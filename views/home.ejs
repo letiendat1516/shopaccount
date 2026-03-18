@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= settings.seoTitle %></title>
+  <meta name="description" content="<%= settings.seoDescription %>">
+  <meta name="keywords" content="<%= settings.seoTags %>">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <meta property="og:title" content="<%= settings.seoTitle %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= settings.baseURL %>" />
+  <meta property="og:image" content="<%= settings.logoPath %>" />
+  <meta property="og:description" content="<%= settings.seoDescription %>" />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+  <meta property="og:locale" content="en_US" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
+            'slide-up': 'slide-up 0.8s ease-out forwards',
+            'fade-in': 'fade-in 1s ease-out forwards',
+            'scale-in': 'scale-in 0.8s ease-out forwards',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'bounce-gentle': {
+              '0%, 100%': {
+                transform: 'translateY(0)'
+              },
+              '50%': {
+                transform: 'translateY(-8px)'
+              }
+            },
+            'slide-up': {
+              '0%': {
+                transform: 'translateY(20px)',
+                opacity: '0'
+              },
+              '100%': {
+                transform: 'translateY(0)',
+                opacity: '1'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0'
+              },
+              '100%': {
+                opacity: '1'
+              }
+            },
+            'scale-in': {
+              '0%': {
+                transform: 'scale(0.95)',
+                opacity: '0'
+              },
+              '100%': {
+                transform: 'scale(1)',
+                opacity: '1'
+              }
+            },
+            'glow': {
+              '0%': {
+                boxShadow: '0 0 20px rgba(var(--accent-rgb), 0.1)'
+              },
+              '100%': {
+                boxShadow: '0 0 40px rgba(var(--accent-rgb), 0.2)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    html, body {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    nav {
+      min-height: 64px;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .accent-glow {
+      box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.15);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-grid {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .gradient-border {
+      background: linear-gradient(45deg, var(--accent-color), transparent, var(--accent-color));
+      padding: 2px;
+      border-radius: 12px;
+    }
+
+    .gradient-border>div {
+      background: #1a1a1a;
+      border-radius: 10px;
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--accent-color);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      top: 15%;
+      left: 10%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 0s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(2) {
+      top: 65%;
+      left: 15%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(3) {
+      top: 35%;
+      right: 12%;
+      width: 4px;
+      height: 4px;
+      animation-delay: 4s;
+      opacity: 0.5;
+    }
+
+    .particle:nth-child(4) {
+      bottom: 25%;
+      left: 18%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(5) {
+      bottom: 55%;
+      right: 20%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(6) {
+      top: 80%;
+      left: 80%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1.5s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(7) {
+      top: 25%;
+      left: 75%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3.5s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(8) {
+      bottom: 15%;
+      right: 80%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2.5s;
+      opacity: 0.3;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+    }
+
+    .markdown-body {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #ffffff;
+    }
+
+    .markdown-body h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1.5rem;
+      margin-top: 2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid rgba(var(--accent-rgb), 0.3);
+    }
+
+    .markdown-body h2 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1.25rem;
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .markdown-body h2::before {
+      content: '';
+      width: 4px;
+      height: 1.5rem;
+      background: var(--accent-color);
+      border-radius: 2px;
+    }
+
+    .markdown-body h3 {
+      font-size: 1.75rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .markdown-body h4 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .markdown-body p {
+      font-size: 1rem;
+      margin-bottom: 1.25rem;
+      color: #a1a1aa;
+      line-height: 1.8;
+    }
+
+    .markdown-body a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .markdown-body a:hover {
+      border-bottom: 1px solid var(--accent-color);
+    }
+
+    .markdown-body ul,
+    .markdown-body ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.25rem;
+      list-style-type: disc;
+      color: #a1a1aa;
+    }
+
+    .markdown-body ul li,
+    .markdown-body ol li {
+      margin-bottom: 0.5rem;
+      line-height: 1.8;
+    }
+
+    .markdown-body ol {
+      list-style-type: decimal;
+    }
+
+    .markdown-body strong,
+    .markdown-body b {
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+
+    .markdown-body em,
+    .markdown-body i {
+      font-style: italic;
+      color: #ffffff;
+    }
+
+    .markdown-body code {
+      background-color: #161b22;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: var(--accent-color);
+      border: 1px solid rgba(var(--accent-rgb), 0.2);
+    }
+
+    .markdown-body pre {
+      background-color: #161b22;
+      padding: 1.25rem;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(var(--accent-rgb), 0.2);
+    }
+
+    .markdown-body pre code {
+      background: none;
+      padding: 0;
+      border: none;
+      color: #ffffff;
+    }
+
+    .markdown-body blockquote {
+      padding: 1rem 1.5rem;
+      margin: 1.25rem 0;
+      background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.1) 0%, transparent 100%);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 0 8px 8px 0;
+      color: #ffffff;
+    }
+
+    .markdown-body blockquote p {
+      color: #ffffff;
+      margin-bottom: 0;
+    }
+
+    .markdown-body hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.5), transparent);
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user, existingUser }) %>
+
+  <%
+    let visibleSections = [];
+    
+    if (settings.displayFeatures && settings.features && settings.features.length > 0) {
+        visibleSections.push('features');
+    }
+    if (settings.displayStats && stats) {
+        visibleSections.push('stats');
+    }
+    if (settings.displayReviews) {
+        visibleSections.push('reviews');
+    }
+    if (settings.aboutUsVisible && settings.aboutUsText && settings.aboutUsText.trim()) {
+        visibleSections.push('about');
+    }
+    if (settings.displayFAQ && settings.faqs && settings.faqs.length > 0) {
+        visibleSections.push('faq');
+    }
+    if (settings.displayCTABanner) {
+        visibleSections.push('cta');
+    }
+    
+    // Helper function to get background class
+    function getSectionBg(sectionName) {
+        const index = visibleSections.indexOf(sectionName);
+        return index % 2 === 0 ? 'bg-dark-lighter' : 'bg-dark';
+    }
+    %>
+
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden" style="
+    background: linear-gradient(
+        135deg,
+        rgba(var(--accent-rgb), 0.25) 0%,
+        rgba(0, 0, 0, 0.85) 30%,
+        rgba(0, 0, 0, 0.90) 70%,
+        rgba(var(--accent-rgb), 0.20) 100%
+    );
+">
+    <div class="absolute inset-0 hero-grid opacity-20"></div>
+
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+
+      <div class="absolute" style="top: 20%; left: 25%; width: 1.5px; height: 1.5px; background: var(--accent-color); opacity: 0.3; border-radius: 50%; animation: float 5s ease-in-out infinite; animation-delay: 0.5s;"></div>
+      <div class="absolute" style="top: 45%; right: 30%; width: 1px; height: 1px; background: var(--accent-color); opacity: 0.4; border-radius: 50%; animation: float 6s ease-in-out infinite; animation-delay: 1.2s;"></div>
+      <div class="absolute" style="bottom: 30%; left: 35%; width: 2px; height: 2px; background: var(--accent-color); opacity: 0.25; border-radius: 50%; animation: float 7s ease-in-out infinite; animation-delay: 2.3s;"></div>
+      <div class="absolute" style="top: 60%; right: 15%; width: 1.5px; height: 1.5px; background: var(--accent-color); opacity: 0.35; border-radius: 50%; animation: float 5.5s ease-in-out infinite; animation-delay: 0.8s;"></div>
+      <div class="absolute" style="bottom: 40%; right: 40%; width: 1px; height: 1px; background: var(--accent-color); opacity: 0.3; border-radius: 50%; animation: float 6.5s ease-in-out infinite; animation-delay: 1.8s;"></div>
+      <div class="absolute" style="top: 35%; left: 15%; width: 2px; height: 2px; background: var(--accent-color); opacity: 0.2; border-radius: 50%; animation: float 8s ease-in-out infinite; animation-delay: 0.3s;"></div>
+      <div class="absolute" style="top: 70%; left: 60%; width: 1.5px; height: 1.5px; background: var(--accent-color); opacity: 0.35; border-radius: 50%; animation: float 5.8s ease-in-out infinite; animation-delay: 1.5s;"></div>
+      <div class="absolute" style="bottom: 50%; left: 45%; width: 1px; height: 1px; background: var(--accent-color); opacity: 0.25; border-radius: 50%; animation: float 6.8s ease-in-out infinite; animation-delay: 2s;"></div>
+      <div class="absolute" style="top: 50%; right: 55%; width: 2px; height: 2px; background: var(--accent-color); opacity: 0.3; border-radius: 50%; animation: float 7.2s ease-in-out infinite; animation-delay: 0.7s;"></div>
+      <div class="absolute" style="bottom: 60%; right: 25%; width: 1.5px; height: 1.5px; background: var(--accent-color); opacity: 0.28; border-radius: 50%; animation: float 5.3s ease-in-out infinite; animation-delay: 1.3s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-5xl mx-auto text-center">
+        <div class="flex justify-center mb-8" data-aos="fade-down" data-aos-duration="800">
+          <div class="relative group">
+            <div class="absolute inset-0 bg-accent/20 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
+            <img src="<%= settings.logoPath %>" alt="<%= settings.storeName %>" class="relative w-24 h-24 rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
+          </div>
+        </div>
+
+        <div class="space-y-6 mb-10" data-aos="fade-up" data-aos-duration="1000">
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight text-white">
+            <%= settings.homePageTitle %>
+          </h1>
+
+          <div class="flex justify-center my-6">
+            <div class="relative w-40 h-1">
+              <div class="absolute inset-0 rounded-full" style="background: linear-gradient(to right, transparent, <%= settings.accentColor %>, transparent);"></div>
+              <div class="absolute inset-0 rounded-full blur-md opacity-75" style="background: linear-gradient(to right, transparent, <%= settings.accentColor %>, transparent);"></div>
+            </div>
+          </div>
+
+          <p class="text-xl sm:text-2xl text-text-secondary leading-relaxed max-w-3xl mx-auto">
+            <%= settings.homePageSubtitle %>
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6" data-aos="fade-up" data-aos-duration="1400">
+          <a href="/products" class="group relative px-8 py-3.5 bg-accent rounded-lg font-semibold transition-all duration-300 flex items-center gap-2.5 justify-center overflow-hidden hover-lift">
+            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            <span class="relative z-10 text-white flex items-center gap-2.5">
+              <i class="fas fa-shopping-bag text-sm"></i>
+              <span>Browse Products</span>
+              <i class="fas fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
+            </span>
+          </a>
+
+          <a href="<%= settings.discordInviteLink %>" class="group glass-effect hover:bg-white/10 px-8 py-3.5 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2.5 justify-center hover-lift">
+            <i class="fab fa-discord text-[#5865F2]"></i>
+            <span class="text-white">Join Discord</span>
+          </a>
+        </div>
+
+        <% if (reviews && reviews.length > 0) { %>
+        <div class="flex justify-center" data-aos="fade-up" data-aos-duration="1600">
+          <div class="inline-flex items-center gap-2 px-3.5 py-2 bg-dark-card/40 backdrop-blur-sm rounded-lg border border-white/5">
+            <% 
+                        const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+                        const fullStars = Math.floor(averageRating);
+                        const hasHalfStar = averageRating % 1 >= 0.5;
+                        %>
+            <div class="flex gap-0.5">
+              <% for (let i = 0; i < fullStars; i++) { %>
+              <i class="fas fa-star text-yellow-400 text-xs"></i>
+              <% } %>
+              <% if (hasHalfStar) { %>
+              <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+              <% } %>
+              <% for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) { %>
+              <i class="far fa-star text-yellow-400/30 text-xs"></i>
+              <% } %>
+            </div>
+            <span class="text-white font-medium text-sm"><%= averageRating.toFixed(1) %></span>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-gentle">
+      <a href="#features" class="text-text-secondary hover:text-accent transition-colors text-2xl">
+        <i class="fas fa-chevron-down"></i>
+      </a>
+    </div>
+  </section>
+
+  <% if (settings.displayFeatures && settings.features && settings.features.length > 0) { %>
+  <section class="py-20 relative overflow-hidden <%= getSectionBg('features') %>">
+    <div class="absolute inset-0">
+      <div class="absolute top-20 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-80 h-80 bg-accent/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <div class="inline-flex items-center gap-3 bg-dark-card px-6 py-2 rounded-full mb-4">
+          <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+          <span class="text-sm text-text-secondary font-medium">Features</span>
+        </div>
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
+          Why Choose <span class="text-accent"><%= settings.storeName %></span>?
+        </h2>
+        <p class="text-text-secondary text-lg max-w-2xl mx-auto">
+          Discover what makes us the trusted choice for thousands of customers worldwide
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-<%= Math.min(settings.features.length, 3) %> gap-8 max-w-6xl mx-auto">
+        <% settings.features.forEach(function(feature, index) { %>
+        <div class="group" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+          <div class="relative h-full glass-effect rounded-2xl p-8 hover-lift overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/0 via-accent/0 to-accent/0 group-hover:from-accent/5 group-hover:via-accent/10 group-hover:to-accent/5 transition-all duration-700 rounded-2xl"></div>
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+
+            <div class="relative z-10">
+              <div class="mb-6 relative w-fit">
+                <div class="absolute inset-0 bg-gradient-to-br from-accent/30 to-accent/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 scale-110"></div>
+                <div class="relative w-16 h-16 bg-gradient-to-br from-accent/20 via-accent/10 to-transparent rounded-2xl flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 border border-accent/20 group-hover:border-accent/40">
+                  <i class="<%= feature.icon %> text-accent text-3xl drop-shadow-[0_0_8px_rgba(var(--accent-rgb),0.5)]"></i>
+                </div>
+                <div class="absolute inset-0 border-2 border-accent/30 rounded-2xl animate-ping opacity-0 group-hover:opacity-75"></div>
+              </div>
+
+              <h3 class="text-xl font-bold text-white mb-3 group-hover:text-accent transition-colors duration-300">
+                <%= feature.title %>
+              </h3>
+
+              <p class="text-text-secondary text-sm leading-relaxed">
+                <%= feature.description %>
+              </p>
+
+              <div class="absolute -bottom-2 -right-2 w-24 h-24 bg-gradient-to-br from-accent/5 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+
+      <% if (settings.features.length >= 4) { %>
+      <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="400">
+        <p class="text-text-secondary mb-6">Ready to experience the difference?</p>
+        <a href="/products" class="inline-flex items-center gap-3 bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover-lift group">
+          <span>View All Products</span>
+          <i class="fas fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+        </a>
+      </div>
+      <% } %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (settings.displayStats && stats) { %>
+  <section class="py-20 <%= getSectionBg('stats') %>">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
+          Our <span class="text-accent">Impact</span>
+        </h2>
+        <p class="text-text-secondary max-w-2xl mx-auto">
+          Numbers that showcase our commitment to excellence and customer satisfaction.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center" data-aos="zoom-in" data-aos-delay="100">
+          <div class="glass-effect p-8 rounded-2xl hover-lift group">
+            <div class="w-16 h-16 bg-dark-card group-hover:bg-accent/10 rounded-xl flex items-center justify-center mx-auto mb-4 transition-all duration-300">
+              <i class="fas fa-shopping-cart text-accent text-2xl"></i>
+            </div>
+            <div class="text-3xl font-bold text-white mb-2">
+              <%= stats.totalPurchases.toLocaleString('en-US') %>+
+            </div>
+            <div class="text-text-secondary">Total Purchases</div>
+          </div>
+        </div>
+
+        <div class="text-center" data-aos="zoom-in" data-aos-delay="200">
+          <div class="glass-effect p-8 rounded-2xl hover-lift group">
+            <div class="w-16 h-16 bg-dark-card group-hover:bg-accent/10 rounded-xl flex items-center justify-center mx-auto mb-4 transition-all duration-300">
+              <i class="fas fa-box-open text-accent text-2xl"></i>
+            </div>
+            <div class="text-3xl font-bold text-white mb-2">
+              <%= totalProducts.toLocaleString('en-US') %>+
+            </div>
+            <div class="text-text-secondary">Products Available</div>
+          </div>
+        </div>
+
+        <div class="text-center" data-aos="zoom-in" data-aos-delay="300">
+          <div class="glass-effect p-8 rounded-2xl hover-lift group">
+            <div class="w-16 h-16 bg-dark-card group-hover:bg-accent/10 rounded-xl flex items-center justify-center mx-auto mb-4 transition-all duration-300">
+              <i class="fas fa-chart-line text-accent text-2xl"></i>
+            </div>
+            <div class="text-3xl font-bold text-white mb-2">
+              <%= (thisMonthStats.totalSiteVisits + lastMonthStats.totalSiteVisits).toLocaleString('en-US') %>+
+            </div>
+            <div class="text-text-secondary">Recent Visits</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (settings.displayReviews) { %>
+  <section class="py-20 <%= getSectionBg('reviews') %> overflow-hidden">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <div class="inline-flex items-center gap-3 bg-dark-card px-6 py-2 rounded-full mb-4">
+          <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+          <span class="text-sm text-text-secondary font-medium">Customer Reviews</span>
+        </div>
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
+          What Our <span class="text-accent">Customers</span> Say
+        </h2>
+        <p class="text-text-secondary max-w-2xl mx-auto">
+          Over <span class="text-accent font-semibold"><%= totalUsers.toLocaleString('en-US') %>+</span> satisfied customers trust us worldwide.
+        </p>
+      </div>
+
+      <% if (reviews.length === 0) { %>
+      <div class="text-center py-16">
+        <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <i class="fas fa-comments text-accent text-3xl"></i>
+        </div>
+        <p class="text-text-secondary text-lg">No reviews yet. Be the first to share your experience!</p>
+      </div>
+      <% } else { %>
+      <div class="reviews-slider-wrapper relative">
+        <div class="reviews-slider flex gap-6">
+          <% reviews.concat(reviews).forEach((review, index) => { %>
+          <div class="review-card flex-shrink-0 w-[350px]">
+            <div class="glass-effect p-6 rounded-2xl h-full flex flex-col">
+              <div class="flex text-yellow-400 mb-4 flex-shrink-0">
+                <% for (let i = 0; i < review.rating; i++) { %>
+                <i class="fas fa-star"></i>
+                <% } %>
+                <% for (let i = review.rating; i < 5; i++) { %>
+                <i class="far fa-star text-text-muted"></i>
+                <% } %>
+              </div>
+
+              <div class="flex-grow mb-6">
+                <p class="text-text-secondary leading-relaxed break-words overflow-hidden">
+                  "<%= review.comment %>"
+                </p>
+              </div>
+
+              <div class="flex items-center gap-3 flex-shrink-0">
+                <img src="<%= review.discordAvatar %>" alt="<%= review.discordUsername %>'s Avatar" class="w-10 h-10 rounded-full border border-dark-border flex-shrink-0 object-cover">
+                <div class="min-w-0 flex-grow">
+                  <div class="font-medium text-white truncate"><%= review.discordUsername %></div>
+                  <div class="text-sm text-text-muted">Verified Customer</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </section>
+
+  <style>
+    @keyframes slide {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(calc(-350px * <%=reviews.length %> - <%=reviews.length * 24 %>px));
+      }
+    }
+
+    .reviews-slider-wrapper {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .reviews-slider {
+      animation: slide <%=reviews.length * 8 %>s linear infinite;
+      will-change: transform;
+    }
+
+    .reviews-slider:hover {
+      animation-play-state: paused;
+    }
+
+    @media (max-width: 768px) {
+      .review-card {
+        width: 300px;
+      }
+
+      @keyframes slide {
+        0% {
+          transform: translateX(0);
+        }
+
+        100% {
+          transform: translateX(calc(-300px * <%=reviews.length %> - <%=reviews.length * 24 %>px));
+        }
+      }
+    }
+  </style>
+  <% } %>
+
+  <% if (settings.aboutUsVisible && settings.aboutUsText && settings.aboutUsText.trim()) { %>
+  <section class="py-20 <%= getSectionBg('about') %>">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
+          About <span class="text-accent">Us</span>
+        </h2>
+        <p class="text-text-secondary max-w-2xl mx-auto">
+          Learn more about our story, mission, and commitment to excellence.
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+        <div class="glass-effect p-8 lg:p-12 rounded-2xl">
+          <div class="markdown-body">
+            <%- md.render(settings.aboutUsText) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (settings.displayFAQ && settings.faqs && settings.faqs.length > 0) { %>
+  <section class="py-20 <%= getSectionBg('faq') %>">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <div class="inline-flex items-center gap-3 bg-dark-card px-6 py-2 rounded-full mb-4">
+          <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+          <span class="text-sm text-text-secondary font-medium">Have Questions?</span>
+        </div>
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
+          Frequently Asked <span class="text-accent">Questions</span>
+        </h2>
+        <p class="text-text-secondary max-w-2xl mx-auto">
+          Find answers to common questions about our products and services
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto space-y-4">
+        <% settings.faqs.forEach((faq, index) => { %>
+        <div class="glass-effect rounded-xl overflow-hidden hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 50 %>">
+          <button type="button" class="faq-button w-full text-left p-6 flex items-center justify-between group" onclick="toggleFAQ(this)">
+            <span class="text-lg font-semibold text-white pr-4 group-hover:text-accent transition-colors"><%= faq.question %></span>
+            <i class="fas fa-chevron-down text-accent transition-transform duration-300 flex-shrink-0"></i>
+          </button>
+          <div class="faq-answer overflow-hidden transition-all duration-300" style="max-height: 0;">
+            <div class="p-6 pt-4 text-text-secondary leading-relaxed border-t border-white/10 mt-2">
+              <%= faq.answer %>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function toggleFAQ(button) {
+      const answer = button.nextElementSibling;
+      const icon = button.querySelector('i');
+      const allFAQs = document.querySelectorAll('.faq-answer');
+      const allIcons = document.querySelectorAll('.faq-button i');
+
+      allFAQs.forEach((faq, index) => {
+        if (faq !== answer) {
+          faq.style.maxHeight = '0';
+          allIcons[index].style.transform = 'rotate(0deg)';
+        }
+      });
+
+      if (answer.style.maxHeight === '0px' || answer.style.maxHeight === '') {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        answer.style.maxHeight = '0';
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+  </script>
+  <% } %>
+
+  <% if (settings.displayCTABanner) { %>
+  <section class="py-20 <%= getSectionBg('cta') %> relative overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-slow"></div>
+      <div class="absolute bottom-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center max-w-4xl mx-auto" data-aos="zoom-in">
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
+          Ready to Get <span class="text-accent">Started?</span>
+        </h2>
+        <p class="text-xl text-text-secondary mb-10 leading-relaxed">
+          Join thousands of satisfied customers and discover why we're the trusted choice for quality products.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-6 justify-center">
+          <a href="/products" class="bg-accent hover:bg-accent/90 text-white px-10 py-4 rounded-lg text-lg font-semibold transition-all duration-300 hover-lift flex items-center gap-3 justify-center">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Explore Products</span>
+          </a>
+          <a href="<%= settings.discordInviteLink %>" class="glass-effect hover:bg-white/10 text-white px-10 py-4 rounded-lg text-lg font-semibold transition-all duration-300 hover-lift flex items-center gap-3 justify-center">
+            <i class="fab fa-discord text-[#5865F2]"></i>
+            <span>Join Our Discord</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

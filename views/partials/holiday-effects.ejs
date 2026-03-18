@@ -1,0 +1,1005 @@
+<% if (settings.holidayEffectsEnabled && settings.holidayEffectsType) { %>
+<div id="holiday-effects-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; overflow: hidden;"></div>
+
+<style>
+  .holiday-effect {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  @keyframes fall-sway {
+    0% {
+      transform: translateY(-50px) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.8;
+    }
+
+    25% {
+      transform: translateY(25vh) translateX(20px) rotate(90deg);
+      opacity: 0.9;
+    }
+
+    50% {
+      transform: translateY(50vh) translateX(-10px) rotate(180deg);
+      opacity: 1;
+    }
+
+    75% {
+      transform: translateY(75vh) translateX(15px) rotate(270deg);
+      opacity: 0.9;
+    }
+
+    90% {
+      opacity: 0.7;
+    }
+
+    100% {
+      transform: translateY(calc(100vh + 50px)) translateX(-5px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes float-horizontal {
+    0% {
+      transform: translateX(-100px) translateY(0) scale(0.8);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.6;
+    }
+
+    25% {
+      transform: translateX(25vw) translateY(-10px) scale(0.9);
+      opacity: 0.7;
+    }
+
+    50% {
+      transform: translateX(50vw) translateY(-5px) scale(1);
+      opacity: 0.8;
+    }
+
+    75% {
+      transform: translateX(75vw) translateY(-12px) scale(0.95);
+      opacity: 0.7;
+    }
+
+    90% {
+      opacity: 0.5;
+    }
+
+    100% {
+      transform: translateX(calc(100vw + 100px)) translateY(0) scale(0.8);
+      opacity: 0;
+    }
+  }
+
+  @keyframes float-ghost {
+    0% {
+      transform: translateX(-100px) translateY(0) rotate(0deg) scale(0.9);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.5;
+    }
+
+    25% {
+      transform: translateX(25vw) translateY(-15px) rotate(3deg) scale(1);
+      opacity: 0.6;
+    }
+
+    50% {
+      transform: translateX(50vw) translateY(-8px) rotate(-3deg) scale(1.05);
+      opacity: 0.5;
+    }
+
+    75% {
+      transform: translateX(75vw) translateY(-20px) rotate(2deg) scale(1);
+      opacity: 0.6;
+    }
+
+    90% {
+      opacity: 0.4;
+    }
+
+    100% {
+      transform: translateX(calc(100vw + 100px)) translateY(0) rotate(0deg) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  @keyframes spin-fall {
+    0% {
+      transform: translateY(-50px) rotate(0deg) scale(0.8);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.8;
+    }
+
+    50% {
+      transform: translateY(50vh) rotate(360deg) scale(1);
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 0.7;
+    }
+
+    100% {
+      transform: translateY(calc(100vh + 50px)) rotate(720deg) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  @keyframes firework-burst {
+    0% {
+      transform: translate(0, 0) scale(0);
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 1;
+      transform: translate(calc(var(--tx) * 0.5), calc(var(--ty) * 0.5)) scale(0.8);
+    }
+
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(1);
+      opacity: 0;
+    }
+  }
+
+  @keyframes firework-burst-long {
+    0% {
+      transform: translate(0, 0) scale(0);
+      opacity: 1;
+    }
+
+    30% {
+      opacity: 1;
+    }
+
+    70% {
+      opacity: 1;
+      transform: translate(calc(var(--tx) * 0.7), calc(var(--ty) * 0.7)) scale(1);
+    }
+
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sparkle {
+    0% {
+      opacity: 0;
+      transform: scale(0.5) rotate(0deg);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.5) rotate(180deg);
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(0.5) rotate(360deg);
+    }
+  }
+
+  @keyframes sparkle-trail {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateY(30px) scale(0.3);
+    }
+  }
+
+  @keyframes heart-pulse {
+    0% {
+      transform: translateY(-50px) translateX(0) scale(0.8);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.9;
+    }
+
+    25% {
+      transform: translateY(25vh) translateX(15px) scale(1.1);
+      opacity: 1;
+    }
+
+    50% {
+      transform: translateY(50vh) translateX(-8px) scale(0.9);
+      opacity: 1;
+    }
+
+    75% {
+      transform: translateY(75vh) translateX(12px) scale(1.05);
+      opacity: 0.9;
+    }
+
+    90% {
+      opacity: 0.6;
+    }
+
+    100% {
+      transform: translateY(calc(100vh + 50px)) translateX(-5px) scale(0.8);
+      opacity: 0;
+    }
+  }
+
+  @keyframes confetti-fall {
+    0% {
+      transform: translateY(-50px) translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateY(calc(100vh + 50px)) translateX(100px) rotate(720deg);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes egg-bounce {
+    0% {
+      transform: translateY(-50px) translateX(0) rotate(0deg) scale(0.8);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.9;
+    }
+
+    25% {
+      transform: translateY(25vh) translateX(10px) rotate(45deg) scale(1.05);
+      opacity: 1;
+    }
+
+    50% {
+      transform: translateY(50vh) translateX(-15px) rotate(90deg) scale(0.95);
+      opacity: 1;
+    }
+
+    75% {
+      transform: translateY(75vh) translateX(8px) rotate(135deg) scale(1.02);
+      opacity: 0.9;
+    }
+
+    90% {
+      opacity: 0.7;
+    }
+
+    100% {
+      transform: translateY(calc(100vh + 50px)) translateX(-5px) rotate(180deg) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  @keyframes bunny-hop {
+    0% {
+      transform: translateX(-100px) translateY(0) scale(0.9);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.8;
+    }
+
+    25% {
+      transform: translateX(25vw) translateY(-30px) scale(1);
+      opacity: 0.9;
+    }
+
+    50% {
+      transform: translateX(50vw) translateY(-15px) scale(1.05);
+      opacity: 1;
+    }
+
+    75% {
+      transform: translateX(75vw) translateY(-25px) scale(1);
+      opacity: 0.9;
+    }
+
+    90% {
+      opacity: 0.7;
+    }
+
+    100% {
+      transform: translateX(calc(100vw + 100px)) translateY(0) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  @keyframes tag-fall {
+    0% {
+      transform: translateY(-50px) translateX(0) rotate(0deg) scale(0.8);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    25% {
+      transform: translateY(25vh) translateX(15px) rotate(90deg) scale(1.05);
+      opacity: 1;
+    }
+
+    50% {
+      transform: translateY(50vh) translateX(-10px) rotate(180deg) scale(1);
+      opacity: 1;
+    }
+
+    75% {
+      transform: translateY(75vh) translateX(12px) rotate(270deg) scale(1.02);
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 0.9;
+    }
+
+    100% {
+      transform: translateY(calc(100vh + 50px)) translateX(-8px) rotate(360deg) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  @keyframes dollar-spin {
+    0% {
+      transform: translateY(-50px) rotate(0deg) scale(0.7);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    50% {
+      transform: translateY(50vh) rotate(720deg) scale(1.1);
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 0.9;
+    }
+
+    100% {
+      transform: translateY(calc(100vh + 50px)) rotate(1440deg) scale(0.8);
+      opacity: 0;
+    }
+  }
+
+  .snowflake {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2em;
+    text-shadow: 
+      0 0 3px rgba(255, 255, 255, 0.8),
+      0 0 6px rgba(200, 230, 255, 0.6);
+    filter: blur(0.3px);
+  }
+
+  .bat {
+    font-size: 1.6em;
+    opacity: 0.7;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  .ghost {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.8em;
+    filter: 
+      drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))
+      blur(0.5px);
+  }
+
+  .pumpkin {
+    font-size: 1.5em;
+    filter: drop-shadow(0 2px 6px rgba(255, 140, 0, 0.4));
+  }
+
+  .spider {
+    color: rgba(50, 50, 50, 0.8);
+    font-size: 1.2em;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+  }
+
+  .heart {
+    font-size: 1.4em;
+    filter: 
+      drop-shadow(0 0 4px rgba(255, 105, 180, 0.6))
+      drop-shadow(0 0 8px rgba(255, 182, 193, 0.4));
+  }
+
+  .firework {
+    font-size: 2em;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .firework-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor, 0 0 12px currentColor;
+  }
+
+  .confetti {
+    position: absolute;
+    width: 8px;
+    height: 12px;
+    opacity: 0.9;
+  }
+
+  .sparkle-trail {
+    position: absolute;
+    font-size: 1.2em;
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+
+  .easter-egg {
+    font-size: 1.5em;
+    filter: drop-shadow(0 0 8px rgba(255, 182, 193, 0.6));
+  }
+
+  .easter-bunny {
+    font-size: 1.6em;
+    filter: drop-shadow(0 0 10px rgba(255, 182, 193, 0.5));
+  }
+
+  .flower {
+    font-size: 1.3em;
+    filter: drop-shadow(0 0 6px rgba(255, 182, 193, 0.4));
+  }
+
+  .price-tag {
+    font-size: 1.8em;
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.8));
+  }
+
+  .dollar-sign {
+    font-size: 2em;
+    color: #FFD700;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
+  }
+
+  .percent-sign {
+    font-size: 1.7em;
+    color: #000000;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+  }
+</style>
+
+<script>
+  (function() {
+    const effectType = '<%= settings.holidayEffectsType %>';
+    const container = document.getElementById('holiday-effects-container');
+
+    if (!container) {
+      console.error('Holiday effects container not found');
+      return;
+    }
+
+    let activeEffects = [];
+    let animationInterval;
+    let burstInterval;
+    let confettiInterval;
+
+    const MAX_EFFECTS = effectType === 'new-year' ? 30 : effectType === 'halloween' ? 15 : effectType === 'black-friday' ? 20 : 25;
+
+    function clearAllEffects() {
+      activeEffects.forEach(effect => {
+        if (effect && effect.parentNode) {
+          effect.remove();
+        }
+      });
+      activeEffects = [];
+    }
+
+    function removeOldestEffect() {
+      if (activeEffects.length > 0) {
+        const oldest = activeEffects.shift();
+        if (oldest && oldest.parentNode) {
+          oldest.remove();
+        }
+      }
+    }
+
+    function createFirework(size = 'medium') {
+      if (activeEffects.length >= MAX_EFFECTS) {
+        removeOldestEffect();
+      }
+
+      const effect = document.createElement('div');
+      effect.className = 'holiday-effect firework';
+      
+      const fireworkX = Math.random() * window.innerWidth;
+      const fireworkY = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.1;
+
+      effect.style.left = fireworkX + 'px';
+      effect.style.top = fireworkY + 'px';
+      
+      const sparkles = ['✨', '💫', '⭐', '🌟', '✦', '✧'];
+      effect.innerHTML = sparkles[Math.floor(Math.random() * sparkles.length)];
+      effect.style.animation = 'sparkle 0.8s ease-in-out';
+
+      const colors = [
+        '#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', 
+        '#FFA07A', '#F7DC6F', '#FF1493', '#7B68EE',
+        '#00CED1', '#FF69B4', '#00FF7F', '#FF4500',
+        '#9370DB', '#20B2AA', '#FF69B4', '#FFB6C1'
+      ];
+      
+      const particleCount = size === 'large' ? 24 : size === 'small' ? 12 : 18;
+      const baseDistance = size === 'large' ? 100 : size === 'small' ? 50 : 70;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.backgroundColor = color;
+        particle.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const distance = baseDistance + Math.random() * 40;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+
+        particle.style.setProperty('--tx', tx + 'px');
+        particle.style.setProperty('--ty', ty + 'px');
+        
+        const animationType = size === 'large' ? 'firework-burst-long' : 'firework-burst';
+        particle.style.animation = `${animationType} ${Math.random() * 0.4 + 1.2}s ease-out forwards`;
+        particle.style.animationDelay = `${Math.random() * 0.15}s`;
+
+        effect.appendChild(particle);
+      }
+
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const trail = document.createElement('div');
+          trail.className = 'sparkle-trail';
+          trail.innerHTML = '✨';
+          trail.style.left = (fireworkX + (Math.random() - 0.5) * 20) + 'px';
+          trail.style.top = (fireworkY + (Math.random() - 0.5) * 20) + 'px';
+          trail.style.color = colors[Math.floor(Math.random() * colors.length)];
+          trail.style.animation = 'sparkle-trail 1s ease-out forwards';
+          trail.style.animationDelay = `${i * 0.05}s`;
+          container.appendChild(trail);
+          
+          setTimeout(() => trail.remove(), 1500);
+        }, i * 100);
+      }
+
+      activeEffects.push(effect);
+      container.appendChild(effect);
+      
+      setTimeout(() => {
+        effect.remove();
+        activeEffects = activeEffects.filter(e => e !== effect);
+      }, 2500);
+    }
+
+    function createConfetti() {
+      if (activeEffects.length >= MAX_EFFECTS) {
+        removeOldestEffect();
+      }
+
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      
+      const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#F7DC6F', '#FF1493', '#7B68EE', '#00FF7F'];
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.left = Math.random() * window.innerWidth + 'px';
+      confetti.style.top = '-20px';
+      
+      const duration = Math.random() * 2 + 3;
+      confetti.style.animation = `confetti-fall ${duration}s linear forwards`;
+      
+      container.appendChild(confetti);
+      activeEffects.push(confetti);
+      
+      setTimeout(() => {
+        confetti.remove();
+        activeEffects = activeEffects.filter(e => e !== confetti);
+      }, duration * 1000);
+    }
+
+    function createEffect() {
+      if (activeEffects.length >= MAX_EFFECTS) {
+        return;
+      }
+
+      const effect = document.createElement('div');
+      effect.className = 'holiday-effect';
+      
+      const startX = Math.random() * window.innerWidth;
+      
+      effect.style.left = startX + 'px';
+      effect.style.position = 'absolute';
+
+      switch (effectType) {
+        case 'christmas':
+          effect.classList.add('snowflake');
+          effect.innerHTML = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+          const snowDuration = Math.random() * 3 + 8;
+          effect.style.animation = `fall-sway ${snowDuration}s linear infinite`;
+          effect.style.fontSize = (Math.random() * 0.5 + 0.9) + 'em';
+          effect.style.opacity = Math.random() * 0.3 + 0.6;
+          break;
+
+        case 'valentines':
+          effect.classList.add('heart');
+          const hearts = ['💕', '💖', '💗', '💓', '💝', '💞'];
+          effect.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+          const heartDuration = Math.random() * 3 + 9;
+          effect.style.animation = `heart-pulse ${heartDuration}s ease-in-out infinite`;
+          effect.style.fontSize = (Math.random() * 0.4 + 1) + 'em';
+          effect.style.opacity = Math.random() * 0.2 + 0.7;
+          break;
+
+        case 'halloween':
+          const halloweenTypes = ['bat', 'ghost', 'pumpkin', 'spider'];
+          const selectedType = halloweenTypes[Math.floor(Math.random() * halloweenTypes.length)];
+
+          switch (selectedType) {
+            case 'bat':
+              effect.classList.add('bat');
+              effect.innerHTML = '🦇';
+              const batDuration = Math.random() * 6 + 12;
+              effect.style.animation = `float-horizontal ${batDuration}s linear infinite`;
+              effect.style.fontSize = (Math.random() * 0.4 + 1.4) + 'em';
+              break;
+
+            case 'ghost':
+              effect.classList.add('ghost');
+              effect.innerHTML = '👻';
+              const ghostDuration = Math.random() * 8 + 14;
+              effect.style.animation = `float-ghost ${ghostDuration}s ease-in-out infinite`;
+              effect.style.fontSize = (Math.random() * 0.4 + 1.6) + 'em';
+              break;
+
+            case 'pumpkin':
+              effect.classList.add('pumpkin');
+              effect.innerHTML = '🎃';
+              const pumpkinDuration = Math.random() * 3 + 7;
+              effect.style.animation = `spin-fall ${pumpkinDuration}s linear infinite`;
+              effect.style.fontSize = (Math.random() * 0.3 + 1.3) + 'em';
+              break;
+
+            case 'spider':
+              effect.classList.add('spider');
+              effect.innerHTML = '🕷️';
+              const spiderDuration = Math.random() * 4 + 8;
+              effect.style.animation = `fall-sway ${spiderDuration}s ease-in-out infinite`;
+              effect.style.fontSize = (Math.random() * 0.3 + 1) + 'em';
+              break;
+          }
+          break;
+
+        case 'easter':
+          const easterTypes = ['egg', 'bunny', 'flower'];
+          const selectedEaster = easterTypes[Math.floor(Math.random() * easterTypes.length)];
+
+          switch (selectedEaster) {
+            case 'egg':
+              effect.classList.add('easter-egg');
+              const eggs = ['🥚', '🐣', '🐥'];
+              effect.innerHTML = eggs[Math.floor(Math.random() * eggs.length)];
+              const eggDuration = Math.random() * 3 + 8;
+              effect.style.animation = `egg-bounce ${eggDuration}s ease-in-out infinite`;
+              effect.style.fontSize = (Math.random() * 0.4 + 1.3) + 'em';
+              break;
+
+            case 'bunny':
+              effect.classList.add('easter-bunny');
+              effect.innerHTML = '🐰';
+              const bunnyDuration = Math.random() * 6 + 12;
+              effect.style.animation = `bunny-hop ${bunnyDuration}s ease-in-out infinite`;
+              effect.style.fontSize = (Math.random() * 0.4 + 1.4) + 'em';
+              break;
+
+            case 'flower':
+              effect.classList.add('flower');
+              const flowers = ['🌸', '🌺', '🌼', '🌷'];
+              effect.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
+              const flowerDuration = Math.random() * 3 + 9;
+              effect.style.animation = `fall-sway ${flowerDuration}s ease-in-out infinite`;
+              effect.style.fontSize = (Math.random() * 0.3 + 1.2) + 'em';
+              break;
+          }
+          break;
+
+        case 'black-friday':
+          const blackFridayTypes = ['tag', 'dollar', 'percent'];
+          const selectedBF = blackFridayTypes[Math.floor(Math.random() * blackFridayTypes.length)];
+
+          switch (selectedBF) {
+            case 'tag':
+              effect.classList.add('price-tag');
+              effect.innerHTML = '🏷️';
+              const tagDuration = Math.random() * 3 + 7;
+              effect.style.animation = `tag-fall ${tagDuration}s linear infinite`;
+              effect.style.fontSize = (Math.random() * 0.4 + 1.6) + 'em';
+              break;
+
+            case 'dollar':
+              effect.classList.add('dollar-sign');
+              effect.innerHTML = '💰';
+              const dollarDuration = Math.random() * 3 + 6;
+              effect.style.animation = `dollar-spin ${dollarDuration}s linear infinite`;
+              effect.style.fontSize = (Math.random() * 0.5 + 1.8) + 'em';
+              break;
+
+            case 'percent':
+              effect.classList.add('percent-sign');
+              effect.innerHTML = '%';
+              const percentDuration = Math.random() * 3 + 8;
+              effect.style.animation = `spin-fall ${percentDuration}s linear infinite`;
+              effect.style.fontSize = (Math.random() * 0.4 + 1.5) + 'em';
+              break;
+          }
+          break;
+
+        case 'new-year':
+          return;
+      }
+
+      container.appendChild(effect);
+      activeEffects.push(effect);
+    }
+
+    const effectCount = 
+      effectType === 'halloween' ? 8 : 
+      effectType === 'new-year' ? 0 : 
+      effectType === 'valentines' ? 10 : 
+      effectType === 'easter' ? 12 :
+      effectType === 'black-friday' ? 14 :
+      18;
+
+    for (let i = 0; i < effectCount; i++) {
+      setTimeout(() => {
+        const effect = document.createElement('div');
+        effect.className = 'holiday-effect';
+        
+        const randomProgress = Math.random();
+        const startX = Math.random() * window.innerWidth;
+        
+        effect.style.left = startX + 'px';
+        effect.style.position = 'absolute';
+
+        switch (effectType) {
+          case 'christmas':
+            effect.classList.add('snowflake');
+            effect.innerHTML = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+            const snowDuration = Math.random() * 3 + 8;
+            const snowDelay = -(randomProgress * snowDuration);
+            effect.style.animation = `fall-sway ${snowDuration}s linear infinite`;
+            effect.style.animationDelay = `${snowDelay}s`;
+            effect.style.fontSize = (Math.random() * 0.5 + 0.9) + 'em';
+            effect.style.opacity = Math.random() * 0.3 + 0.6;
+            break;
+
+          case 'valentines':
+            effect.classList.add('heart');
+            const hearts = ['💕', '💖', '💗', '💓', '💝', '💞'];
+            effect.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            const heartDuration = Math.random() * 3 + 9;
+            const heartDelay = -(randomProgress * heartDuration);
+            effect.style.animation = `heart-pulse ${heartDuration}s ease-in-out infinite`;
+            effect.style.animationDelay = `${heartDelay}s`;
+            effect.style.fontSize = (Math.random() * 0.4 + 1) + 'em';
+            effect.style.opacity = Math.random() * 0.2 + 0.7;
+            break;
+
+          case 'halloween':
+            const halloweenTypes = ['bat', 'ghost', 'pumpkin', 'spider'];
+            const selectedType = halloweenTypes[Math.floor(Math.random() * halloweenTypes.length)];
+
+            switch (selectedType) {
+              case 'bat':
+                effect.classList.add('bat');
+                effect.innerHTML = '🦇';
+                const batDuration = Math.random() * 6 + 12;
+                const batDelay = -(randomProgress * batDuration);
+                effect.style.animation = `float-horizontal ${batDuration}s linear infinite`;
+                effect.style.animationDelay = `${batDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.4 + 1.4) + 'em';
+                break;
+
+              case 'ghost':
+                effect.classList.add('ghost');
+                effect.innerHTML = '👻';
+                const ghostDuration = Math.random() * 8 + 14;
+                const ghostDelay = -(randomProgress * ghostDuration);
+                effect.style.animation = `float-ghost ${ghostDuration}s ease-in-out infinite`;
+                effect.style.animationDelay = `${ghostDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.4 + 1.6) + 'em';
+                break;
+
+              case 'pumpkin':
+                effect.classList.add('pumpkin');
+                effect.innerHTML = '🎃';
+                const pumpkinDuration = Math.random() * 3 + 7;
+                const pumpkinDelay = -(randomProgress * pumpkinDuration);
+                effect.style.animation = `spin-fall ${pumpkinDuration}s linear infinite`;
+                effect.style.animationDelay = `${pumpkinDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.3 + 1.3) + 'em';
+                break;
+
+              case 'spider':
+                effect.classList.add('spider');
+                effect.innerHTML = '🕷️';
+                const spiderDuration = Math.random() * 4 + 8;
+                const spiderDelay = -(randomProgress * spiderDuration);
+                effect.style.animation = `fall-sway ${spiderDuration}s ease-in-out infinite`;
+                effect.style.animationDelay = `${spiderDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.3 + 1) + 'em';
+                break;
+            }
+            break;
+
+          case 'easter':
+            const easterTypes = ['egg', 'bunny', 'flower'];
+            const selectedEaster = easterTypes[Math.floor(Math.random() * easterTypes.length)];
+
+            switch (selectedEaster) {
+              case 'egg':
+                effect.classList.add('easter-egg');
+                const eggs = ['🥚', '🐣', '🐥'];
+                effect.innerHTML = eggs[Math.floor(Math.random() * eggs.length)];
+                const eggDuration = Math.random() * 3 + 8;
+                const eggDelay = -(randomProgress * eggDuration);
+                effect.style.animation = `egg-bounce ${eggDuration}s ease-in-out infinite`;
+                effect.style.animationDelay = `${eggDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.4 + 1.3) + 'em';
+                break;
+
+              case 'bunny':
+                effect.classList.add('easter-bunny');
+                effect.innerHTML = '🐰';
+                const bunnyDuration = Math.random() * 6 + 12;
+                const bunnyDelay = -(randomProgress * bunnyDuration);
+                effect.style.animation = `bunny-hop ${bunnyDuration}s ease-in-out infinite`;
+                effect.style.animationDelay = `${bunnyDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.4 + 1.4) + 'em';
+                break;
+
+              case 'flower':
+                effect.classList.add('flower');
+                const flowers = ['🌸', '🌺', '🌼', '🌷'];
+                effect.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
+                const flowerDuration = Math.random() * 3 + 9;
+                const flowerDelay = -(randomProgress * flowerDuration);
+                effect.style.animation = `fall-sway ${flowerDuration}s ease-in-out infinite`;
+                effect.style.animationDelay = `${flowerDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.3 + 1.2) + 'em';
+                break;
+            }
+            break;
+
+          case 'black-friday':
+            const blackFridayTypes = ['tag', 'dollar', 'percent'];
+            const selectedBF = blackFridayTypes[Math.floor(Math.random() * blackFridayTypes.length)];
+
+            switch (selectedBF) {
+              case 'tag':
+                effect.classList.add('price-tag');
+                effect.innerHTML = '🏷️';
+                const tagDuration = Math.random() * 3 + 7;
+                const tagDelay = -(randomProgress * tagDuration);
+                effect.style.animation = `tag-fall ${tagDuration}s linear infinite`;
+                effect.style.animationDelay = `${tagDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.4 + 1.6) + 'em';
+                break;
+
+              case 'dollar':
+                effect.classList.add('dollar-sign');
+                effect.innerHTML = '💰';
+                const dollarDuration = Math.random() * 3 + 6;
+                const dollarDelay = -(randomProgress * dollarDuration);
+                effect.style.animation = `dollar-spin ${dollarDuration}s linear infinite`;
+                effect.style.animationDelay = `${dollarDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.5 + 1.8) + 'em';
+                break;
+
+              case 'percent':
+                effect.classList.add('percent-sign');
+                effect.innerHTML = '%';
+                const percentDuration = Math.random() * 3 + 8;
+                const percentDelay = -(randomProgress * percentDuration);
+                effect.style.animation = `spin-fall ${percentDuration}s linear infinite`;
+                effect.style.animationDelay = `${percentDelay}s`;
+                effect.style.fontSize = (Math.random() * 0.4 + 1.5) + 'em';
+                break;
+            }
+            break;
+        }
+
+        container.appendChild(effect);
+        activeEffects.push(effect);
+      }, i * 150);
+    }
+
+    if (effectType === 'new-year') {
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          createFirework(Math.random() > 0.7 ? 'large' : 'medium');
+        }, i * 400);
+      }
+
+      burstInterval = setInterval(() => {
+        const size = Math.random() > 0.8 ? 'large' : Math.random() > 0.5 ? 'medium' : 'small';
+        createFirework(size);
+      }, 1200);
+
+      setInterval(() => {
+        setTimeout(() => createFirework('large'), 0);
+        setTimeout(() => createFirework('medium'), 200);
+        setTimeout(() => createFirework('medium'), 400);
+      }, 5000);
+
+      confettiInterval = setInterval(() => {
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => createConfetti(), i * 100);
+        }
+      }, 800);
+    }
+
+    const intervalTime = 
+      effectType === 'halloween' ? 3000 : 
+      effectType === 'new-year' ? 0 : 
+      effectType === 'valentines' ? 1500 : 
+      effectType === 'easter' ? 1200 :
+      effectType === 'black-friday' ? 1000 :
+      900;
+    
+    if (intervalTime > 0) {
+      animationInterval = setInterval(createEffect, intervalTime);
+    }
+
+    window.addEventListener('beforeunload', () => {
+      clearInterval(animationInterval);
+      clearInterval(burstInterval);
+      clearInterval(confettiInterval);
+      clearAllEffects();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        clearInterval(animationInterval);
+        clearInterval(burstInterval);
+        clearInterval(confettiInterval);
+      } else {
+        if (effectType === 'new-year') {
+          burstInterval = setInterval(() => {
+            const size = Math.random() > 0.8 ? 'large' : Math.random() > 0.5 ? 'medium' : 'small';
+            createFirework(size);
+          }, 1200);
+          
+          confettiInterval = setInterval(() => {
+            for (let i = 0; i < 3; i++) {
+              setTimeout(() => createConfetti(), i * 100);
+            }
+          }, 800);
+        } else if (intervalTime > 0) {
+          animationInterval = setInterval(createEffect, intervalTime);
+        }
+      }
+    });
+  })();
+</script>
+<% } %>

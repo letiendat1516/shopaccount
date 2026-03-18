@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .sidebar-nav {
+      position: sticky;
+      top: 100px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      background-color: rgba(var(--accent-rgb), 0.3);
+      border-radius: 10px;
+    }
+
+    .nav-item {
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(var(--accent-rgb), 0.1);
+      border-left-color: var(--accent-color);
+    }
+
+    .nav-item.active {
+      background: rgba(var(--accent-rgb), 0.2);
+      border-left-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .settings-section {
+      scroll-margin-top: 100px;
+    }
+
+    .compact-input {
+      height: 42px;
+    }
+
+    .compact-textarea {
+      min-height: 100px;
+    }
+
+    .custom-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .checkmark {
+      position: relative;
+      height: 20px;
+      width: 20px;
+      background-color: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 4px;
+      margin-right: 10px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+
+    .custom-checkbox input:checked~.checkmark {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:checked~.checkmark:after {
+      display: block;
+    }
+
+    .upload-box {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-box input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    @media (max-width: 1023px) {
+      .sidebar-nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'settings' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-3xl font-bold text-white mb-2">Store Settings</h1>
+        <p class="text-text-secondary">Configure your store's appearance and functionality</p>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="lg:w-64 flex-shrink-0" data-aos="fade-right">
+          <div class="glass-effect rounded-xl p-4 sidebar-nav">
+            <nav class="space-y-1">
+              <a href="#general" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-cog w-4"></i>
+                <span>General</span>
+              </a>
+              <a href="#appearance" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-palette w-4"></i>
+                <span>Appearance</span>
+              </a>
+              <a href="#assets" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-image w-4"></i>
+                <span>Assets</span>
+              </a>
+              <a href="#legal" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-file-contract w-4"></i>
+                <span>Legal</span>
+              </a>
+              <a href="#reviews" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-star w-4"></i>
+                <span>Reviews</span>
+              </a>
+              <a href="#categories" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-tags w-4"></i>
+                <span>Categories</span>
+              </a>
+              <a href="#visibility" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-eye w-4"></i>
+                <span>Visibility</span>
+              </a>
+              <a href="#api" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-code w-4"></i>
+                <span>API</span>
+              </a>
+              <a href="#email" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-envelope w-4"></i>
+                <span>Email</span>
+              </a>
+              <a href="#payments" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-credit-card w-4"></i>
+                <span>Payments</span>
+              </a>
+              <a href="#seo" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-search w-4"></i>
+                <span>SEO</span>
+              </a>
+            </nav>
+          </div>
+        </aside>
+
+        <main class="flex-1">
+          <form action="/staff/settings?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST" enctype="multipart/form-data">
+            <input type="hidden" id="csrfToken" value="<%= csrfToken %>">
+
+            <section id="general" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-cog text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">General Settings</h2>
+                  <p class="text-text-secondary text-sm">Basic store configuration</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Store Name</label>
+                  <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="storeName" value="<%= settings.storeName %>" required>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Payment Currency</label>
+                  <select name="paymentCurrency" required class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm">
+                    <option value="USD" <% if (settings.paymentCurrency === 'USD') { %>selected<% } %>>USD ($)</option>
+                    <option value="EUR" <% if (settings.paymentCurrency === 'EUR') { %>selected<% } %>>EUR (€)</option>
+                    <option value="GBP" <% if (settings.paymentCurrency === 'GBP') { %>selected<% } %>>GBP (£)</option>
+                    <option value="JPY" <% if (settings.paymentCurrency === 'JPY') { %>selected<% } %>>JPY (¥)</option>
+                    <option value="AUD" <% if (settings.paymentCurrency === 'AUD') { %>selected<% } %>>AUD (A$)</option>
+                    <option value="CAD" <% if (settings.paymentCurrency === 'CAD') { %>selected<% } %>>CAD (C$)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Sales Tax (%)</label>
+                  <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="number" name="salesTax" min="0" max="100" value="<%= settings.salesTax || '' %>" placeholder="Optional">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Discord Logging Channel</label>
+                  <select name="discordLoggingChannel" class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm">
+                    <option value="">Select a channel</option>
+                    <% discordChannels.forEach(channel => { %>
+                    <option value="<%= channel.id %>" <% if (settings.discordLoggingChannel === channel.id) { %>selected<% } %>>
+                      # <%= channel.name %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <section id="appearance" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-palette text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Appearance</h2>
+                  <p class="text-text-secondary text-sm">Customize your store's look</p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-white mb-2">Accent Color</label>
+                    <div class="flex items-center gap-3">
+                      <input type="color" name="accentColor" value="<%= settings.accentColor %>" class="w-16 h-10 rounded-lg border-2 border-white/20 cursor-pointer" id="colorPicker">
+                      <span class="text-white font-mono text-sm" id="colorValue"><%= settings.accentColor %></span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-white mb-2">Discord Invite Link</label>
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="discordInviteLink" value="<%= settings.discordInviteLink %>" placeholder="https://discord.gg/...">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Site Banner Text</label>
+                  <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="siteBannerText" value="<%= settings.siteBannerText %>" placeholder="Leave empty to hide">
+                </div>
+              </div>
+            </section>
+
+            <section id="assets" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-image text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Assets</h2>
+                  <p class="text-text-secondary text-sm">Upload branding files</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="upload-box bg-dark-lighter border-2 border-dashed border-white/20 hover:border-accent/50 rounded-lg p-4 text-center cursor-pointer transition-colors">
+                  <i class="fas fa-image text-accent text-2xl mb-2"></i>
+                  <p class="text-sm text-white font-medium mb-1" id="logoFileName">Logo</p>
+                  <p class="text-xs text-text-muted">JPG, PNG</p>
+                  <input type="file" name="logo" accept=".jpg,.png" id="logoInput">
+                </div>
+
+                <div class="upload-box bg-dark-lighter border-2 border-dashed border-white/20 hover:border-accent/50 rounded-lg p-4 text-center cursor-pointer transition-colors">
+                  <i class="fas fa-star text-accent text-2xl mb-2"></i>
+                  <p class="text-sm text-white font-medium mb-1" id="faviconFileName">Favicon</p>
+                  <p class="text-xs text-text-muted">ICO (16×16 / 32×32)</p>
+                  <input type="file" name="favicon" accept=".ico" id="faviconInput">
+                </div>
+              </div>
+            </section>
+
+            <section id="legal" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-file-contract text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Legal & Content</h2>
+                  <p class="text-text-secondary text-sm">Terms, privacy, and about us</p>
+                </div>
+              </div>
+
+              <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mb-4">
+                <p class="text-sm text-blue-300">
+                  <i class="fas fa-info-circle mr-2"></i>
+                  Supports <a href="https://docs.plexdevelopment.net/plex-store/markdown-guide" target="_blank" class="text-blue-400 underline hover:no-underline">Markdown formatting</a>
+                </p>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Terms of Service</label>
+                  <textarea class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-textarea focus:border-accent focus:outline-none transition-colors resize-y text-sm" name="termsOfService" required><%= settings.termsOfService %></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Privacy Policy</label>
+                  <textarea class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-textarea focus:border-accent focus:outline-none transition-colors resize-y text-sm" name="privacyPolicy" required><%= settings.privacyPolicy %></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">About Us</label>
+                  <textarea class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-textarea focus:border-accent focus:outline-none transition-colors resize-y text-sm" name="aboutUsText" required><%= settings.aboutUsText %></textarea>
+                </div>
+              </div>
+            </section>
+
+            <section id="reviews" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-star text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Review Settings</h2>
+                  <p class="text-text-secondary text-sm">Customer review configuration</p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="sendReviewsToDiscord" value="true" <% if (settings.sendReviewsToDiscord) { %>checked<% } %>>
+                  <span class="checkmark"></span>
+                  <span class="text-sm">Send new reviews to Discord</span>
+                </label>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-white mb-2">Discord Review Channel</label>
+                    <select name="discordReviewChannel" class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm">
+                      <option value="">Select a channel</option>
+                      <% discordChannels.forEach(channel => { %>
+                      <option value="<%= channel.id %>" <% if (settings.discordReviewChannel === channel.id) { %>selected<% } %>>
+                        # <%= channel.name %>
+                      </option>
+                      <% }) %>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-white mb-2">Minimum Review Length</label>
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="number" name="minimumReviewLength" min="10" value="<%= settings.minimumReviewLength || 30 %>" required>
+                  </div>
+                </div>
+
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="allowReviewDeletion" value="true" <% if (settings.allowReviewDeletion) { %>checked<% } %>>
+                  <span class="checkmark"></span>
+                  <span class="text-sm">Allow users to delete their own reviews</span>
+                </label>
+              </div>
+            </section>
+
+            <section id="categories" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-tags text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Product Categories</h2>
+                  <p class="text-text-secondary text-sm">Organize your products</p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <input class="flex-1 bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" id="categoryName" placeholder="Category Name">
+                  <input class="flex-1 bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" id="categoryUrl" placeholder="URL (e.g., discord-bots)">
+                  <button type="button" id="addCategoryButton" class="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-semibold transition-all text-sm whitespace-nowrap w-full sm:w-auto">
+                    <i class="fas fa-plus mr-1"></i> Add
+                  </button>
+                </div>
+
+                <div id="categoryList" class="space-y-2 max-h-64 overflow-y-auto">
+                  <% settings.productCategories.forEach(category => { %>
+                  <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center bg-dark-lighter rounded-lg p-2 border border-white/10">
+                    <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" value="<%= category.name %>" readonly>
+                    <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" value="<%= category.url %>" readonly>
+                    <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all delete-category-button w-full sm:w-auto" data-id="<%= category._id %>">
+                      <i class="fas fa-trash text-sm"></i>
+                    </button>
+                  </div>
+                  <% }); %>
+                </div>
+              </div>
+            </section>
+
+            <section id="visibility" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-eye text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Visibility Settings</h2>
+                  <p class="text-text-secondary text-sm">Control what's displayed</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                  <h3 class="text-sm font-semibold text-white mb-3">Home Page</h3>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="aboutUsVisible" value="true" <% if (settings.aboutUsVisible) { %>checked<% } %>>
+                    <span class="checkmark"></span>
+                    <span class="text-sm">About Us section</span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="displayStats" value="true" <% if (settings.displayStats) { %>checked<% } %>>
+                    <span class="checkmark"></span>
+                    <span class="text-sm">Statistics</span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="displayReviews" value="true" <% if (settings.displayReviews) { %>checked<% } %>>
+                    <span class="checkmark"></span>
+                    <span class="text-sm">Customer reviews</span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="displayCTABanner" value="true" <% if (settings.displayCTABanner) { %>checked<% } %>>
+                    <span class="checkmark"></span>
+                    <span class="text-sm">CTA banner</span>
+                  </label>
+                </div>
+
+                <div class="space-y-3">
+                  <h3 class="text-sm font-semibold text-white mb-3">Product Pages</h3>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="displayProductReviews" value="true" <% if (settings.displayProductReviews) { %>checked<% } %>>
+                    <span class="checkmark"></span>
+                    <span class="text-sm">Customer reviews</span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="showProductStats" value="true" <% if (settings.showProductStats) { %>checked<% } %>>
+                    <span class="checkmark"></span>
+                    <span class="text-sm">Product statistics</span>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section id="api" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-code text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">API Settings</h2>
+                  <p class="text-text-secondary text-sm">External integrations</p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="apiEnabled" value="true" <% if (settings.apiEnabled) { %>checked<% } %>>
+                  <span class="checkmark"></span>
+                  <span class="text-sm">Enable API Access</span>
+                </label>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">API Key</label>
+                  <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors font-mono text-sm" type="text" name="apiKey" value="<%= settings.apiKey || '' %>" placeholder="Enter a secure API key">
+                </div>
+
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                  <p class="text-sm text-blue-300">
+                    <i class="fas fa-book mr-2"></i>
+                    <a href="https://docs.plexdevelopment.net/plex-store/api" target="_blank" class="text-blue-400 underline hover:no-underline">View API Documentation</a>
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section id="email" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-envelope text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Email Configuration</h2>
+                  <p class="text-text-secondary text-sm">Configure email sending for invoices and notifications</p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="emailEnabled" value="true" id="emailEnabled" <%= settings.emailSettings?.enabled ? 'checked' : '' %>>
+                  <span class="checkmark"></span>
+                  <span class="text-sm">Enable Email Sending</span>
+                </label>
+
+                <div id="emailConfigSection" class="<%= settings.emailSettings?.enabled ? '' : 'hidden' %>">
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-white mb-2">From Email Address</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="email" name="emailFromAddress" value="<%= settings.emailSettings?.fromEmail || '' %>" placeholder="noreply@yourdomain.com">
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium text-white mb-2">Email Provider</label>
+                      <select name="emailProvider" id="emailProvider" class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm">
+                        <option value="smtp" <%= settings.emailSettings?.provider === 'smtp' ? 'selected' : '' %>>SMTP</option>
+                        <option value="sendgrid" <%= settings.emailSettings?.provider === 'sendgrid' ? 'selected' : '' %>>SendGrid</option>
+                      </select>
+                    </div>
+
+                    <div id="sendgridSettings" class="<%= settings.emailSettings?.provider === 'sendgrid' ? '' : 'hidden' %>">
+                      <div class="bg-dark-card rounded-lg p-4 border border-white/10">
+                        <h3 class="text-sm font-semibold text-white mb-3">SendGrid Configuration</h3>
+                        <div>
+                          <label class="block text-sm font-medium text-white mb-2">SendGrid API Token</label>
+                          <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="password" name="emailSendGridToken" value="<%= settings.emailSettings?.sendGrid?.token || '' %>" placeholder="SG.xxxxxxxxxxxxxxxxxxxx">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="smtpSettings" class="<%= settings.emailSettings?.provider === 'smtp' ? '' : 'hidden' %>">
+                      <div class="bg-dark-card rounded-lg p-4 border border-white/10">
+                        <h3 class="text-sm font-semibold text-white mb-3">SMTP Configuration</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label class="block text-sm font-medium text-white mb-2">SMTP Host</label>
+                            <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="emailSmtpHost" value="<%= settings.emailSettings?.smtp?.host || '' %>" placeholder="smtp.example.com">
+                          </div>
+                          <div>
+                            <label class="block text-sm font-medium text-white mb-2">SMTP Port</label>
+                            <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="number" name="emailSmtpPort" value="<%= settings.emailSettings?.smtp?.port || 587 %>" placeholder="587">
+                          </div>
+                          <div>
+                            <label class="block text-sm font-medium text-white mb-2">SMTP Username</label>
+                            <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="emailSmtpUser" value="<%= settings.emailSettings?.smtp?.user || '' %>" placeholder="user@example.com">
+                          </div>
+                          <div>
+                            <label class="block text-sm font-medium text-white mb-2">SMTP Password</label>
+                            <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="password" name="emailSmtpPassword" value="<%= settings.emailSettings?.smtp?.password || '' %>" placeholder="••••••••">
+                          </div>
+                        </div>
+                        <div class="mt-3">
+                          <label class="custom-checkbox">
+                            <input type="checkbox" name="emailSmtpSecure" value="true" <%= settings.emailSettings?.smtp?.secure ? 'checked' : '' %>>
+                            <span class="checkmark"></span>
+                            <span class="text-sm">Use SSL/TLS (Port 465)</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                      <p class="text-sm text-blue-300 mb-3">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Test your email configuration before saving
+                      </p>
+                      <button type="button" id="testEmailButton" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all text-sm">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Send Test Email
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="payments" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-credit-card text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Payment Methods</h2>
+                  <p class="text-text-secondary text-sm">Configure payment processors (encrypted)</p>
+                </div>
+              </div>
+
+              <div class="space-y-6">
+                <div class="bg-dark-card rounded-lg p-4 border border-white/10">
+                  <div class="flex items-center gap-3 mb-4">
+                    <i class="fab fa-paypal text-2xl" style="color: #0070ba;"></i>
+                    <div class="flex-1">
+                      <h3 class="text-sm font-semibold text-white">PayPal</h3>
+                      <p class="text-xs text-text-muted">REST API & IPN support</p>
+                    </div>
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="paypalEnabled" value="true" id="paypalEnabled" <%= settings.paymentMethods?.paypal?.enabled ? 'checked' : '' %>>
+                      <span class="checkmark"></span>
+                      <span class="text-sm">Enable</span>
+                    </label>
+                  </div>
+
+                  <div id="paypalConfig" class="<%= settings.paymentMethods?.paypal?.enabled ? '' : 'hidden' %> space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Account Type</label>
+                        <select name="paypalAccountType" id="paypalAccountType" class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm">
+                          <option value="business" <%= settings.paymentMethods?.paypal?.accountType === 'business' || !settings.paymentMethods?.paypal?.accountType ? 'selected' : '' %>>Business (REST API)</option>
+                          <option value="personal" <%= settings.paymentMethods?.paypal?.accountType === 'personal' ? 'selected' : '' %>>Personal (IPN)</option>
+                        </select>
+                      </div>
+                      <div id="paypalModeField" class="<%= settings.paymentMethods?.paypal?.accountType === 'personal' ? 'hidden' : '' %>">
+                        <label class="block text-sm font-medium text-white mb-2">Mode</label>
+                        <select name="paypalMode" id="paypalMode" class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm">
+                          <option value="sandbox" <%= settings.paymentMethods?.paypal?.mode === 'sandbox' ? 'selected' : '' %>>Sandbox (Testing)</option>
+                          <option value="live" <%= settings.paymentMethods?.paypal?.mode === 'live' ? 'selected' : '' %>>Live (Production)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div id="paypalBusinessFields" class="<%= settings.paymentMethods?.paypal?.accountType === 'personal' ? 'hidden' : '' %> space-y-3">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label class="block text-sm font-medium text-white mb-2">Client ID</label>
+                          <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="password" name="paypalClientId" placeholder="<%= settings.paymentMethods?.paypal?.clientId ? '••••••••••••' : 'Enter Client ID' %>">
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-white mb-2">Client Secret</label>
+                          <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="password" name="paypalClientSecret" placeholder="<%= settings.paymentMethods?.paypal?.clientSecret ? '••••••••••••' : 'Enter Client Secret' %>">
+                        </div>
+                      </div>
+                      <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                        <p class="text-xs text-blue-300">
+                          <i class="fas fa-info-circle mr-1"></i>
+                          Get credentials at <a href="https://developer.paypal.com/" target="_blank" class="underline">developer.paypal.com</a>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div id="paypalPersonalFields" class="<%= settings.paymentMethods?.paypal?.accountType === 'personal' ? '' : 'hidden' %> space-y-3">
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">PayPal Email</label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="email" name="paypalPersonalEmail" value="<%= settings.paymentMethods?.paypal?.personalEmail || '' %>" placeholder="your-paypal@email.com">
+                      </div>
+
+                      <div class="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                        <div class="flex items-start gap-2 mb-2">
+                          <i class="fas fa-exclamation-triangle text-amber-400 mt-1"></i>
+                          <div>
+                            <h4 class="text-sm font-semibold text-amber-300 mb-2">Required: Manual IPN Setup</h4>
+                            <p class="text-xs text-amber-200 mb-3">Personal accounts require manual IPN configuration. Follow these steps:</p>
+                            <ol class="text-xs text-amber-200 space-y-2 list-decimal list-inside">
+                              <li>Log into PayPal at <a href="https://www.paypal.com" target="_blank" class="underline">paypal.com</a></li>
+                              <li>Go to: <span class="font-semibold">Settings → Notifications → Instant Payment Notifications</span></li>
+                              <li>Click "Update" or "Choose IPN Settings"</li>
+                              <li>Enter your IPN URL:
+                                <div class="bg-dark-card rounded px-2 py-1 mt-1 font-mono text-xs break-all">
+                                  <%= config.baseURL %>/ipn/paypal
+                                </div>
+                              </li>
+                              <li>Select "Receive IPN messages (Enabled)"</li>
+                              <li>Click Save</li>
+                            </ol>
+                            <p class="text-xs text-amber-300 font-semibold mt-3">
+                              ⚠️ Without IPN setup, payments will process but customers won't receive products!
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-dark-card rounded-lg p-4 border border-white/10">
+                  <div class="flex items-center gap-3 mb-4">
+                    <i class="fab fa-stripe text-2xl" style="color: #635bff;"></i>
+                    <div class="flex-1">
+                      <h3 class="text-sm font-semibold text-white">Stripe</h3>
+                      <p class="text-xs text-text-muted">Credit card processing</p>
+                    </div>
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="stripeEnabled" value="true" id="stripeEnabled" <%= settings.paymentMethods?.stripe?.enabled ? 'checked' : '' %>>
+                      <span class="checkmark"></span>
+                      <span class="text-sm">Enable</span>
+                    </label>
+                  </div>
+
+                  <div id="stripeConfig" class="<%= settings.paymentMethods?.stripe?.enabled ? '' : 'hidden' %> space-y-3">
+                    <div>
+                      <label class="block text-sm font-medium text-white mb-2">Secret Key</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="password" name="stripeSecretKey" placeholder="<%= settings.paymentMethods?.stripe?.secretKey ? '••••••••••••' : 'sk_test_...' %>">
+                    </div>
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                      <p class="text-xs text-blue-300">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Get your secret key at <a href="https://dashboard.stripe.com/apikeys" target="_blank" class="underline">dashboard.stripe.com</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-dark-card rounded-lg p-4 border border-white/10">
+                  <div class="flex items-center gap-3 mb-4">
+                    <i class="fab fa-bitcoin text-2xl" style="color: #0052ff;"></i>
+                    <div class="flex-1">
+                      <h3 class="text-sm font-semibold text-white">Coinbase Commerce</h3>
+                      <p class="text-xs text-text-muted">Cryptocurrency payments</p>
+                    </div>
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="coinbaseEnabled" value="true" id="coinbaseEnabled" <%= settings.paymentMethods?.coinbase?.enabled ? 'checked' : '' %>>
+                      <span class="checkmark"></span>
+                      <span class="text-sm">Enable</span>
+                    </label>
+                  </div>
+
+                  <div id="coinbaseConfig" class="<%= settings.paymentMethods?.coinbase?.enabled ? '' : 'hidden' %> space-y-3">
+                    <div>
+                      <label class="block text-sm font-medium text-white mb-2">API Key</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="password" name="coinbaseApiKey" placeholder="<%= settings.paymentMethods?.coinbase?.apiKey ? '••••••••••••' : 'Enter API Key' %>">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-white mb-2">Webhook Secret</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="password" name="coinbaseWebhookSecret" placeholder="<%= settings.paymentMethods?.coinbase?.webhookSecret ? '••••••••••••' : 'Enter Webhook Secret' %>">
+                    </div>
+
+                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                      <div class="flex items-start gap-2">
+                        <i class="fas fa-exclamation-triangle text-amber-400 mt-1"></i>
+                        <div>
+                          <h4 class="text-sm font-semibold text-amber-300 mb-2">Required: Webhook Setup</h4>
+                          <p class="text-xs text-amber-200 mb-3">Coinbase requires manual webhook configuration:</p>
+                          <ol class="text-xs text-amber-200 space-y-2 list-decimal list-inside">
+                            <li>Go to <a href="https://commerce.coinbase.com/dashboard/settings" target="_blank" class="underline">Coinbase Commerce Settings</a></li>
+                            <li>Click the <span class="font-semibold">"Notifications"</span> tab</li>
+                            <li>In "Webhook subscriptions", click <span class="font-semibold">"Add an endpoint"</span></li>
+                            <li>Enter your webhook URL:
+                              <div class="bg-dark-card rounded px-2 py-1 mt-1 font-mono text-xs break-all">
+                                <%= config.baseURL %>/webhooks/coinbase
+                              </div>
+                            </li>
+                            <li>Click "Show shared secret" and copy it to the field above</li>
+                            <li>Click "Save" to activate the webhook</li>
+                          </ol>
+                          <p class="text-xs text-amber-300 font-semibold mt-3">
+                            ⚠️ Without webhooks, customers won't receive products after payment!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                      <p class="text-xs text-blue-300">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Get credentials at <a href="https://commerce.coinbase.com/dashboard/settings" target="_blank" class="underline">commerce.coinbase.com</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                  <p class="text-sm text-green-300">
+                    <i class="fas fa-lock mr-2"></i>
+                    All payment credentials are encrypted with AES-256 before storage
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section id="seo" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-search text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">SEO Settings</h2>
+                  <p class="text-text-secondary text-sm">Search engine optimization</p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">SEO Title</label>
+                  <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="seoTitle" value="<%= settings.seoTitle %>" required>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">SEO Description</label>
+                  <textarea class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 focus:border-accent focus:outline-none transition-colors resize-none text-sm" name="seoDescription" rows="3" required><%= settings.seoDescription %></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">SEO Keywords</label>
+                  <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="seoTags" value="<%= settings.seoTags %>" placeholder="keyword1, keyword2, keyword3" required>
+                </div>
+              </div>
+            </section>
+
+            <div class="sticky bottom-6 z-10" data-aos="fade-up">
+              <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-2xl">
+                <i class="fas fa-save"></i>
+                <span>Save All Settings</span>
+              </button>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.querySelectorAll('.nav-item').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+
+        if (target) {
+          const offset = 100;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    const sections = document.querySelectorAll('.settings-section');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.pageYOffset >= (sectionTop - 150)) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === `#${current}`) {
+          item.classList.add('active');
+        }
+      });
+    });
+
+    const colorPicker = document.getElementById('colorPicker');
+    const colorValue = document.getElementById('colorValue');
+    colorPicker.addEventListener('input', () => {
+      colorValue.textContent = colorPicker.value.toUpperCase();
+    });
+
+    const fileInputs = [{
+        input: 'logoInput',
+        display: 'logoFileName'
+      },
+      {
+        input: 'faviconInput',
+        display: 'faviconFileName'
+      }
+    ];
+
+    fileInputs.forEach(({
+      input,
+      display
+    }) => {
+      document.getElementById(input).addEventListener('change', function() {
+        const fileName = this.files.length > 0 ? this.files[0].name : display.replace('FileName', '');
+        document.getElementById(display).textContent = fileName;
+      });
+    });
+
+    const addCategoryButton = document.getElementById('addCategoryButton');
+    const categoryList = document.getElementById('categoryList');
+    const categoryNameInput = document.getElementById('categoryName');
+    const categoryUrlInput = document.getElementById('categoryUrl');
+
+    function updateCategoriesInput() {
+      const categories = [];
+      categoryList.querySelectorAll('.bg-dark-lighter').forEach(item => {
+        const inputs = item.querySelectorAll('input[type="text"]');
+        categories.push({
+          name: inputs[0].value,
+          url: inputs[1].value
+        });
+      });
+
+      const existingInput = document.querySelector('input[name="categories"]');
+      if (existingInput) existingInput.remove();
+
+      const categoriesInput = document.createElement('input');
+      categoriesInput.type = 'hidden';
+      categoriesInput.name = 'categories';
+      categoriesInput.value = JSON.stringify(categories);
+      document.querySelector('form').appendChild(categoriesInput);
+    }
+
+    addCategoryButton.addEventListener('click', () => {
+      const name = categoryNameInput.value.trim();
+      const url = categoryUrlInput.value.trim();
+
+      if (name && url) {
+        const exists = Array.from(categoryList.querySelectorAll('input[type="text"]')).some(input =>
+          input.value === name || input.value === url
+        );
+
+        if (!exists) {
+          const categoryItem = document.createElement('div');
+          categoryItem.className = 'flex flex-col sm:flex-row gap-2 items-stretch sm:items-center bg-dark-lighter rounded-lg p-2 border border-white/10';
+          categoryItem.innerHTML = `
+                <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" value="${name}" readonly>
+                <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" value="${url}" readonly>
+                <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all delete-category-button w-full sm:w-auto">
+                    <i class="fas fa-trash text-sm"></i>
+                </button>
+            `;
+
+          categoryList.appendChild(categoryItem);
+          categoryNameInput.value = '';
+          categoryUrlInput.value = '';
+          updateCategoriesInput();
+        }
+      }
+    });
+
+    categoryList.addEventListener('click', (e) => {
+      if (e.target.closest('.delete-category-button')) {
+        e.target.closest('.bg-dark-lighter').remove();
+        updateCategoriesInput();
+      }
+    });
+
+    updateCategoriesInput();
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const emailEnabled = document.getElementById('emailEnabled');
+      const emailConfigSection = document.getElementById('emailConfigSection');
+      const emailProvider = document.getElementById('emailProvider');
+      const sendgridSettings = document.getElementById('sendgridSettings');
+      const smtpSettings = document.getElementById('smtpSettings');
+
+      if (emailEnabled && emailConfigSection) {
+        emailEnabled.addEventListener('change', function() {
+          if (this.checked) {
+            emailConfigSection.classList.remove('hidden');
+          } else {
+            emailConfigSection.classList.add('hidden');
+          }
+        });
+      }
+
+      if (emailProvider && sendgridSettings && smtpSettings) {
+        emailProvider.addEventListener('change', function() {
+          if (this.value === 'sendgrid') {
+            sendgridSettings.classList.remove('hidden');
+            smtpSettings.classList.add('hidden');
+          } else {
+            sendgridSettings.classList.add('hidden');
+            smtpSettings.classList.remove('hidden');
+          }
+        });
+      }
+
+      const testEmailButton = document.getElementById('testEmailButton');
+      if (testEmailButton) {
+        testEmailButton.addEventListener('click', async function() {
+          const button = this;
+          const originalText = button.innerHTML;
+          button.disabled = true;
+          button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+
+          try {
+            const csrfToken = document.getElementById('csrfToken').value;
+
+            const response = await fetch('/staff/test-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'CSRF-Token': csrfToken
+              },
+              body: JSON.stringify({
+                enabled: document.getElementById('emailEnabled')?.checked || false,
+                fromEmail: document.querySelector('[name="emailFromAddress"]')?.value || '',
+                provider: document.querySelector('[name="emailProvider"]')?.value || 'smtp',
+                sendGridToken: document.querySelector('[name="emailSendGridToken"]')?.value || '',
+                smtpHost: document.querySelector('[name="emailSmtpHost"]')?.value || '',
+                smtpPort: document.querySelector('[name="emailSmtpPort"]')?.value || '587',
+                smtpUser: document.querySelector('[name="emailSmtpUser"]')?.value || '',
+                smtpPassword: document.querySelector('[name="emailSmtpPassword"]')?.value || '',
+                smtpSecure: document.querySelector('[name="emailSmtpSecure"]')?.checked || false
+              })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              alert('✅ Test email sent successfully! Check your inbox.');
+            } else {
+              alert('❌ Failed to send test email: ' + (data.error || 'Unknown error'));
+            }
+          } catch (error) {
+            alert('❌ Error sending test email: ' + error.message);
+          } finally {
+            button.disabled = false;
+            button.innerHTML = originalText;
+          }
+        });
+      }
+    });
+
+    const paymentToggles = [{
+        checkbox: 'paypalEnabled',
+        config: 'paypalConfig'
+      },
+      {
+        checkbox: 'stripeEnabled',
+        config: 'stripeConfig'
+      },
+      {
+        checkbox: 'coinbaseEnabled',
+        config: 'coinbaseConfig'
+      }
+    ];
+
+    paymentToggles.forEach(({
+      checkbox,
+      config
+    }) => {
+      const toggle = document.getElementById(checkbox);
+      const configSection = document.getElementById(config);
+
+      if (toggle && configSection) {
+        toggle.addEventListener('change', function() {
+          if (this.checked) {
+            configSection.classList.remove('hidden');
+          } else {
+            configSection.classList.add('hidden');
+          }
+        });
+      }
+    });
+
+    const paypalAccountType = document.getElementById('paypalAccountType');
+    const paypalBusinessFields = document.getElementById('paypalBusinessFields');
+    const paypalPersonalFields = document.getElementById('paypalPersonalFields');
+    const paypalModeField = document.getElementById('paypalModeField');
+
+    if (paypalAccountType && paypalBusinessFields && paypalPersonalFields && paypalModeField) {
+      paypalAccountType.addEventListener('change', function() {
+        if (this.value === 'personal') {
+          paypalBusinessFields.classList.add('hidden');
+          paypalPersonalFields.classList.remove('hidden');
+          paypalModeField.classList.add('hidden');
+        } else {
+          paypalBusinessFields.classList.remove('hidden');
+          paypalPersonalFields.classList.add('hidden');
+          paypalModeField.classList.remove('hidden');
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

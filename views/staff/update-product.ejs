@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Update Product</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    input[type="file"]::file-selector-button {
+      background-color: rgba(var(--accent-rgb), 0.2);
+      color: var(--accent-color);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      border-radius: 0.375rem;
+      padding: 0.5rem 1rem;
+      margin-right: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background-color: rgba(var(--accent-rgb), 0.3);
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'products' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">Update Product</h1>
+        <p class="text-text-secondary text-lg">Add a new version, changelog, and product file.</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <div class="glass-effect rounded-2xl p-6 mb-8 hover-lift" data-aos="fade-up">
+          <div class="flex items-center gap-6">
+            <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="w-20 h-20 rounded-xl object-cover border-2 border-accent/30">
+
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold text-white mb-2"><%= product.name %></h2>
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 text-text-secondary">
+                  <% if (product.productType === 'digitalPaid') { %>
+                  <i class="fas fa-dollar-sign text-accent"></i>
+                  <span>Digital Paid</span>
+                  <% } else if (product.productType === 'digitalFree') { %>
+                  <i class="fas fa-gift text-accent"></i>
+                  <span>Digital Free</span>
+                  <% } else if (product.productType === 'service') { %>
+                  <i class="fas fa-cogs text-accent"></i>
+                  <span>Service</span>
+                  <% } else if (product.productType === 'serials') { %>
+                  <i class="fas fa-key text-accent"></i>
+                  <span>Serial Keys</span>
+                  <% } %>
+                </div>
+
+                <% if (product.versions && product.versions.length > 0) { %>
+                <div class="inline-flex items-center gap-2 bg-accent/20 border border-accent/50 px-3 py-1 rounded-lg">
+                  <i class="fas fa-code-branch text-accent text-sm"></i>
+                  <span class="text-accent font-semibold text-sm">v<%= product.versions[0].version %></span>
+                </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form id="productForm" action="/staff/products/update/<%= product._id %>?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST" enctype="multipart/form-data">
+          <div class="glass-effect rounded-2xl p-8 mb-8 hover-lift overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-code-branch text-accent text-xl"></i>
+              </div>
+              <h2 class="text-2xl font-bold text-white">New Version Details</h2>
+            </div>
+
+            <div class="space-y-6">
+              <div>
+                <label class="block text-white font-semibold mb-2">Version Number</label>
+                <% if (product.versions && product.versions.length > 0) { %>
+                <div class="mb-3 p-3 bg-accent/10 border-l-4 border-accent rounded">
+                  <span class="text-sm text-text-secondary">Current Version: </span>
+                  <span class="text-accent font-bold"><%= product.versions[0].version %></span>
+                </div>
+                <% } %>
+                <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="version" placeholder="<%= product.versions && product.versions.length > 0 ? 'e.g., ' + product.versions[0].version.replace(/(\d+)$/, function(match) { return parseInt(match) + 1; }) : 'e.g., 1.0.0' %>" required>
+                <p class="text-sm text-text-muted mt-2">
+                  <i class="fas fa-info-circle mr-1"></i>
+                  Enter a meaningful version number to track changes
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-white font-semibold mb-2">Changelog</label>
+                <div class="mb-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+                  <div class="flex items-start gap-3">
+                    <i class="fas fa-file-code text-blue-400 mt-1"></i>
+                    <div class="text-sm">
+                      <p class="text-blue-400 font-semibold mb-1">Markdown Supported</p>
+                      <p class="text-blue-300">Use # Headings, **Bold**, *Italic*, Lists, Links, etc.
+                        <a href="https://docs.plexdevelopment.net/plex-store/markdown-guide" target="_blank" class="underline hover:no-underline">View Guide</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-y font-mono text-sm" name="changelog" rows="10" required placeholder="# What's New&#10;- Added new features&#10;- Fixed bugs&#10;- Improved performance&#10;&#10;## Bug Fixes&#10;- Fixed issue with X not working properly&#10;- Resolved crash when doing Y"></textarea>
+                <p class="text-sm text-text-muted mt-2">
+                  <i class="fas fa-list mr-1"></i>
+                  Describe all changes, improvements, and fixes in this version
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-white font-semibold mb-2">Upload New Product File</label>
+                <div class="relative">
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors file:mr-4 file:py-2 file:px-4" type="file" name="productFile" required>
+                </div>
+                <p class="text-sm text-text-muted mt-2">
+                  <i class="fas fa-upload mr-1"></i>
+                  Upload the new version of the product file
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4" data-aos="fade-up" data-aos-delay="200">
+            <button type="submit" class="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift shadow-lg">
+              <i class="fas fa-upload"></i>
+              <span>Publish Update</span>
+            </button>
+            <a href="/staff/products" class="flex-1 bg-dark-card hover:bg-dark-border text-white border border-white/20 px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+              <i class="fas fa-times"></i>
+              <span>Cancel</span>
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 50
+    });
+  </script>
+</body>
+
+</html>

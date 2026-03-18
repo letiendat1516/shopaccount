@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - <%= settings.storeName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <meta property="og:title" content="Sign In | <%= settings.storeName %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= config.baseURL %>/login" />
+  <meta property="og:image" content="<%= settings.logoPath %>" />
+  <meta property="og:description" content="Sign in to your <%= settings.storeName %> account" />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--accent-color);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      top: 15%;
+      left: 10%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 0s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(2) {
+      top: 65%;
+      left: 15%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(3) {
+      top: 35%;
+      right: 12%;
+      width: 4px;
+      height: 4px;
+      animation-delay: 4s;
+      opacity: 0.5;
+    }
+
+    .particle:nth-child(4) {
+      bottom: 25%;
+      left: 18%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(5) {
+      bottom: 55%;
+      right: 20%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3s;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user: user || null, existingUser: existingUser || null }) %>
+
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden py-20" style="
+        background: linear-gradient(
+            135deg,
+            rgba(var(--accent-rgb), 0.25) 0%,
+            rgba(0, 0, 0, 0.85) 30%,
+            rgba(0, 0, 0, 0.90) 70%,
+            rgba(var(--accent-rgb), 0.20) 100%
+        );
+    ">
+    <div class="absolute inset-0">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-md mx-auto">
+        <div class="text-center mb-8" data-aos="fade-up">
+          <img src="<%= settings.logoPath %>" alt="Logo" class="w-20 h-20 rounded-xl mx-auto mb-6 shadow-2xl ring-2 ring-accent/50">
+          <h1 class="text-4xl font-black text-white mb-2">Welcome Back</h1>
+          <p class="text-text-secondary">Sign in to your account</p>
+        </div>
+
+        <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
+
+          <% if (error) { %>
+          <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6 animate-fade-in">
+            <div class="flex items-start gap-3 mb-3">
+              <i class="fas fa-exclamation-circle text-red-400 mt-1"></i>
+              <div class="flex-1">
+                <p class="text-red-400 text-sm"><%= error %></p>
+              </div>
+            </div>
+
+            <% if (error.includes('verify your email')) { %>
+            <div class="pt-3 border-t border-red-500/20">
+              <button id="resendLoginButton" onclick="resendVerificationFromLogin()" class="w-full bg-accent/20 hover:bg-accent/30 text-accent border border-accent/50 px-4 py-2.5 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm">
+                <i class="fas fa-paper-plane"></i>
+                <span id="resendLoginButtonText">Resend Verification Email</span>
+              </button>
+
+              <p class="text-xs text-center mt-2" id="resendLoginStatus"></p>
+            </div>
+            <% } %>
+          </div>
+          <% } %>
+
+          <% if (authConfig.Discord && authConfig.Discord.enabled && (authConfig.mode === 'discord' || authConfig.mode === 'both')) { %>
+          <a href="/auth/discord" class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift mb-6 group">
+            <i class="fab fa-discord text-2xl group-hover:scale-110 transition-transform"></i>
+            <span>Continue with Discord</span>
+          </a>
+
+          <% if (authConfig.Local && authConfig.Local.enabled && authConfig.mode === 'both') { %>
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-white/10"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-4 bg-dark-card text-text-muted">Or sign in with email</span>
+            </div>
+          </div>
+          <% } %>
+          <% } %>
+
+          <% if (authConfig.Local && authConfig.Local.enabled && (authConfig.mode === 'local' || authConfig.mode === 'both')) { %>
+          <form action="/auth/local" method="POST" class="space-y-5">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div>
+              <label class="block text-white font-medium mb-2 text-sm">Email</label>
+              <div class="relative">
+                <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <input type="email" name="email" required autocomplete="email" placeholder="your@email.com" class="w-full bg-dark-card text-white pl-12 pr-4 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-white font-medium mb-2 text-sm">Password</label>
+              <div class="relative">
+                <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password" class="w-full bg-dark-card text-white pl-12 pr-12 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
+                <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-white transition-colors">
+                  <i class="fas fa-eye" id="password-toggle-icon"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-sm">
+              <label class="flex items-center gap-2 text-text-secondary hover:text-white cursor-pointer transition-colors">
+                <input type="checkbox" name="remember" class="w-4 h-4 rounded border-white/20 bg-dark-card text-accent focus:ring-accent focus:ring-offset-0">
+                <span>Remember me</span>
+              </label>
+              <button type="button" onclick="requestPasswordReset()" class="text-accent hover:text-accent/80 font-semibold transition-colors">
+                Forgot password?
+              </button>
+            </div>
+
+            <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 hover-lift flex items-center justify-center gap-2">
+              <i class="fas fa-sign-in-alt"></i>
+              <span>Sign In</span>
+            </button>
+          </form>
+          <% } %>
+
+          <div class="mt-6 text-center">
+            <p class="text-text-secondary text-sm">
+              Don't have an account?
+              <a href="/register" class="text-accent hover:text-accent/80 font-semibold transition-colors">
+                Create Account
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <div class="text-center mt-6" data-aos="fade-up" data-aos-delay="200">
+          <a href="/" class="text-text-muted hover:text-accent text-sm flex items-center justify-center gap-2 transition-colors">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Home</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    function togglePassword() {
+      const field = document.getElementById('password');
+      const icon = document.getElementById('password-toggle-icon');
+
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    let loginResendCooldown = 0;
+    let loginResendTimer = null;
+
+    function resendVerificationFromLogin() {
+      if (loginResendCooldown > 0) {
+        return;
+      }
+
+      const emailInput = document.querySelector('input[name="email"]');
+      const email = emailInput ? emailInput.value : '';
+
+      if (!email) {
+        const statusText = document.getElementById('resendLoginStatus');
+        statusText.textContent = 'Please enter your email address first';
+        statusText.className = 'text-xs text-red-400 text-center mt-2';
+        return;
+      }
+
+      const button = document.getElementById('resendLoginButton');
+      const buttonText = document.getElementById('resendLoginButtonText');
+      const statusText = document.getElementById('resendLoginStatus');
+
+      button.disabled = true;
+      buttonText.textContent = 'Sending...';
+      statusText.textContent = '';
+
+      fetch('/api/resend-verification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'CSRF-Token': '<%= csrfToken %>'
+          },
+          body: JSON.stringify({
+            email: email
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            statusText.textContent = '✓ Verification email sent! Please check your inbox.';
+            statusText.className = 'text-xs text-green-400 text-center mt-2';
+
+            // Start 60 second cooldown
+            loginResendCooldown = 60;
+            updateLoginCooldownButton();
+          } else {
+            statusText.textContent = data.message || 'Failed to send email';
+            statusText.className = 'text-xs text-red-400 text-center mt-2';
+            button.disabled = false;
+            buttonText.textContent = 'Resend Verification Email';
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          statusText.textContent = 'An error occurred. Please try again.';
+          statusText.className = 'text-xs text-red-400 text-center mt-2';
+          button.disabled = false;
+          buttonText.textContent = 'Resend Verification Email';
+        });
+    }
+
+    function updateLoginCooldownButton() {
+      const button = document.getElementById('resendLoginButton');
+      const buttonText = document.getElementById('resendLoginButtonText');
+
+      if (loginResendCooldown > 0) {
+        button.disabled = true;
+        button.classList.add('opacity-50', 'cursor-not-allowed');
+        buttonText.textContent = `Wait ${loginResendCooldown}s before resending`;
+
+        loginResendTimer = setTimeout(() => {
+          loginResendCooldown--;
+          updateLoginCooldownButton();
+        }, 1000);
+      } else {
+        button.disabled = false;
+        button.classList.remove('opacity-50', 'cursor-not-allowed');
+        buttonText.textContent = 'Resend Verification Email';
+        if (loginResendTimer) {
+          clearTimeout(loginResendTimer);
+        }
+      }
+    }
+
+    function requestPasswordReset() {
+      const emailInput = document.querySelector('input[name="email"]');
+      const email = emailInput ? emailInput.value : '';
+
+      if (!email) {
+        alert('Please enter your email address first');
+        emailInput.focus();
+        return;
+      }
+
+      if (!confirm(`Send password reset link to ${email}?`)) {
+        return;
+      }
+
+      fetch('/forgot-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'CSRF-Token': '<%= csrfToken %>'
+          },
+          body: JSON.stringify({
+            email: email
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('✓ Password reset link sent! Please check your email.');
+          } else {
+            alert(data.message || 'Failed to send reset link');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+    }
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

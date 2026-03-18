@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Overview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .toggle-checkbox:checked+.toggle-label .toggle-switch {
+      transform: translateX(30px);
+    }
+
+    .chart-toggle-button.active {
+      background-color: var(--accent-color);
+      color: white;
+      box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'overview' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-12" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">Dashboard Overview</h1>
+        <p class="text-text-secondary text-lg">Welcome to your staff dashboard. Track key metrics, analyze trends, and monitor store activity all in one place.</p>
+      </div>
+
+      <% if (isOwner) { %>
+      <div class="mb-8" data-aos="fade-up">
+        <div class="flex items-center gap-4">
+          <input type="checkbox" id="toggle-stats" class="hidden toggle-checkbox" onclick="toggleStats()" />
+          <label for="toggle-stats" class="relative w-16 h-8 bg-dark-card rounded-full cursor-pointer border border-accent/30 flex-shrink-0">
+            <span class="toggle-switch absolute w-6 h-6 bg-accent rounded-full top-1 left-1 transition-transform duration-300"></span>
+          </label>
+          <div class="flex items-center gap-3 text-sm font-semibold">
+            <span id="monthly-text" class="px-4 py-2 rounded-lg bg-accent/20 text-white transition-all">Monthly Stats</span>
+            <span id="lifetime-text" class="px-4 py-2 rounded-lg text-text-secondary transition-all">Lifetime Stats</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div class="monthly-stat" data-aos="fade-up" data-aos-delay="100">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-user-plus text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">New Accounts</p>
+            <p class="text-3xl font-bold text-white mb-4"><%= thisMonthStats.userJoins.toLocaleString('en-US') %></p>
+            <div class="flex items-center gap-2 text-sm <%= joinsDifference >= 0 ? 'text-green-400' : 'text-red-400' %>">
+              <i class="fas fa-arrow-<%= joinsDifference >= 0 ? 'up' : 'down' %>"></i>
+              <span class="font-semibold"><%= Math.round(Math.abs(joinsDifference)) %>%</span>
+              <span class="text-text-muted">(<%= lastMonthStats.userJoins.toLocaleString('en-US') %> last month)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lifetime-stat hidden" data-aos="fade-up" data-aos-delay="100">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-users text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">Total Accounts</p>
+            <p class="text-3xl font-bold text-white mb-4"><%= totalUsers.toLocaleString('en-US') %></p>
+            <div class="h-6"></div>
+          </div>
+        </div>
+
+        <div class="monthly-stat" data-aos="fade-up" data-aos-delay="200">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-shopping-cart text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">Monthly Sales</p>
+            <p class="text-3xl font-bold text-white mb-4"><%= thisMonthStats.totalPurchases.toLocaleString('en-US') %></p>
+            <div class="flex items-center gap-2 text-sm <%= salesDifference >= 0 ? 'text-green-400' : 'text-red-400' %>">
+              <i class="fas fa-arrow-<%= salesDifference >= 0 ? 'up' : 'down' %>"></i>
+              <span class="font-semibold"><%= Math.round(Math.abs(salesDifference)) %>%</span>
+              <span class="text-text-muted">(<%= lastMonthStats.totalPurchases.toLocaleString('en-US') %> last month)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lifetime-stat hidden" data-aos="fade-up" data-aos-delay="200">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-shopping-bag text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">Total Sales</p>
+            <p class="text-3xl font-bold text-white mb-4"><%= stats.totalPurchases.toLocaleString('en-US') %></p>
+            <div class="h-6"></div>
+          </div>
+        </div>
+
+        <div class="monthly-stat" data-aos="fade-up" data-aos-delay="300">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-dollar-sign text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">Monthly Revenue</p>
+            <p class="text-3xl font-bold text-accent mb-4"><%= settings.currencySymbol %><%= thisMonthStats.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></p>
+            <div class="flex items-center gap-2 text-sm <%= revenueDifference >= 0 ? 'text-green-400' : 'text-red-400' %>">
+              <i class="fas fa-arrow-<%= revenueDifference >= 0 ? 'up' : 'down' %>"></i>
+              <span class="font-semibold"><%= Math.round(Math.abs(revenueDifference)) %>%</span>
+              <span class="text-text-muted">(<%= lastMonthStats.totalEarned.toLocaleString('en-US') %> last month)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lifetime-stat hidden" data-aos="fade-up" data-aos-delay="300">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-coins text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">Lifetime Revenue</p>
+            <p class="text-3xl font-bold text-accent mb-4"><%= settings.currencySymbol %><%= stats.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></p>
+            <div class="h-6"></div>
+          </div>
+        </div>
+
+        <div class="monthly-stat" data-aos="fade-up" data-aos-delay="400">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-chart-line text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">Monthly Visits</p>
+            <p class="text-3xl font-bold text-white mb-4"><%= thisMonthStats.totalSiteVisits.toLocaleString('en-US') %></p>
+            <div class="flex items-center gap-2 text-sm <%= visitsDifference >= 0 ? 'text-green-400' : 'text-red-400' %>">
+              <i class="fas fa-arrow-<%= visitsDifference >= 0 ? 'up' : 'down' %>"></i>
+              <span class="font-semibold"><%= Math.round(Math.abs(visitsDifference)) %>%</span>
+              <span class="text-text-muted">(<%= lastMonthStats.totalSiteVisits.toLocaleString('en-US') %> last month)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lifetime-stat hidden" data-aos="fade-up" data-aos-delay="400">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full overflow-hidden">
+            <div class="stat-accent-bar -mx-6 -mt-6 mb-4"></div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-eye text-accent text-xl"></i>
+              </div>
+            </div>
+            <p class="text-text-secondary text-sm uppercase tracking-wider mb-2">Total Visits</p>
+            <p class="text-3xl font-bold text-white mb-4"><%= stats.totalSiteVisits.toLocaleString('en-US') %></p>
+            <div class="h-6"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 mb-12 hover-lift" data-aos="fade-up">
+        <div class="flex items-center gap-3 mb-6">
+          <i class="fas fa-chart-bar text-accent text-xl"></i>
+          <h2 class="text-2xl font-bold text-white" id="chart-title">Performance Analytics</h2>
+        </div>
+
+        <div class="flex justify-center gap-4 mb-8">
+          <button id="monthly-btn" class="chart-toggle-button px-6 py-3 bg-accent text-white rounded-lg font-semibold transition-all duration-300 hover-lift" onclick="switchChartView('monthly')">Monthly View</button>
+          <button id="yearly-btn" class="chart-toggle-button px-6 py-3 bg-dark-card text-text-secondary border border-white/20 rounded-lg font-semibold transition-all duration-300 hover:bg-dark-border hover-lift" onclick="switchChartView('yearly')">Yearly View</button>
+        </div>
+
+        <div style="height: 500px; position: relative;">
+          <canvas id="statsChart"></canvas>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fas fa-trophy text-accent text-xl"></i>
+            <h3 class="text-2xl font-bold text-white">Top Customers</h3>
+          </div>
+          <div class="space-y-4">
+            <% topUsers.forEach((user, index) => { %>
+            <div class="flex items-center gap-4 bg-dark-card rounded-xl p-4 border border-white/10 hover:border-accent/50 transition-all duration-300 hover-lift">
+              <div class="flex items-center justify-center min-w-[40px] h-10 font-bold text-white rounded-xl bg-accent/20">
+                <%= index + 1 %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-white font-semibold truncate block"><%= user.discordUsername %></span>
+              </div>
+              <div class="flex-shrink-0">
+                <span class="text-accent font-bold bg-accent/10 px-3 py-1 rounded-lg"><%= settings.currencySymbol %><%= user.totalSpent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
+          <div class="flex items-center gap-3 mb-6">
+            <i class="fas fa-star text-accent text-xl"></i>
+            <h3 class="text-2xl font-bold text-white">Top Products</h3>
+          </div>
+          <div class="space-y-4">
+            <% topProducts.forEach((product, index) => { %>
+            <div class="flex items-center gap-4 bg-dark-card rounded-xl p-4 border border-white/10 hover:border-accent/50 transition-all duration-300 hover-lift">
+              <div class="flex items-center justify-center min-w-[40px] h-10 font-bold text-white rounded-xl bg-accent/20">
+                <%= index + 1 %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-white font-semibold truncate block"><%= product.name %></span>
+              </div>
+              <div class="flex-shrink-0">
+                <span class="text-accent font-bold bg-accent/10 px-3 py-1 rounded-lg"><%= product.totalPurchases.toLocaleString('en-US') %> Sales</span>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="glass-effect rounded-2xl p-12 text-center max-w-2xl mx-auto" data-aos="fade-up">
+        <div class="w-24 h-24 bg-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <i class="fas fa-lock text-accent text-4xl"></i>
+        </div>
+        <h3 class="text-3xl font-bold text-white mb-4">Analytics Access Restricted</h3>
+        <p class="text-text-secondary text-lg mb-6">Dashboard statistics and analytics are only available to store owners. You can access other staff features based on your assigned permissions.</p>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <% if (isOwner) { %>
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    function toggleStats() {
+      const monthlyText = document.getElementById('monthly-text');
+      const lifetimeText = document.getElementById('lifetime-text');
+      const isChecked = document.getElementById('toggle-stats').checked;
+
+      if (isChecked) {
+        monthlyText.classList.remove('bg-accent/20', 'text-white');
+        monthlyText.classList.add('text-text-secondary');
+        lifetimeText.classList.add('bg-accent/20', 'text-white');
+        lifetimeText.classList.remove('text-text-secondary');
+        document.querySelectorAll('.monthly-stat').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.lifetime-stat').forEach(el => el.classList.remove('hidden'));
+      } else {
+        lifetimeText.classList.remove('bg-accent/20', 'text-white');
+        lifetimeText.classList.add('text-text-secondary');
+        monthlyText.classList.add('bg-accent/20', 'text-white');
+        monthlyText.classList.remove('text-text-secondary');
+        document.querySelectorAll('.monthly-stat').forEach(el => el.classList.remove('hidden'));
+        document.querySelectorAll('.lifetime-stat').forEach(el => el.classList.add('hidden'));
+      }
+    }
+
+    const monthlyLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const yearlyLabels = <%- JSON.stringify(allYears || []) %>;
+
+    const currentYear = new Date().getFullYear();
+    const availableYears = <%- JSON.stringify(allYears || []) %>.map(year => parseInt(year));
+    const startYear = Math.min(...availableYears) || (currentYear - 4);
+    const endYear = currentYear + 1;
+
+    const completeYearArray = [];
+    for (let year = startYear; year <= endYear; year++) {
+      completeYearArray.push(year.toString());
+    }
+
+    const yearlyUserJoinsMap = {};
+    const yearlyPurchasesMap = {};
+    const yearlyRevenueMap = {};
+
+    yearlyLabels.forEach((year, index) => {
+      yearlyUserJoinsMap[year] = <%- JSON.stringify(yearlyUserJoins || []) %>[index] || 0;
+      yearlyPurchasesMap[year] = <%- JSON.stringify(yearlyPurchases || []) %>[index] || 0;
+      yearlyRevenueMap[year] = <%- JSON.stringify(yearlyRevenue || []) %>[index] || 0;
+    });
+
+    const monthlyData = {
+      labels: monthlyLabels,
+      datasets: [{
+          label: 'User Joins',
+          backgroundColor: 'rgba(255, 99, 132, 0.7)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+          data: <%- JSON.stringify(monthlyUserJoins || Array(12).fill(0)) %>,
+          borderRadius: 6,
+          yAxisID: 'y-users',
+          order: 1
+        },
+        {
+          label: 'Total Purchases',
+          backgroundColor: 'rgba(54, 162, 235, 0.7)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+          data: <%- JSON.stringify(monthlyPurchases || Array(12).fill(0)) %>,
+          borderRadius: 6,
+          yAxisID: 'y-purchases',
+          order: 2
+        },
+        {
+          label: 'Total Revenue',
+          backgroundColor: 'rgba(75, 192, 192, 0.7)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+          data: <%- JSON.stringify(monthlyRevenue || Array(12).fill(0)) %>,
+          borderRadius: 6,
+          yAxisID: 'y-revenue',
+          order: 3
+        },
+      ],
+    };
+
+    const completeYearlyData = {
+      labels: completeYearArray,
+      datasets: [{
+          label: 'User Joins',
+          backgroundColor: 'rgba(255, 99, 132, 0.7)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+          data: completeYearArray.map(year => yearlyUserJoinsMap[year] || 0),
+          borderRadius: 6,
+          yAxisID: 'y-users',
+          order: 1
+        },
+        {
+          label: 'Total Purchases',
+          backgroundColor: 'rgba(54, 162, 235, 0.7)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+          data: completeYearArray.map(year => yearlyPurchasesMap[year] || 0),
+          borderRadius: 6,
+          yAxisID: 'y-purchases',
+          order: 2
+        },
+        {
+          label: 'Total Revenue',
+          backgroundColor: 'rgba(75, 192, 192, 0.7)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+          data: completeYearArray.map(year => yearlyRevenueMap[year] || 0),
+          borderRadius: 6,
+          yAxisID: 'y-revenue',
+          order: 3
+        },
+      ],
+    };
+
+    const chartConfig = {
+      type: 'bar',
+      data: monthlyData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            top: 20,
+            right: 30,
+            bottom: 40,
+            left: 30,
+          },
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: 'white',
+              font: {
+                size: 13,
+                weight: 'bold',
+              },
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+            },
+          },
+          tooltip: {
+            backgroundColor: 'rgba(22, 27, 34, 0.9)',
+            titleFont: {
+              size: 14,
+              weight: 'bold',
+            },
+            bodyFont: {
+              size: 13,
+            },
+            padding: 12,
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: 'rgba(var(--accent-color-rgb), 0.3)',
+            borderWidth: 1,
+            callbacks: {
+              label: function(tooltipItem) {
+                let prefix = tooltipItem.dataset.label === 'Total Revenue' ? '<%= settings.currencySymbol %>' : '';
+                return `${tooltipItem.dataset.label}: ${prefix}${tooltipItem.raw.toLocaleString()}`;
+              },
+            },
+          },
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        elements: {
+          bar: {
+            borderWidth: 1,
+            borderRadius: 6,
+            borderSkipped: false,
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)',
+              drawBorder: false,
+            },
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.7)',
+              font: {
+                size: 11,
+              },
+              maxRotation: 30,
+              minRotation: 0,
+            },
+          },
+          'y-users': {
+            type: 'linear',
+            position: 'left',
+            title: {
+              display: false,
+              text: 'User Joins',
+              color: 'rgba(255, 99, 132, 1)',
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)',
+              drawBorder: false,
+            },
+            ticks: {
+              color: 'rgba(255, 99, 132, 0.8)',
+              font: {
+                size: 11,
+              },
+              beginAtZero: true,
+              padding: 8,
+              callback: function(value) {
+                return value.toLocaleString();
+              }
+            },
+          },
+          'y-purchases': {
+            type: 'linear',
+            position: 'right',
+            title: {
+              display: false,
+              text: 'Purchases',
+              color: 'rgba(54, 162, 235, 1)',
+            },
+            grid: {
+              drawOnChartArea: false,
+            },
+            ticks: {
+              color: 'rgba(54, 162, 235, 0.8)',
+              font: {
+                size: 11,
+              },
+              beginAtZero: true,
+              padding: 8,
+              callback: function(value) {
+                return value.toLocaleString();
+              }
+            },
+          },
+          'y-revenue': {
+            type: 'linear',
+            position: 'right',
+            title: {
+              display: false,
+              text: 'Revenue',
+              color: 'rgba(75, 192, 192, 1)',
+            },
+            grid: {
+              drawOnChartArea: false,
+            },
+            ticks: {
+              color: 'rgba(75, 192, 192, 0.8)',
+              font: {
+                size: 11,
+              },
+              beginAtZero: true,
+              padding: 8,
+              callback: function(value) {
+                return '<%= settings.currencySymbol %>' + value.toLocaleString();
+              }
+            },
+          }
+        },
+        hover: {
+          mode: 'index',
+          intersect: false,
+        },
+        animations: {
+          tension: {
+            duration: 1000,
+            easing: 'easeOutQuart',
+          },
+          y: {
+            duration: 800,
+            easing: 'easeOutQuart',
+          }
+        }
+      },
+    };
+
+    let statsChart = new Chart(document.getElementById('statsChart'), chartConfig);
+
+    function switchChartView(view) {
+      const monthlyBtn = document.getElementById('monthly-btn');
+      const yearlyBtn = document.getElementById('yearly-btn');
+      const chartTitle = document.getElementById('chart-title');
+
+      if (view === 'monthly') {
+        monthlyBtn.classList.add('bg-accent', 'text-white', 'active');
+        monthlyBtn.classList.remove('bg-dark-card', 'text-text-secondary', 'border', 'border-white/20');
+        yearlyBtn.classList.remove('bg-accent', 'text-white', 'active');
+        yearlyBtn.classList.add('bg-dark-card', 'text-text-secondary', 'border', 'border-white/20');
+        chartTitle.textContent = 'Performance Analytics (Monthly)';
+        statsChart.data = monthlyData;
+      } else {
+        yearlyBtn.classList.add('bg-accent', 'text-white', 'active');
+        yearlyBtn.classList.remove('bg-dark-card', 'text-text-secondary', 'border', 'border-white/20');
+        monthlyBtn.classList.remove('bg-accent', 'text-white', 'active');
+        monthlyBtn.classList.add('bg-dark-card', 'text-text-secondary', 'border', 'border-white/20');
+        chartTitle.textContent = 'Performance Analytics (Yearly)';
+        statsChart.data = completeYearlyData;
+      }
+
+      statsChart.update('active');
+    }
+  </script>
+  <% } else { %>
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+  </script>
+  <% } %>
+</body>
+
+</html>

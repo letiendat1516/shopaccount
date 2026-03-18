@@ -1,0 +1,925 @@
+<style>
+  :root {
+    --accent-color: <%=settings.accentColor %>;
+    --accent-rgb: <%=accentColorRgb %>;
+  }
+
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType) {
+    %><% if (settings.holidayEffectsType==='christmas') {
+      %>.holiday-footer-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .christmas-lights {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 30px;
+        display: flex;
+        justify-content: space-around;
+        z-index: 10;
+      }
+
+      .christmas-light {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        animation: twinkle 2s infinite;
+      }
+
+      .christmas-light:nth-child(1) {
+        background: #ff0000;
+        animation-delay: 0s;
+      }
+
+      .christmas-light:nth-child(2) {
+        background: #00ff00;
+        animation-delay: 0.5s;
+      }
+
+      .christmas-light:nth-child(3) {
+        background: #0000ff;
+        animation-delay: 1s;
+      }
+
+      .christmas-light:nth-child(4) {
+        background: #ffff00;
+        animation-delay: 1.5s;
+      }
+
+      .christmas-light:nth-child(5) {
+        background: #ff00ff;
+        animation-delay: 0.25s;
+      }
+
+      .christmas-light:nth-child(6) {
+        background: #00ffff;
+        animation-delay: 0.75s;
+      }
+
+      .christmas-light:nth-child(7) {
+        background: #ff0000;
+        animation-delay: 1.25s;
+      }
+
+      .christmas-light:nth-child(8) {
+        background: #00ff00;
+        animation-delay: 1.75s;
+      }
+
+      @keyframes twinkle {
+
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 10px currentColor;
+        }
+
+        50% {
+          opacity: 0.3;
+          box-shadow: 0 0 5px currentColor;
+        }
+      }
+
+      .santa-sleigh {
+        position: absolute;
+        bottom: 20%;
+        font-size: 3rem;
+        animation: fly-across 20s linear infinite;
+        z-index: 5;
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+      }
+
+      @keyframes fly-across {
+        0% {
+          left: -10%;
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-30px);
+        }
+
+        100% {
+          left: 110%;
+          transform: translateY(0);
+        }
+      }
+
+      .snowman-footer {
+        position: absolute;
+        bottom: 50px;
+        right: 10%;
+        font-size: 4rem;
+        animation: wave 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+      }
+
+      @keyframes wave {
+
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+
+        25% {
+          transform: rotate(-10deg);
+        }
+
+        75% {
+          transform: rotate(10deg);
+        }
+      }
+
+      <%
+    }
+
+    else if (settings.holidayEffectsType==='halloween') {
+      %>.holiday-footer-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background: linear-gradient(180deg, transparent 0%, rgba(255, 102, 0, 0.05) 100%);
+      }
+
+      .halloween-pumpkins {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-around;
+        font-size: 2.5rem;
+        z-index: 10;
+      }
+
+      .halloween-pumpkin {
+        animation: glow-pulse 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 102, 0, 0.8));
+      }
+
+      .halloween-pumpkin:nth-child(odd) {
+        animation-delay: 1s;
+      }
+
+      @keyframes glow-pulse {
+
+        0%,
+        100% {
+          filter: drop-shadow(0 0 15px rgba(255, 102, 0, 0.8));
+        }
+
+        50% {
+          filter: drop-shadow(0 0 25px rgba(255, 102, 0, 1));
+        }
+      }
+
+      .spooky-ghost {
+        position: absolute;
+        top: 20%;
+        font-size: 3rem;
+        animation: float-spooky 15s ease-in-out infinite;
+        opacity: 0.7;
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+      }
+
+      @keyframes float-spooky {
+        0% {
+          left: -10%;
+          transform: translateY(0) rotate(0deg);
+        }
+
+        25% {
+          transform: translateY(-20px) rotate(10deg);
+        }
+
+        50% {
+          left: 50%;
+          transform: translateY(-10px) rotate(-10deg);
+        }
+
+        75% {
+          transform: translateY(-25px) rotate(5deg);
+        }
+
+        100% {
+          left: 110%;
+          transform: translateY(0) rotate(0deg);
+        }
+      }
+
+      .creepy-moon {
+        position: absolute;
+        top: 30px;
+        right: 10%;
+        font-size: 4rem;
+        opacity: 0.9;
+        filter: drop-shadow(0 0 30px rgba(255, 200, 100, 0.6));
+        animation: moon-glow 3s ease-in-out infinite;
+      }
+
+      @keyframes moon-glow {
+
+        0%,
+        100% {
+          filter: drop-shadow(0 0 30px rgba(255, 200, 100, 0.6));
+        }
+
+        50% {
+          filter: drop-shadow(0 0 50px rgba(255, 200, 100, 0.9));
+        }
+      }
+
+      <%
+    }
+
+    else if (settings.holidayEffectsType==='valentines') {
+      %>.holiday-footer-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background: linear-gradient(180deg, transparent 0%, rgba(255, 105, 180, 0.05) 100%);
+      }
+
+      .love-hearts {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-around;
+        font-size: 2rem;
+        z-index: 10;
+      }
+
+      .love-heart {
+        animation: heartbeat-footer 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 105, 180, 0.8));
+      }
+
+      .love-heart:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .love-heart:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+
+      .love-heart:nth-child(3) {
+        animation-delay: 0.8s;
+      }
+
+      .love-heart:nth-child(4) {
+        animation-delay: 1.2s;
+      }
+
+      .love-heart:nth-child(5) {
+        animation-delay: 1.6s;
+      }
+
+      @keyframes heartbeat-footer {
+
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        10%,
+        30% {
+          transform: scale(1.2);
+        }
+
+        20%,
+        40% {
+          transform: scale(1);
+        }
+      }
+
+      .cupid-arrow {
+        position: absolute;
+        top: 30%;
+        font-size: 2.5rem;
+        animation: arrow-fly 12s linear infinite;
+        transform: rotate(-45deg);
+        filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.6));
+      }
+
+      @keyframes arrow-fly {
+        0% {
+          left: -10%;
+        }
+
+        100% {
+          left: 110%;
+        }
+      }
+
+      .love-letter {
+        position: absolute;
+        bottom: 40px;
+        right: 8%;
+        font-size: 3rem;
+        animation: float-gentle 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5));
+      }
+
+      @keyframes float-gentle {
+
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+          transform: translateY(-15px) rotate(5deg);
+        }
+      }
+
+      <%
+    }
+
+    else if (settings.holidayEffectsType==='new-year') {
+      %>.holiday-footer-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background: linear-gradient(180deg, transparent 0%, rgba(75, 0, 130, 0.1) 100%);
+      }
+
+      .celebration-icons {
+        position: absolute;
+        bottom: 30px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-around;
+        font-size: 2.5rem;
+        z-index: 10;
+      }
+
+      .celebration-icon {
+        animation: celebrate 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+      }
+
+      .celebration-icon:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .celebration-icon:nth-child(2) {
+        animation-delay: 0.3s;
+      }
+
+      .celebration-icon:nth-child(3) {
+        animation-delay: 0.6s;
+      }
+
+      .celebration-icon:nth-child(4) {
+        animation-delay: 0.9s;
+      }
+
+      .celebration-icon:nth-child(5) {
+        animation-delay: 1.2s;
+      }
+
+      @keyframes celebrate {
+
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+
+        50% {
+          transform: scale(1.15) rotate(10deg);
+        }
+      }
+
+      .party-popper {
+        position: absolute;
+        top: 20%;
+        left: 15%;
+        font-size: 3rem;
+        animation: pop 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7));
+      }
+
+      @keyframes pop {
+
+        0%,
+        90%,
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+
+        95% {
+          transform: scale(1.3) rotate(15deg);
+        }
+      }
+
+      .champagne-glass {
+        position: absolute;
+        bottom: 50px;
+        right: 12%;
+        font-size: 3.5rem;
+        animation: toast 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+      }
+
+      @keyframes toast {
+
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+          transform: translateY(-10px) rotate(-10deg);
+        }
+      }
+
+      <%
+    }
+
+    else if (settings.holidayEffectsType==='easter') {
+      %>.holiday-footer-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background: linear-gradient(180deg, transparent 0%, rgba(255, 182, 193, 0.05) 100%);
+      }
+
+      .easter-eggs {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-around;
+        font-size: 2.5rem;
+        z-index: 10;
+      }
+
+      .easter-egg {
+        animation: easter-bounce 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 182, 193, 0.6));
+      }
+
+      .easter-egg:nth-child(1) { animation-delay: 0s; }
+      .easter-egg:nth-child(2) { animation-delay: 0.3s; }
+      .easter-egg:nth-child(3) { animation-delay: 0.6s; }
+      .easter-egg:nth-child(4) { animation-delay: 0.9s; }
+
+      @keyframes easter-bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      .easter-bunny {
+        position: absolute;
+        bottom: 40px;
+        right: 10%;
+        font-size: 3.5rem;
+        animation: bunny-hop 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 182, 193, 0.5));
+      }
+
+      @keyframes bunny-hop {
+        0%, 100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-20px) rotate(-5deg);
+        }
+        75% {
+          transform: translateY(-10px) rotate(5deg);
+        }
+      }
+
+      .spring-flower {
+        position: absolute;
+        top: 25%;
+        left: 12%;
+        font-size: 2.5rem;
+        animation: flower-bloom 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 10px rgba(255, 182, 193, 0.4));
+      }
+
+      @keyframes flower-bloom {
+        0%, 100% {
+          transform: scale(1) rotate(0deg);
+        }
+        50% {
+          transform: scale(1.1) rotate(10deg);
+        }
+      }
+
+      <%
+    }
+
+    else if (settings.holidayEffectsType==='black-friday') {
+      %>.holiday-footer-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+      }
+
+      .black-friday-tags {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-around;
+        font-size: 2.5rem;
+        z-index: 10;
+      }
+
+      .price-tag {
+        animation: tag-swing 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+      }
+
+      .price-tag:nth-child(1) { animation-delay: 0s; }
+      .price-tag:nth-child(2) { animation-delay: 0.4s; }
+      .price-tag:nth-child(3) { animation-delay: 0.8s; }
+      .price-tag:nth-child(4) { animation-delay: 1.2s; }
+
+      @keyframes tag-swing {
+        0%, 100% {
+          transform: rotate(-5deg) scale(1);
+        }
+        50% {
+          transform: rotate(5deg) scale(1.1);
+        }
+      }
+
+      .sale-badge {
+        position: absolute;
+        bottom: 50px;
+        right: 8%;
+        font-size: 3.5rem;
+        animation: sale-pulse 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.9));
+      }
+
+      @keyframes sale-pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+
+      .discount-percent {
+        position: absolute;
+        top: 20%;
+        left: 15%;
+        font-size: 3rem;
+        animation: percent-rotate 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7));
+      }
+
+      @keyframes percent-rotate {
+        0%, 100% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(15deg) scale(1.1);
+        }
+      }
+
+      <%
+    }
+
+    %><%
+  }
+
+  %>
+</style>
+
+<footer class="bg-dark-lighter border-t border-dark-border mt-auto relative">
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType) { %>
+  <div class="holiday-footer-overlay">
+    <% if (settings.holidayEffectsType === 'christmas') { %>
+    <div class="christmas-lights">
+      <div class="christmas-light"></div>
+      <div class="christmas-light"></div>
+      <div class="christmas-light"></div>
+      <div class="christmas-light"></div>
+      <div class="christmas-light"></div>
+      <div class="christmas-light"></div>
+      <div class="christmas-light"></div>
+      <div class="christmas-light"></div>
+    </div>
+    <div class="santa-sleigh">🎅🦌</div>
+    <div class="snowman-footer">⛄</div>
+    <% } else if (settings.holidayEffectsType === 'halloween') { %>
+    <div class="halloween-pumpkins">
+      <div class="halloween-pumpkin">🎃</div>
+      <div class="halloween-pumpkin">🎃</div>
+      <div class="halloween-pumpkin">🎃</div>
+      <div class="halloween-pumpkin">🎃</div>
+    </div>
+    <div class="spooky-ghost">👻</div>
+    <div class="creepy-moon">🌕</div>
+    <% } else if (settings.holidayEffectsType === 'valentines') { %>
+    <div class="love-hearts">
+      <div class="love-heart">💕</div>
+      <div class="love-heart">💖</div>
+      <div class="love-heart">💗</div>
+      <div class="love-heart">💝</div>
+      <div class="love-heart">💓</div>
+    </div>
+    <div class="cupid-arrow">💘</div>
+    <div class="love-letter">💌</div>
+    <% } else if (settings.holidayEffectsType === 'new-year') { %>
+    <div class="celebration-icons">
+      <div class="celebration-icon">🎊</div>
+      <div class="celebration-icon">🎉</div>
+      <div class="celebration-icon">✨</div>
+      <div class="celebration-icon">🎊</div>
+      <div class="celebration-icon">🎉</div>
+    </div>
+    <div class="party-popper">🎉</div>
+    <div class="champagne-glass">🥂</div>
+    <% } else if (settings.holidayEffectsType === 'easter') { %>
+    <div class="easter-eggs">
+      <div class="easter-egg">🥚</div>
+      <div class="easter-egg">🐣</div>
+      <div class="easter-egg">🥚</div>
+      <div class="easter-egg">🐣</div>
+    </div>
+    <div class="easter-bunny">🐰</div>
+    <div class="spring-flower">🌸</div>
+    <% } else if (settings.holidayEffectsType === 'black-friday') { %>
+    <div class="black-friday-tags">
+      <div class="price-tag">🏷️</div>
+      <div class="price-tag">💰</div>
+      <div class="price-tag">🏷️</div>
+      <div class="price-tag">💰</div>
+    </div>
+    <div class="sale-badge">💸</div>
+    <div class="discount-percent">%</div>
+    <% } %>
+  </div>
+  <% } %>
+
+  <div class="container mx-auto px-6 py-16 relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+
+      <div class="lg:col-span-2">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold text-white mb-4"><%= settings.storeName %></h3>
+          <p class="text-gray-400 leading-relaxed max-w-md">
+            <%= settings.footerDescription %>
+          </p>
+        </div>
+
+        <% if (settings.displaySocialLinks) { %>
+        <div class="flex items-center gap-3 flex-wrap">
+          <% if (settings.socialLinks?.discord) { %>
+          <a href="<%= settings.socialLinks.discord %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-[#5865F2] rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-discord text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+          <% if (settings.socialLinks?.twitter) { %>
+          <a href="<%= settings.socialLinks.twitter %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-black rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-x text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+          <% if (settings.socialLinks?.instagram) { %>
+          <a href="<%= settings.socialLinks.instagram %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-instagram text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+          <% if (settings.socialLinks?.youtube) { %>
+          <a href="<%= settings.socialLinks.youtube %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-[#FF0000] rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-youtube text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+          <% if (settings.socialLinks?.github) { %>
+          <a href="<%= settings.socialLinks.github %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-github text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+          <% if (settings.socialLinks?.tiktok) { %>
+          <a href="<%= settings.socialLinks.tiktok %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-black rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-tiktok text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+          <% if (settings.socialLinks?.linkedin) { %>
+          <a href="<%= settings.socialLinks.linkedin %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-[#0A66C2] rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-linkedin text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+          <% if (settings.socialLinks?.facebook) { %>
+          <a href="<%= settings.socialLinks.facebook %>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 hover:bg-[#1877F2] rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+            <i class="fab fa-facebook text-gray-400 group-hover:text-white transition-colors"></i>
+          </a>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+
+      <div>
+        <h4 class="text-lg font-semibold text-white mb-6 relative">
+          Navigation
+          <div class="absolute bottom-0 left-0 w-8 h-0.5 bg-accent mt-2" style="background-color: var(--accent-color);"></div>
+        </h4>
+        <ul class="space-y-3">
+          <li>
+            <a href="/" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
+              <i class="fas fa-home w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="/products" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
+              <i class="fas fa-shopping-bag w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Products</span>
+            </a>
+          </li>
+          <li>
+            <a href="/reviews" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
+              <i class="fas fa-star w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Reviews</span>
+            </a>
+          </li>
+          <li>
+            <a href="/profile" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
+              <i class="fas fa-user w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Profile</span>
+            </a>
+          </li>
+          <% if (settings.customFooterTabs && settings.customFooterTabs.length > 0) { %>
+          <% settings.customFooterTabs.forEach(function(tab) { %>
+          <li>
+            <a href="<%= tab.link %>" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
+              <i class="fas fa-external-link-alt w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
+              <span class="group-hover:translate-x-1 transition-transform duration-300"><%= tab.name %></span>
+            </a>
+          </li>
+          <% }); %>
+          <% } %>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-lg font-semibold text-white mb-6 relative">
+          Legal
+          <div class="absolute bottom-0 left-0 w-8 h-0.5 bg-accent mt-2" style="background-color: var(--accent-color);"></div>
+        </h4>
+        <ul class="space-y-3">
+          <li>
+            <a href="/privacy-policy" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
+              <i class="fas fa-shield-alt w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Privacy Policy</span>
+            </a>
+          </li>
+          <li>
+            <a href="/tos" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
+              <i class="fas fa-file-contract w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Terms of Service</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <% if (paymentConfig && (paymentConfig.paypal.enabled || paymentConfig.stripe.enabled || paymentConfig.coinbase.enabled)) { %>
+  <div class="border-t border-gray-800 relative z-10">
+    <div class="container mx-auto px-6 py-8">
+      <div class="text-center">
+        <h5 class="text-white font-semibold mb-6">Secure Payment Methods</h5>
+        <div class="flex flex-wrap items-center justify-center gap-6">
+          <% if (paymentConfig.paypal.enabled) { %>
+          <div class="group cursor-default">
+            <img src="/images/paypal.png" alt="PayPal" class="h-8 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+          <% } %>
+          <% if (paymentConfig.stripe.enabled) { %>
+          <div class="group cursor-default">
+            <img src="/images/card.png" alt="Card Payments" class="h-8 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+          <div class="group cursor-default">
+            <img src="/images/visa.png" alt="Visa" class="h-8 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+          <% } %>
+          <% if (paymentConfig.coinbase.enabled) { %>
+          <div class="group cursor-default">
+            <img src="/images/coinbase.png" alt="Coinbase" class="h-8 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+
+  <div class="border-t border-gray-800 bg-black/50 relative z-10">
+    <div class="container mx-auto px-6 py-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-gray-400 text-sm">
+          &copy; <span id="currentYear"></span> <%= settings.storeName %>. All rights reserved.
+        </div>
+
+        <div class="flex items-center gap-6 text-sm text-gray-500">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-shield-alt text-green-500"></i>
+            <span>SSL Secured</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-lock text-blue-500"></i>
+            <span>Secure Checkout</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-headset text-accent" style="color: var(--accent-color);"></i>
+            <span>24/7 Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="back-to-top" class="fixed bottom-6 right-6 w-12 h-12 bg-accent text-white rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:scale-110 z-50" style="background-color: var(--accent-color);">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+</footer>
+
+<script>
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+  const backToTop = document.getElementById('back-to-top');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTop.classList.remove('opacity-0', 'invisible');
+      backToTop.classList.add('opacity-100', 'visible');
+    } else {
+      backToTop.classList.remove('opacity-100', 'visible');
+      backToTop.classList.add('opacity-0', 'invisible');
+    }
+  });
+
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('footer h3, footer h4, footer p, footer ul').forEach((el) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>

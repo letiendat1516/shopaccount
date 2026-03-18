@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Edit Product</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+      background-color: #1a1a1a !important;
+      border: 1px solid rgba(var(--accent-rgb), 0.3) !important;
+      border-radius: 0.5rem !important;
+      min-height: 3rem !important;
+      padding: 0.375rem !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+      padding: 0 !important;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+      background-color: rgba(var(--accent-rgb), 0.2) !important;
+      border: 1px solid rgba(var(--accent-rgb), 0.3) !important;
+      border-radius: 0.375rem !important;
+      color: #ffffff !important;
+      padding: 0.375rem 0.625rem !important;
+      margin: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      line-height: 1.2 !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+      color: var(--accent-color) !important;
+      margin-right: 0.375rem !important;
+      font-weight: bold !important;
+      border: none !important;
+      background: none !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+      background: none !important;
+      color: #ff4444 !important;
+    }
+
+    .select2-dropdown {
+      background-color: #1a1a1a !important;
+      border: 1px solid rgba(var(--accent-rgb), 0.3) !important;
+      border-radius: 0.5rem !important;
+      margin-top: 0.25rem !important;
+    }
+
+    .select2-container--default .select2-results__option {
+      color: #ffffff !important;
+      padding: 0.625rem 0.875rem !important;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+      background-color: rgba(var(--accent-rgb), 0.3) !important;
+      color: #ffffff !important;
+    }
+
+    .select2-container--default .select2-results__option[aria-selected="true"] {
+      background-color: rgba(var(--accent-rgb), 0.15) !important;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+      background-color: #1a1a1a !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(var(--accent-rgb), 0.3) !important;
+      border-radius: 0.375rem !important;
+      padding: 0.5rem !important;
+      outline: none !important;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+      border-color: var(--accent-color) !important;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+      border-color: var(--accent-color) !important;
+    }
+
+    .product-type-option.selected {
+      background-color: rgba(var(--accent-rgb), 0.15) !important;
+      border-color: var(--accent-color) !important;
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    input[type="file"]::file-selector-button {
+      background-color: rgba(var(--accent-rgb), 0.2);
+      color: var(--accent-color);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      border-radius: 0.375rem;
+      padding: 0.5rem 1rem;
+      margin-right: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background-color: rgba(var(--accent-rgb), 0.3);
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'products' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">Edit Product: <%= product.name %></h1>
+        <p class="text-text-secondary text-lg">Modify the details and settings for this product.</p>
+      </div>
+
+      <form id="productForm" action="/staff/products/edit/<%= product._id %>?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST" enctype="multipart/form-data">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-6">
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-info-circle text-accent"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Product Information</h2>
+              </div>
+
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-white font-semibold mb-2">Product Name</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="name" placeholder="Enter product name" value="<%= product.name %>" required>
+                </div>
+
+                <div>
+                  <label class="block text-white font-semibold mb-2">URL ID</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="urlId" id="urlId" placeholder="Enter URL ID" pattern="[a-zA-Z0-9-]+" title="Alphanumeric characters and hyphens only" value="<%= product.urlId %>" required>
+                  <div class="mt-2 p-3 bg-accent/10 border-l-4 border-accent rounded text-sm text-text-secondary">
+                    Link: <span id="urlExample" class="text-accent font-mono"></span>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-white font-semibold mb-3">Product Type</label>
+                  <div id="productTypeOptions" class="space-y-3">
+                    <div class="product-type-option cursor-pointer p-4 bg-dark-card border border-white/20 rounded-xl transition-all hover:border-accent/50 hover:bg-accent/5" data-value="digitalPaid">
+                      <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i class="fas fa-dollar-sign text-accent"></i>
+                        </div>
+                        <div class="flex-1">
+                          <div class="text-white font-semibold mb-1">Digital Paid</div>
+                          <div class="text-text-secondary text-sm">A paid product that includes a downloadable file. Customers can download it after payment.</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="product-type-option cursor-pointer p-4 bg-dark-card border border-white/20 rounded-xl transition-all hover:border-accent/50 hover:bg-accent/5" data-value="digitalFree">
+                      <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i class="fas fa-gift text-accent"></i>
+                        </div>
+                        <div class="flex-1">
+                          <div class="text-white font-semibold mb-1">Digital Free</div>
+                          <div class="text-text-secondary text-sm">A free product that includes a downloadable file. Customers can download it without payment.</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="product-type-option cursor-pointer p-4 bg-dark-card border border-white/20 rounded-xl transition-all hover:border-accent/50 hover:bg-accent/5" data-value="service">
+                      <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i class="fas fa-cogs text-accent"></i>
+                        </div>
+                        <div class="flex-1">
+                          <div class="text-white font-semibold mb-1">Service</div>
+                          <div class="text-text-secondary text-sm">A customizable service where you define instructions for customers after purchase.</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="product-type-option cursor-pointer p-4 bg-dark-card border border-white/20 rounded-xl transition-all hover:border-accent/50 hover:bg-accent/5" data-value="serials">
+                      <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i class="fas fa-key text-accent"></i>
+                        </div>
+                        <div class="flex-1">
+                          <div class="text-white font-semibold mb-1">Serial Keys</div>
+                          <div class="text-text-secondary text-sm">A product that provides customers with unique serial keys upon purchase.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <select name="productType" id="productType" required class="hidden">
+                    <option value="digitalPaid" <%= product.productType === 'digitalPaid' ? 'selected' : '' %>>Digital Paid</option>
+                    <option value="digitalFree" <%= product.productType === 'digitalFree' ? 'selected' : '' %>>Digital Free</option>
+                    <option value="service" <%= product.productType === 'service' ? 'selected' : '' %>>Service</option>
+                    <option value="serials" <%= product.productType === 'serials' ? 'selected' : '' %>>Serials</option>
+                  </select>
+                </div>
+
+                <div id="price-field">
+                  <label class="block text-white font-semibold mb-2">Price</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="price" placeholder="Enter product price" step="0.01" value="<%= product.price %>">
+                </div>
+
+                <div>
+                  <label class="block text-white font-semibold mb-2">Product Category (Optional)</label>
+                  <select name="category" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+                    <option value="" <%= !product.category ? 'selected' : '' %>>Choose a category</option>
+                    <% settings.productCategories.forEach(category => { %>
+                    <option value="<%= category.url %>" <%= product.category === category.url ? 'selected' : '' %>><%= category.name %></option>
+                    <% }); %>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-align-left text-accent"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Product Description</h2>
+              </div>
+
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-white font-semibold mb-2">Description</label>
+                  <p class="text-sm text-accent mb-2">
+                    Supports <a href="https://docs.plexdevelopment.net/plex-store/markdown-guide" target="_blank" class="underline hover:text-accent/80">Markdown</a>
+                  </p>
+                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-y" name="description" placeholder="Describe your product..." rows="8" required><%= product.description %></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-white font-semibold mb-2">Dependencies (Optional)</label>
+                  <p class="text-sm text-accent mb-2">
+                    Supports <a href="https://docs.plexdevelopment.net/plex-store/markdown-guide" target="_blank" class="underline hover:text-accent/80">Markdown</a>
+                  </p>
+                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-y" name="dependencies" placeholder="List any dependencies or requirements..." rows="4"><%= product.dependencies || '' %></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden hidden" id="serviceMessageField" data-aos="fade-up" data-aos-delay="200">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-comment-dots text-accent"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Service Details</h2>
+              </div>
+
+              <div>
+                <label class="block text-white font-semibold mb-2">Service Message</label>
+                <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-none" name="serviceMessage" placeholder="Enter instructions for customers after purchase..." rows="6"><%= product.serviceMessage || '' %></textarea>
+                <p class="text-sm text-accent mt-2">
+                  Provide detailed instructions that customers will see after purchasing this service. This can include contact information, next steps, or any other important details.
+                </p>
+              </div>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up" data-aos-delay="300">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-cog text-accent"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Advanced Settings</h2>
+              </div>
+
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-white font-semibold mb-2">Numerical Position</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="position" placeholder="Enter product position" value="<%= product.position %>" required>
+                  <p class="text-sm text-text-secondary mt-2">Lower numbers appear first in the product list</p>
+                </div>
+
+                <div>
+                  <label class="block text-white font-semibold mb-2">Discord Roles to Assign (Optional)</label>
+                  <select id="discordRoleIds" name="discordRoleIds[]" multiple class="w-full bg-dark-card text-white border border-white/20 rounded-lg">
+                    <% roles.forEach(role => { %>
+                    <option value="<%= role.id %>" <%= product.discordRoleIds.includes(role.id) ? 'selected' : '' %>><%= role.name %> (<%= role.id %>)</option>
+                    <% }); %>
+                  </select>
+                  <p class="text-sm text-accent mt-2">
+                    <strong>Tip:</strong> Select multiple roles from the list above
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-info-circle text-accent"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Current Status</h2>
+              </div>
+
+              <% if (product.hideProduct) { %>
+              <div class="flex items-center gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl mb-4">
+                <i class="fas fa-eye-slash text-yellow-400 text-xl"></i>
+                <span class="text-yellow-400 font-semibold">Product is hidden from customers</span>
+              </div>
+              <% } else if (product.pauseSelling) { %>
+              <div class="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl mb-4">
+                <i class="fas fa-pause-circle text-red-400 text-xl"></i>
+                <span class="text-red-400 font-semibold">Product is visible but not purchasable</span>
+              </div>
+              <% } else { %>
+              <div class="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/30 rounded-xl mb-4">
+                <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                <span class="text-green-400 font-semibold">Product is active and available</span>
+              </div>
+              <% } %>
+
+              <div class="space-y-4">
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="hideProduct" <%= product.hideProduct ? 'checked' : '' %> class="w-5 h-5 mt-0.5 rounded border-white/20 text-accent focus:ring-accent focus:ring-offset-0">
+                  <div>
+                    <span class="text-white font-semibold">Hide Product</span>
+                    <p class="text-sm text-text-secondary mt-1">If enabled, this product will be hidden from customers</p>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="pauseSelling" <%= product.pauseSelling ? 'checked' : '' %> class="w-5 h-5 mt-0.5 rounded border-white/20 text-accent focus:ring-accent focus:ring-offset-0">
+                  <div>
+                    <span class="text-white font-semibold">Pause Product Selling</span>
+                    <p class="text-sm text-text-secondary mt-1">If enabled, customers can see but not purchase this product</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-upload text-accent"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Update Banner Image</h2>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-white font-semibold mb-2">Current Banner Image</label>
+                  <div class="mb-4">
+                    <img src="/<%= product.bannerImage %>" alt="Product Banner" class="w-full rounded-lg border border-accent/30">
+                  </div>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors file:mr-4 file:py-2 file:px-4" type="file" name="bannerImage" accept="image/*">
+                  <p class="text-sm text-text-secondary mt-2">Leave empty to keep the current image</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden hidden" id="serialsCard" data-aos="fade-up" data-aos-delay="200">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-key text-accent"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Serial Keys</h2>
+              </div>
+
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-white font-semibold mb-2">Current Serial Keys</label>
+                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-none font-mono text-sm" name="serialKeys" id="serialKeys" placeholder="Enter one serial key per line" rows="8"><% if (product.serials && product.serials.length > 0) { %><%= product.serials.map(serial => serial.key).join('\n') %><% } %></textarea>
+                  <p class="text-sm text-text-secondary mt-2">Remove keys by deleting them from the list, add new keys on new lines</p>
+                  <div class="flex items-center gap-2 mt-3 p-3 bg-accent/10 rounded-lg">
+                    <i class="fas fa-tag text-accent"></i>
+                    <span class="text-white">Keys available:</span>
+                    <span class="text-accent font-bold" id="serialKeyCount">0</span>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-white/10">
+                  <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="enableFileUpload" name="enableFileUpload" <%= product.serialRequiresFile ? 'checked' : '' %> class="w-5 h-5 mt-0.5 rounded border-white/20 text-accent focus:ring-accent focus:ring-offset-0">
+                    <div>
+                      <span class="text-white font-semibold">Enable product file upload</span>
+                      <p class="text-sm text-text-secondary mt-1">Check if your serial key requires additional files</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 overflow-hidden" data-aos="fade-up" data-aos-delay="300">
+              <div class="flex flex-col sm:flex-row gap-4">
+                <button type="submit" class="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+                  <i class="fas fa-save"></i>
+                  <span>Update Product</span>
+                </button>
+                <a href="/staff/products" class="flex-1 bg-dark-card hover:bg-dark-border text-white border border-white/20 px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+                  <i class="fas fa-times"></i>
+                  <span>Cancel</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof $ !== 'undefined') {
+        $('#discordRoleIds').select2({
+          placeholder: "Select Discord roles",
+          allowClear: true
+        });
+      }
+
+      const productTypeSelect = document.getElementById('productType');
+      const productTypeOptions = document.querySelectorAll('.product-type-option');
+      const serviceMessageField = document.getElementById('serviceMessageField');
+      const serialsCard = document.getElementById('serialsCard');
+      const serialKeys = document.getElementById('serialKeys');
+      const serialKeyCount = document.getElementById('serialKeyCount');
+      const enableFileUpload = document.getElementById('enableFileUpload');
+      const priceField = document.getElementById('price-field');
+
+      const currentProductType = productTypeSelect.value;
+      productTypeOptions.forEach(option => {
+        if (option.getAttribute('data-value') === currentProductType) {
+          option.classList.add('selected');
+        }
+      });
+
+      productTypeOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          productTypeOptions.forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+          const value = this.getAttribute('data-value');
+          productTypeSelect.value = value;
+          updateProductTypeUI();
+        });
+      });
+
+      function updateProductTypeUI() {
+        const selectedType = productTypeSelect.value;
+
+        if (selectedType === 'service') {
+          serviceMessageField.classList.remove('hidden');
+          serviceMessageField.querySelector('textarea').setAttribute('required', 'required');
+          serialsCard.classList.add('hidden');
+          serialKeys.removeAttribute('required');
+          priceField.classList.remove('hidden');
+          priceField.querySelector('input').setAttribute('required', 'required');
+        } else if (selectedType === 'serials') {
+          serviceMessageField.classList.add('hidden');
+          serviceMessageField.querySelector('textarea').removeAttribute('required');
+          serialsCard.classList.remove('hidden');
+          updateSerialKeyCount();
+          priceField.classList.remove('hidden');
+          priceField.querySelector('input').setAttribute('required', 'required');
+        } else if (selectedType === 'digitalFree') {
+          serviceMessageField.classList.add('hidden');
+          serviceMessageField.querySelector('textarea').removeAttribute('required');
+          serialsCard.classList.add('hidden');
+          serialKeys.removeAttribute('required');
+          priceField.classList.add('hidden');
+          priceField.querySelector('input').removeAttribute('required');
+        } else {
+          serviceMessageField.classList.add('hidden');
+          serviceMessageField.querySelector('textarea').removeAttribute('required');
+          serialsCard.classList.add('hidden');
+          serialKeys.removeAttribute('required');
+          priceField.classList.remove('hidden');
+          priceField.querySelector('input').setAttribute('required', 'required');
+        }
+      }
+
+      function updateSerialKeyCount() {
+        if (serialKeys && serialKeyCount) {
+          const keys = serialKeys.value.split('\n').filter(key => key.trim() !== '').length;
+          serialKeyCount.textContent = keys;
+        }
+      }
+
+      const urlIdInput = document.getElementById('urlId');
+      const urlExample = document.getElementById('urlExample');
+
+      function updateUrlExample() {
+        if (urlIdInput && urlExample) {
+          const currentUrl = window.location.origin;
+          const urlIdValue = urlIdInput.value.trim();
+          urlExample.textContent = `${currentUrl}/products/${urlIdValue}`;
+        }
+      }
+
+      const bannerImageInput = document.querySelector('input[name="bannerImage"]');
+      const productForm = document.getElementById('productForm');
+
+      if (bannerImageInput) {
+        bannerImageInput.addEventListener('change', function() {
+          const file = this.files[0];
+          if (file && !file.type.startsWith('image/')) {
+            alert('Please upload a valid image file.');
+            this.value = '';
+          }
+        });
+      }
+
+      if (productForm) {
+        productForm.addEventListener('submit', function(event) {
+          if (bannerImageInput.files.length > 0) {
+            const file = bannerImageInput.files[0];
+            if (!file.type.startsWith('image/')) {
+              event.preventDefault();
+              alert('Please upload a valid image file.');
+            }
+          }
+        });
+      }
+
+      if (urlIdInput) {
+        urlIdInput.addEventListener('input', updateUrlExample);
+      }
+
+      if (serialKeys) {
+        serialKeys.addEventListener('input', updateSerialKeyCount);
+      }
+
+      updateProductTypeUI();
+      updateUrlExample();
+      updateSerialKeyCount();
+    });
+  </script>
+</body>
+
+</html>

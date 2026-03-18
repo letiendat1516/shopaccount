@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= displayName %>'s Download History - <%= settings.storeName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <% 
+  const userId = userInfo.discordID || userInfo._id.toString();
+  let avatarUrl = '/images/default-avatar.png';
+  
+  if (fullUser && fullUser.avatar && userInfo.discordID) {
+    avatarUrl = `https://cdn.discordapp.com/avatars/${userInfo.discordID}/${fullUser.avatar}.png`;
+  }
+%>
+
+  <meta property="og:title" content="<%= displayName %>'s Download History | <%= settings.storeName %>" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:url" content="<%= config.baseURL %>/download-history/<%= userId %>" />
+  <meta property="og:image" content="<%= avatarUrl %>" />
+  <meta property="og:description" content="Download history for <%= displayName %> on <%= settings.storeName %>" />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+  <meta property="og:locale" content="en_US" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--accent-color);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      top: 15%;
+      left: 10%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 0s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(2) {
+      top: 65%;
+      left: 15%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(3) {
+      top: 35%;
+      right: 12%;
+      width: 4px;
+      height: 4px;
+      animation-delay: 4s;
+      opacity: 0.5;
+    }
+
+    .particle:nth-child(4) {
+      bottom: 25%;
+      left: 18%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(5) {
+      bottom: 55%;
+      right: 20%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3s;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user, existingUser }) %>
+
+  <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden" style="
+    background: linear-gradient(
+      135deg,
+      rgba(var(--accent-rgb), 0.25) 0%,
+      rgba(0, 0, 0, 0.85) 30%,
+      rgba(0, 0, 0, 0.90) 70%,
+      rgba(var(--accent-rgb), 0.20) 100%
+    );
+  ">
+    <div class="absolute inset-0">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center max-w-4xl mx-auto">
+        <div class="flex justify-center items-center gap-4 mb-8" data-aos="fade-up" data-aos-duration="1000">
+          <img src="<%= avatarUrl %>" alt="User Avatar" class="w-20 h-20 rounded-full border-4 border-accent/50 shadow-2xl" onerror="this.src='/images/default-avatar.png'">
+          <div class="text-left">
+            <h2 class="text-2xl font-bold text-white"><%= displayName %></h2>
+            <p class="text-text-secondary">ID: <%= userId %></p>
+          </div>
+        </div>
+
+        <div class="space-y-6" data-aos="fade-up" data-aos-duration="1200">
+          <h1 class="text-4xl lg:text-6xl font-black leading-tight text-white mb-4">
+            Download History
+          </h1>
+          <p class="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
+            Tracking all download activities and usage statistics
+          </p>
+        </div>
+
+        <div class="mt-12" data-aos="fade-up" data-aos-duration="1400">
+          <a href="/profile/<%= userId %>" class="bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center gap-3 hover-lift mx-auto w-fit">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Profile</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-dark-lighter">
+    <div class="container mx-auto px-6">
+
+      <div class="glass-effect rounded-2xl p-8 mb-12 hover-lift" data-aos="fade-up">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+          <i class="fas fa-filter text-accent"></i>
+          Filter Downloads
+        </h3>
+
+        <form action="/download-history/<%= userId %>" method="GET" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <label class="block text-white font-medium mb-2 flex items-center gap-2">
+                <i class="fas fa-box text-accent"></i>
+                Product
+              </label>
+              <select name="product" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+                <option value="">All Products</option>
+                <% productList.forEach(product => { %>
+                <option value="<%= product._id %>" <%= selectedProduct === product._id.toString() ? 'selected' : '' %>><%= product.name %></option>
+                <% }); %>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-white font-medium mb-2 flex items-center gap-2">
+                <i class="fas fa-check-circle text-accent"></i>
+                Status
+              </label>
+              <select name="status" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+                <option value="">All Statuses</option>
+                <option value="completed" <%= selectedStatus === 'completed' ? 'selected' : '' %>>Completed</option>
+                <option value="failed" <%= selectedStatus === 'failed' ? 'selected' : '' %>>Failed</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-white font-medium mb-2 flex items-center gap-2">
+                <i class="fas fa-calendar-alt text-accent"></i>
+                Date From
+              </label>
+              <input type="date" name="dateFrom" value="<%= dateFrom %>" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-white font-medium mb-2 flex items-center gap-2">
+                <i class="fas fa-calendar-alt text-accent"></i>
+                Date To
+              </label>
+              <input type="date" name="dateTo" value="<%= dateTo %>" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button type="submit" class="px-6 py-3 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
+              <i class="fas fa-filter"></i>
+              <span>Filter Results</span>
+            </button>
+            <a href="/download-history/<%= userId %>" class="px-6 py-3 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
+              <i class="fas fa-undo"></i>
+              <span>Reset Filters</span>
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="200">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+          <i class="fas fa-download text-accent"></i>
+          Download Records (<%= totalItems %>)
+        </h3>
+
+        <% if (downloads.length > 0) { %>
+        <div class="space-y-6">
+          <% downloads.forEach((download, index) => { %>
+          <div class="bg-dark-card rounded-xl p-6 border border-white/10 hover:border-accent/50 transition-all duration-300" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/10">
+              <div>
+                <h4 class="text-lg font-semibold text-white mb-2"><%= download.productName %></h4>
+                <div class="flex items-center gap-2 text-text-secondary text-sm">
+                  <i class="fas fa-clock text-accent"></i>
+                  <span>
+                    <%= new Date(download.downloadDate).toLocaleString('en-US', { 
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit'
+                        }) %>
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <% if (download.downloadCompleted) { %>
+                <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30 flex items-center gap-2 text-sm font-medium">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Completed</span>
+                </span>
+                <% } else { %>
+                <span class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg border border-red-500/30 flex items-center gap-2 text-sm font-medium">
+                  <i class="fas fa-times-circle"></i>
+                  <span>Failed</span>
+                </span>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+              <div class="bg-dark rounded-lg p-4 border border-white/10">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-tag text-accent"></i>
+                  <span>Version</span>
+                </div>
+                <div class="text-white font-medium"><%= download.versionNumber || 'N/A' %></div>
+              </div>
+
+              <div class="bg-dark rounded-lg p-4 border border-white/10">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-globe text-accent"></i>
+                  <span>IP Address</span>
+                </div>
+                <div class="text-white font-medium break-all"><%= download.ipAddress || 'N/A' %></div>
+              </div>
+
+              <div class="bg-dark rounded-lg p-4 border border-white/10">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-user text-accent"></i>
+                  <span>Discord User ID</span>
+                </div>
+                <div class="text-white font-medium break-all"><%= download.discordUserId || 'N/A' %></div>
+              </div>
+
+              <div class="bg-dark rounded-lg p-4 border border-white/10">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-file text-accent"></i>
+                  <span>File Size</span>
+                </div>
+                <div class="text-white font-medium"><%= download.fileSize ? formatFileSize(download.fileSize) : 'N/A' %></div>
+              </div>
+
+              <% if (download.downloadCompleted && download.timeToDownload) { %>
+              <div class="bg-dark rounded-lg p-4 border border-white/10">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-stopwatch text-accent"></i>
+                  <span>Download Time</span>
+                </div>
+                <div class="text-accent font-bold"><%= formatTime(download.timeToDownload) %></div>
+              </div>
+              <% } %>
+
+              <% if (download.error) { %>
+              <div class="bg-dark rounded-lg p-4 border border-red-500/30 sm:col-span-2">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-exclamation-triangle text-red-400"></i>
+                  <span>Error</span>
+                </div>
+                <div class="text-red-400 font-medium break-words"><%= download.error %></div>
+              </div>
+              <% } %>
+
+              <div class="bg-dark rounded-lg p-4 border border-white/10">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-fingerprint text-accent"></i>
+                  <span>Nonce</span>
+                </div>
+                <div class="text-white font-medium break-all text-sm"><%= download.nonce %></div>
+              </div>
+
+              <div class="bg-dark rounded-lg p-4 border border-white/10">
+                <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
+                  <i class="fas fa-receipt text-accent"></i>
+                  <span>Transaction ID</span>
+                </div>
+                <div class="text-white font-medium break-all text-sm"><%= download.transactionId || 'N/A' %></div>
+              </div>
+            </div>
+
+            <div class="bg-dark rounded-lg p-4 border border-white/10">
+              <div class="flex items-center gap-2 text-text-secondary text-sm mb-3">
+                <i class="fas fa-laptop text-accent"></i>
+                <span>User Agent</span>
+              </div>
+              <div class="text-white text-sm break-all bg-dark-card p-3 rounded-lg border border-white/10">
+                <%= download.userAgent || 'N/A' %>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+
+        <% if (totalPages > 1) { %>
+        <div class="flex justify-center items-center gap-2 mt-12" data-aos="fade-up">
+          <% if (currentPage > 1) { %>
+          <a href="<%= paginationUrl %>&page=1" class="p-3 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+          <a href="<%= paginationUrl %>&page=<%= Math.max(1, currentPage - 1) %>" class="p-3 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift">
+            <i class="fas fa-angle-left"></i>
+          </a>
+          <% } %>
+
+          <% 
+              let startPage = Math.max(1, currentPage - 2);
+              let endPage = Math.min(totalPages, currentPage + 2);
+              
+              if (startPage > 1) { 
+            %>
+          <a href="<%= paginationUrl %>&page=1" class="px-4 py-2 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift">1</a>
+
+          <% if (startPage > 2) { %>
+          <span class="px-2 text-text-secondary">...</span>
+          <% } %>
+          <% } %>
+
+          <% for (let i = startPage; i <= endPage; i++) { %>
+          <% if (currentPage === i) { %>
+          <span class="px-4 py-2 bg-accent text-white rounded-lg font-bold"><%= i %></span>
+          <% } else { %>
+          <a href="<%= paginationUrl %>&page=<%= i %>" class="px-4 py-2 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift"><%= i %></a>
+          <% } %>
+          <% } %>
+
+          <% if (endPage < totalPages) { %>
+          <% if (endPage < totalPages - 1) { %>
+          <span class="px-2 text-text-secondary">...</span>
+          <% } %>
+
+          <a href="<%= paginationUrl %>&page=<%= totalPages %>" class="px-4 py-2 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift">
+            <%= totalPages %>
+          </a>
+          <% } %>
+
+          <% if (currentPage < totalPages) { %>
+          <a href="<%= paginationUrl %>&page=<%= Math.min(totalPages, currentPage + 1) %>" class="p-3 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift">
+            <i class="fas fa-angle-right"></i>
+          </a>
+          <a href="<%= paginationUrl %>&page=<%= totalPages %>" class="p-3 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+          <% } %>
+        </div>
+        <% } %>
+
+        <% } else { %>
+        <div class="text-center py-20">
+          <div class="w-24 h-24 bg-dark-card rounded-3xl flex items-center justify-center mx-auto mb-8">
+            <i class="fas fa-download text-accent text-4xl"></i>
+          </div>
+          <h3 class="text-3xl font-bold text-white mb-4">No Download History</h3>
+          <p class="text-text-secondary text-lg">This user hasn't downloaded any products yet.</p>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

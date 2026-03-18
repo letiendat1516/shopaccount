@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Create Bundle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    .product-checkbox:checked + .product-card {
+      border-color: var(--accent-color);
+      background: rgba(var(--accent-rgb), 0.1);
+    }
+
+    .product-checkbox:checked + .product-card .check-icon {
+      opacity: 1;
+    }
+
+    .check-icon {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'bundles' }) %>
+
+<% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+<div id="alertMessage" class="fixed top-4 right-4 z-50 glass-effect border-l-4 border-red-500 p-4 rounded-lg shadow-lg max-w-md animate-fade-in">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
+    </div>
+    <div class="flex-1">
+      <p class="text-white font-semibold">Error</p>
+      <p class="text-text-secondary text-sm"><%= errorMessage %></p>
+    </div>
+    <button onclick="closeAlert()" class="text-text-secondary hover:text-white transition-colors">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+<% } %>
+
+<% if (typeof successMessage !== 'undefined' && successMessage) { %>
+<div id="alertMessage" class="fixed top-4 right-4 z-50 glass-effect border-l-4 border-green-500 p-4 rounded-lg shadow-lg max-w-md animate-fade-in">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-check-circle text-green-500 text-xl"></i>
+    </div>
+    <div class="flex-1">
+      <p class="text-white font-semibold">Success</p>
+      <p class="text-text-secondary text-sm"><%= successMessage %></p>
+    </div>
+    <button onclick="closeAlert()" class="text-text-secondary hover:text-white transition-colors">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+<% } %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">Create Bundle</h1>
+        <p class="text-text-secondary text-lg">Create a new product bundle with special pricing to attract customers.</p>
+      </div>
+
+      <form action="/staff/bundles/create?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2 space-y-6">
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-info-circle text-accent"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Bundle Information</h2>
+              </div>
+
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-white font-semibold mb-2">Bundle Name <span class="text-red-400">*</span></label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="name" placeholder="e.g., Ultimate Development Bundle" required>
+                  <p class="text-sm text-text-secondary mt-2">A catchy name for your bundle</p>
+                </div>
+
+                <div>
+                  <label class="block text-white font-semibold mb-2">Description <span class="text-red-400">*</span></label>
+                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-none" name="description" rows="4" placeholder="Describe what's included in this bundle and why customers should buy it..." required></textarea>
+                  <p class="text-sm text-text-secondary mt-2">Explain the value proposition of this bundle</p>
+                </div>
+
+                <div>
+                  <label class="block text-white font-semibold mb-2">Discount Percentage <span class="text-red-400">*</span></label>
+                  <div class="relative">
+                    <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg pl-4 pr-12 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="discountPercentage" placeholder="15" min="1" max="95" required>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-accent font-bold text-lg">%</div>
+                  </div>
+                  <p class="text-sm text-text-secondary mt-2">Discount applied to the total price of all products (1-95%)</p>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-box text-accent"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Select Products</h2>
+              </div>
+
+              <% if (products.length === 0) { %>
+              <div class="text-center py-12">
+                <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-exclamation-triangle text-yellow-400 text-3xl"></i>
+                </div>
+                <p class="text-text-secondary text-lg">No products available to bundle.</p>
+                <p class="text-text-muted mt-2">Create some products first before creating bundles.</p>
+              </div>
+              <% } else { %>
+              <p class="text-text-secondary mb-6">Select at least 2 products to include in this bundle</p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="productSelection">
+                <% products.forEach((product, index) => { %>
+                <label class="cursor-pointer">
+                  <input type="checkbox" name="products" value="<%= product._id %>" class="product-checkbox hidden" data-price="<%= product.price %>">
+                  <div class="product-card glass-effect rounded-xl p-4 hover-lift border-2 border-transparent transition-all duration-300">
+                    <div class="flex items-start gap-3">
+                      <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                        <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="w-full h-full object-cover">
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-white truncate mb-1"><%= product.name %></h4>
+                        <p class="text-accent font-bold"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></p>
+                      </div>
+                      <div class="check-icon w-6 h-6 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-check text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </div>
+                </label>
+                <% }); %>
+              </div>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="lg:col-span-1">
+            <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden sticky top-8" data-aos="fade-up" data-aos-delay="200">
+              <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-calculator text-accent"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Price Preview</h2>
+              </div>
+
+              <div class="space-y-4 mb-6">
+                <div class="flex justify-between items-center">
+                  <span class="text-text-secondary">Selected Products:</span>
+                  <span class="font-bold text-white" id="selectedCount">0</span>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                  <span class="text-text-secondary">Original Price:</span>
+                  <span class="font-bold text-white" id="originalPrice"><%= settings.currencySymbol %>0.00</span>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                  <span class="text-text-secondary">Discount:</span>
+                  <span class="font-bold text-accent" id="discountAmount"><%= settings.currencySymbol %>0.00</span>
+                </div>
+                
+                <div class="h-px bg-white/10 my-4"></div>
+                
+                <div class="flex justify-between items-center text-lg">
+                  <span class="text-white font-semibold">Bundle Price:</span>
+                  <span class="font-bold text-accent text-2xl" id="bundlePrice"><%= settings.currencySymbol %>0.00</span>
+                </div>
+                
+                <div class="bg-accent/10 border border-accent/30 rounded-lg p-4">
+                  <p class="text-sm text-accent text-center">
+                    <i class="fas fa-tag mr-2"></i>
+                    <span id="savingsAmount">Save <%= settings.currencySymbol %>0.00</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+                  <i class="fas fa-check"></i>
+                  <span>Create Bundle</span>
+                </button>
+                
+                <a href="/staff/bundles" class="w-full bg-dark-card hover:bg-dark-border text-white border border-white/20 px-6 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+                  <i class="fas fa-times"></i>
+                  <span>Cancel</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    const currencySymbol = '<%= settings.currencySymbol %>';
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    const discountInput = document.querySelector('input[name="discountPercentage"]');
+    const selectedCountEl = document.getElementById('selectedCount');
+    const originalPriceEl = document.getElementById('originalPrice');
+    const discountAmountEl = document.getElementById('discountAmount');
+    const bundlePriceEl = document.getElementById('bundlePrice');
+    const savingsAmountEl = document.getElementById('savingsAmount');
+
+    function updatePricePreview() {
+      let totalPrice = 0;
+      let selectedCount = 0;
+
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          selectedCount++;
+          totalPrice += parseFloat(checkbox.dataset.price);
+        }
+      });
+
+      const discountPercentage = parseFloat(discountInput.value) || 0;
+      const discountAmount = totalPrice * (discountPercentage / 100);
+      const bundlePrice = totalPrice - discountAmount;
+
+      selectedCountEl.textContent = selectedCount;
+      originalPriceEl.textContent = `${currencySymbol}${totalPrice.toFixed(2)}`;
+      discountAmountEl.textContent = `${currencySymbol}${discountAmount.toFixed(2)}`;
+      bundlePriceEl.textContent = `${currencySymbol}${bundlePrice.toFixed(2)}`;
+      savingsAmountEl.textContent = `Save ${currencySymbol}${discountAmount.toFixed(2)}`;
+    }
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', updatePricePreview);
+    });
+
+    discountInput.addEventListener('input', updatePricePreview);
+
+  function closeAlert() {
+    const alert = document.getElementById('alertMessage');
+    if (alert) {
+      alert.style.opacity = '0';
+      setTimeout(() => alert.remove(), 300);
+    }
+  }
+
+  if (document.getElementById('alertMessage')) {
+    setTimeout(() => {
+      closeAlert();
+    }, 5000);
+  }
+
+  </script>
+</body>
+
+</html>

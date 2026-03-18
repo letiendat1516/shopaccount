@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Page Customization</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .sidebar-nav {
+      position: sticky;
+      top: 100px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      background-color: rgba(var(--accent-rgb), 0.3);
+      border-radius: 10px;
+    }
+
+    .nav-item {
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(var(--accent-rgb), 0.1);
+      border-left-color: var(--accent-color);
+    }
+
+    .nav-item.active {
+      background: rgba(var(--accent-rgb), 0.2);
+      border-left-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .settings-section {
+      scroll-margin-top: 100px;
+    }
+
+    .compact-input {
+      height: 42px;
+    }
+
+    .compact-textarea {
+      min-height: 80px;
+    }
+
+    .custom-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .checkmark {
+      position: relative;
+      height: 20px;
+      width: 20px;
+      background-color: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 4px;
+      margin-right: 10px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+
+    .custom-checkbox input:checked~.checkmark {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:checked~.checkmark:after {
+      display: block;
+    }
+
+    .holiday-effect-radio:checked+.holiday-effect-card {
+      border-color: var(--accent-color);
+      background: rgba(var(--accent-rgb), 0.1);
+    }
+
+    .holiday-effect-card {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .holiday-effect-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+
+    @media (max-width: 1023px) {
+      .sidebar-nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'page-customization' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-3xl font-bold text-white mb-2">Page Customization</h1>
+        <p class="text-text-secondary">Customize your website's appearance, content, and navigation</p>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="lg:w-64 flex-shrink-0" data-aos="fade-right">
+          <div class="glass-effect rounded-xl p-4 sidebar-nav">
+            <nav class="space-y-1">
+              <a href="#typography" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-font w-4"></i>
+                <span>Typography</span>
+              </a>
+              <a href="#page-titles" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-heading w-4"></i>
+                <span>Page Titles</span>
+              </a>
+              <a href="#features" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-boxes w-4"></i>
+                <span>Features</span>
+              </a>
+              <a href="#navigation" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-bars w-4"></i>
+                <span>Navigation</span>
+              </a>
+              <a href="#footer" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-shoe-prints w-4"></i>
+                <span>Footer</span>
+              </a>
+              <a href="#faqs" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-question-circle w-4"></i>
+                <span>FAQs</span>
+              </a>
+              <a href="#holiday" class="nav-item flex items-center gap-3 px-4 py-2.5 rounded-lg border-l-4 border-transparent text-sm">
+                <i class="fas fa-snowflake w-4"></i>
+                <span>Holiday Effects</span>
+              </a>
+            </nav>
+          </div>
+        </aside>
+
+        <main class="flex-1">
+          <form action="/staff/page-customization?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST">
+
+            <section id="typography" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-font text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Typography</h2>
+                  <p class="text-text-secondary text-sm">Choose your website's font</p>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-white mb-2">Website Font Family</label>
+                <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="fontSelector" value="<%= settings.websiteFont %>" placeholder="e.g., Roboto, Arial, sans-serif">
+                <p class="text-xs text-text-muted mt-2">
+                  <i class="fas fa-info-circle mr-1"></i>
+                  Popular choices: Inter, Poppins, Roboto, Montserrat
+                </p>
+              </div>
+            </section>
+
+            <section id="page-titles" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-heading text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Page Titles & Subtitles</h2>
+                  <p class="text-text-secondary text-sm">Customize heading text for each page</p>
+                </div>
+              </div>
+
+              <div class="space-y-6">
+                <div class="bg-dark-card rounded-xl p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
+                      <i class="fas fa-home text-blue-400 text-xs"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-white">Home Page</h3>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Title</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="homePageTitle" value="<%= settings.homePageTitle %>" required>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Subtitle</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="homePageSubtitle" value="<%= settings.homePageSubtitle %>" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-dark-card rounded-xl p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center">
+                      <i class="fas fa-box text-purple-400 text-xs"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-white">Products Page</h3>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Title</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="productsPageTitle" value="<%= settings.productsPageTitle %>" required>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Subtitle</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="productsPageSubtitle" value="<%= settings.productsPageSubtitle %>" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-dark-card rounded-xl p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
+                      <i class="fas fa-file-contract text-green-400 text-xs"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-white">Terms of Service Page</h3>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Title</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="tosPageTitle" value="<%= settings.tosPageTitle %>" required>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Subtitle</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="tosPageSubtitle" value="<%= settings.tosPageSubtitle %>" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-dark-card rounded-xl p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="w-6 h-6 bg-red-500/20 rounded flex items-center justify-center">
+                      <i class="fas fa-shield-alt text-red-400 text-xs"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-white">Privacy Policy Page</h3>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Title</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="privacyPolicyPageTitle" value="<%= settings.privacyPolicyPageTitle %>" required>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-1">Subtitle</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="privacyPolicyPageSubtitle" value="<%= settings.privacyPolicyPageSubtitle %>" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="features" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-boxes text-accent"></i>
+                </div>
+                <div class="flex-1">
+                  <h2 class="text-xl font-bold text-white">Feature Boxes</h2>
+                  <p class="text-text-secondary text-sm">Showcase key benefits on your home page</p>
+                </div>
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="displayFeatures" value="true" <%= settings.displayFeatures ? 'checked' : '' %>>
+                  <span class="checkmark"></span>
+                  <span class="text-sm">Display on Home</span>
+                </label>
+              </div>
+
+              <div class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <i class="fas fa-lightbulb text-blue-400"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-semibold text-white mb-1">💡 Pro Tips</h4>
+                    <ul class="text-sm text-blue-300 space-y-1">
+                      <li>• Keep titles short and impactful (2-4 words)</li>
+                      <li>• Use clear, benefit-focused descriptions</li>
+                      <li>• Choose icons that represent your features well</li>
+                      <li>• Aim for 3-6 features for best visual balance</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div id="custom-features" class="space-y-4 mb-4 max-h-[600px] overflow-y-auto pr-2">
+                <% if (settings.features && settings.features.length > 0) { %>
+                <% settings.features.forEach(function(feature, index) { %>
+                <div class="feature-card bg-gradient-to-br from-dark-card to-dark-lighter rounded-xl p-5 border border-white/10 hover:border-accent/50 transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center">
+                        <span class="text-accent font-bold text-sm">#<%= index + 1 %></span>
+                      </div>
+                      <h3 class="text-sm font-semibold text-white">Feature <%= index + 1 %></h3>
+                    </div>
+                    <button type="button" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3 py-1.5 rounded-lg transition-all text-sm border border-red-600/30 hover:border-red-600" onclick="removeFeature(this)">
+                      <i class="fas fa-trash text-xs mr-1"></i> Remove
+                    </button>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div>
+                      <label class="block text-xs font-medium text-text-secondary mb-2">
+                        <i class="fas fa-icons mr-1"></i> Icon Class
+                      </label>
+                      <div class="flex gap-2">
+                        <div class="relative flex-1">
+                          <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg pl-10 pr-3 py-2.5 text-sm focus:border-accent focus:outline-none transition-colors" type="text" name="features[<%= index %>][icon]" value="<%= feature.icon %>" placeholder="fas fa-star" oninput="updateIconPreview(this)" required>
+                          <div class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-accent/20 rounded flex items-center justify-center icon-preview">
+                            <i class="<%= feature.icon %> text-accent text-xs"></i>
+                          </div>
+                        </div>
+                        <a href="https://fontawesome.com/search?o=r&m=free" target="_blank" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-4 py-2.5 rounded-lg transition-all text-sm border border-blue-600/30 hover:border-blue-600 flex items-center gap-2 whitespace-nowrap">
+                          <i class="fab fa-font-awesome"></i>
+                          <span class="hidden sm:inline">Browse</span>
+                        </a>
+                      </div>
+                      <p class="text-xs text-text-muted mt-1.5">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Popular: fa-rocket, fa-shield-alt, fa-bolt, fa-star, fa-heart
+                      </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-xs font-medium text-text-secondary mb-2">
+                          <i class="fas fa-heading mr-1"></i> Title
+                        </label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2.5 text-sm focus:border-accent focus:outline-none transition-colors" type="text" name="features[<%= index %>][title]" value="<%= feature.title %>" placeholder="Fast & Reliable" maxlength="30" required>
+                        <p class="text-xs text-text-muted mt-1">Keep it short and catchy</p>
+                      </div>
+                      <div>
+                        <label class="block text-xs font-medium text-text-secondary mb-2">
+                          <i class="fas fa-align-left mr-1"></i> Description
+                        </label>
+                        <textarea class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2.5 text-sm focus:border-accent focus:outline-none transition-colors resize-none" name="features[<%= index %>][description]" rows="2" placeholder="Brief description of this feature..." maxlength="100" required><%= feature.description %></textarea>
+                        <p class="text-xs text-text-muted mt-1">Max 100 characters</p>
+                      </div>
+                    </div>
+
+                    <div class="bg-dark-card/50 rounded-lg p-4 border border-white/5">
+                      <p class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">
+                        <i class="fas fa-eye mr-1"></i> Preview
+                      </p>
+                      <div class="flex items-start gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-accent/20 to-accent/5 rounded-xl flex items-center justify-center flex-shrink-0 feature-preview-icon">
+                          <i class="<%= feature.icon %> text-accent text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <h4 class="text-sm font-bold text-white mb-1 feature-preview-title"><%= feature.title %></h4>
+                          <p class="text-xs text-text-secondary leading-relaxed feature-preview-description"><%= feature.description %></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+                <% } else { %>
+                <div class="text-center py-12 bg-dark-card rounded-xl border border-dashed border-white/10" id="emptyFeaturesState">
+                  <div class="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-boxes text-accent text-2xl"></i>
+                  </div>
+                  <h3 class="text-lg font-bold text-white mb-2">No Features Added Yet</h3>
+                  <p class="text-text-secondary text-sm mb-4">Start showcasing your product's best features</p>
+                  <button type="button" class="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all text-sm" onclick="addFeature()">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Your First Feature</span>
+                  </button>
+                </div>
+                <% } %>
+              </div>
+
+              <% if (settings.features && settings.features.length > 0) { %>
+              <button type="button" class="w-full bg-gradient-to-r from-accent/20 to-accent/10 hover:from-accent/30 hover:to-accent/20 text-accent border border-accent/50 px-4 py-3 rounded-xl font-semibold transition-all text-sm flex items-center justify-center gap-2" onclick="addFeature()">
+                <i class="fas fa-plus"></i>
+                <span>Add Another Feature</span>
+              </button>
+              <% } %>
+            </section>
+
+            <section id="navigation" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-bars text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Navigation Links</h2>
+                  <p class="text-text-secondary text-sm">Add custom links to your navigation bar</p>
+                </div>
+              </div>
+
+              <div id="custom-nav-tabs" class="space-y-2 mb-4 max-h-96 overflow-y-auto">
+                <% if (settings.customNavTabs && settings.customNavTabs.length > 0) { %>
+                <% settings.customNavTabs.forEach(function(tab, index) { %>
+                <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center bg-dark-lighter rounded-lg p-2 border border-white/10">
+                  <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customNavTabs[<%= index %>][name]" placeholder="Link Text" value="<%= tab.name %>" required>
+                  <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customNavTabs[<%= index %>][link]" placeholder="https://..." value="<%= tab.link %>" required>
+                  <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all w-full sm:w-auto" onclick="removeNavTab(this)">
+                    <i class="fas fa-trash text-sm"></i>
+                  </button>
+                </div>
+                <% }); %>
+                <% } else { %>
+                <div class="text-center py-6 bg-dark-card rounded-xl">
+                  <i class="fas fa-link text-text-muted text-2xl mb-2"></i>
+                  <p class="text-text-secondary text-sm">No custom links added yet</p>
+                </div>
+                <% } %>
+              </div>
+
+              <button type="button" class="w-full bg-accent/20 hover:bg-accent/30 text-accent border border-accent/50 px-4 py-2 rounded-lg font-semibold transition-all text-sm flex items-center justify-center gap-2" onclick="addNavTab()">
+                <i class="fas fa-plus"></i>
+                <span>Add Navigation Link</span>
+              </button>
+            </section>
+
+            <section id="footer" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-shoe-prints text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Footer Settings</h2>
+                  <p class="text-text-secondary text-sm">Customize footer content and links</p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Footer Description</label>
+                  <textarea class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-textarea focus:border-accent focus:outline-none transition-colors resize-none text-sm" name="footerDescription" placeholder="A brief description about your store" required><%= settings.footerDescription %></textarea>
+                </div>
+
+                <div class="bg-dark-card rounded-xl p-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-white">Social Media Links</h3>
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="displaySocialLinks" value="true" <%= settings.displaySocialLinks ? 'checked' : '' %>>
+                      <span class="checkmark"></span>
+                      <span class="text-sm">Display Icons</span>
+                    </label>
+                  </div>
+
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[discord]" placeholder="Discord" value="<%= settings.socialLinks?.discord || '' %>">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[twitter]" placeholder="Twitter" value="<%= settings.socialLinks?.twitter || '' %>">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[instagram]" placeholder="Instagram" value="<%= settings.socialLinks?.instagram || '' %>">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[youtube]" placeholder="YouTube" value="<%= settings.socialLinks?.youtube || '' %>">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[github]" placeholder="GitHub" value="<%= settings.socialLinks?.github || '' %>">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[tiktok]" placeholder="TikTok" value="<%= settings.socialLinks?.tiktok || '' %>">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[linkedin]" placeholder="LinkedIn" value="<%= settings.socialLinks?.linkedin || '' %>">
+                    <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="url" name="socialLinks[facebook]" placeholder="Facebook" value="<%= settings.socialLinks?.facebook || '' %>">
+                  </div>
+                </div>
+
+                <div>
+                  <h3 class="text-sm font-semibold text-white mb-2">Footer Links</h3>
+                  <div id="custom-footer-tabs" class="space-y-2 mb-3 max-h-64 overflow-y-auto">
+                    <% if (settings.customFooterTabs && settings.customFooterTabs.length > 0) { %>
+                    <% settings.customFooterTabs.forEach(function(tab, index) { %>
+                    <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center bg-dark-lighter rounded-lg p-2 border border-white/10">
+                      <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customFooterTabs[<%= index %>][name]" placeholder="Link Text" value="<%= tab.name %>" required>
+                      <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customFooterTabs[<%= index %>][link]" placeholder="https://..." value="<%= tab.link %>" required>
+                      <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all w-full sm:w-auto" onclick="removeFooterTab(this)">
+                        <i class="fas fa-trash text-sm"></i>
+                      </button>
+                    </div>
+                    <% }); %>
+                    <% } else { %>
+                    <div class="text-center py-6 bg-dark-card rounded-xl">
+                      <i class="fas fa-link text-text-muted text-2xl mb-2"></i>
+                      <p class="text-text-secondary text-sm">No footer links added yet</p>
+                    </div>
+                    <% } %>
+                  </div>
+
+                  <button type="button" class="w-full bg-accent/20 hover:bg-accent/30 text-accent border border-accent/50 px-4 py-2 rounded-lg font-semibold transition-all text-sm flex items-center justify-center gap-2" onclick="addFooterTab()">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Footer Link</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+
+            <section id="faqs" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-question-circle text-accent"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold text-white">Frequently Asked Questions</h2>
+                  <p class="text-text-secondary text-sm">Help customers with common questions</p>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="displayFAQ" value="true" <%= settings.displayFAQ ? 'checked' : '' %>>
+                  <span class="checkmark"></span>
+                  <span class="text-sm font-medium">Display FAQ Section on Home Page</span>
+                </label>
+              </div>
+
+              <div class="space-y-4">
+                <div id="custom-faqs" class="space-y-3 max-h-96 overflow-y-auto mb-4">
+                  <% if (settings.faqs && settings.faqs.length > 0) { %>
+                  <% settings.faqs.forEach(function(faq, index) { %>
+                  <div class="bg-dark-card rounded-xl p-4 border border-white/10">
+                    <div class="space-y-3">
+                      <div>
+                        <label class="block text-xs font-medium text-text-secondary mb-1">Question</label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" type="text" name="faqs[<%= index %>][question]" placeholder="e.g., How do I install the product?" value="<%= faq.question %>" required>
+                      </div>
+                      <div>
+                        <label class="block text-xs font-medium text-text-secondary mb-1">Answer</label>
+                        <textarea class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors resize-none" name="faqs[<%= index %>][answer]" rows="3" placeholder="Provide a detailed answer..." required><%= faq.answer %></textarea>
+                      </div>
+                      <div class="flex justify-end">
+                        <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all text-sm" onclick="removeFAQ(this)">
+                          <i class="fas fa-trash text-sm mr-1"></i> Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+                  <% } else { %>
+                  <div class="text-center py-6 bg-dark-card rounded-xl" id="emptyFAQState">
+                    <i class="fas fa-question-circle text-text-muted text-2xl mb-2"></i>
+                    <p class="text-text-secondary text-sm">No FAQs added yet</p>
+                  </div>
+                  <% } %>
+                </div>
+
+                <button type="button" class="w-full bg-accent/20 hover:bg-accent/30 text-accent border border-accent/50 px-4 py-2 rounded-lg font-semibold transition-all text-sm flex items-center justify-center gap-2" onclick="addFAQ()">
+                  <i class="fas fa-plus"></i>
+                  <span>Add FAQ</span>
+                </button>
+              </div>
+            </section>
+
+<section id="holiday" class="glass-effect rounded-xl p-6 mb-6 settings-section" data-aos="fade-up">
+  <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+    <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+      <i class="fas fa-snowflake text-purple-400"></i>
+    </div>
+    <div>
+      <h2 class="text-xl font-bold text-white">Holiday Effects</h2>
+      <p class="text-text-secondary text-sm">Add festive decorations and animations</p>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="custom-checkbox">
+      <input type="checkbox" name="holidayEffectsEnabled" value="true" <%= settings.holidayEffectsEnabled ? 'checked' : '' %> id="holidayEffectsToggle">
+      <span class="checkmark"></span>
+      <span class="text-sm font-medium">Enable Holiday Effects</span>
+    </label>
+  </div>
+
+  <div id="holidayEffectsOptions" class="<%= settings.holidayEffectsEnabled ? '' : 'hidden' %>">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <label class="holiday-effect-option cursor-pointer">
+        <input type="radio" name="holidayEffectsType" value="christmas" class="hidden holiday-effect-radio" <%= settings.holidayEffectsType === 'christmas' ? 'checked' : '' %>>
+        <div class="holiday-effect-card glass-effect rounded-xl p-4 text-center border-2 border-transparent">
+          <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+            <i class="fas fa-snowflake text-white text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">Christmas</h4>
+          <p class="text-xs text-text-secondary">❄️ Snowflakes</p>
+        </div>
+      </label>
+
+      <label class="holiday-effect-option cursor-pointer">
+        <input type="radio" name="holidayEffectsType" value="halloween" class="hidden holiday-effect-radio" <%= settings.holidayEffectsType === 'halloween' ? 'checked' : '' %>>
+        <div class="holiday-effect-card glass-effect rounded-xl p-4 text-center border-2 border-transparent">
+          <div class="w-12 h-12 bg-gradient-to-br from-orange-600 to-purple-800 rounded-lg flex items-center justify-center mx-auto mb-2">
+            <i class="fas fa-ghost text-white text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">Halloween</h4>
+          <p class="text-xs text-text-secondary">🎃 Spooky</p>
+        </div>
+      </label>
+
+      <label class="holiday-effect-option cursor-pointer">
+        <input type="radio" name="holidayEffectsType" value="valentines" class="hidden holiday-effect-radio" <%= settings.holidayEffectsType === 'valentines' ? 'checked' : '' %>>
+        <div class="holiday-effect-card glass-effect rounded-xl p-4 text-center border-2 border-transparent">
+          <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-red-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+            <i class="fas fa-heart text-white text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">Valentine's</h4>
+          <p class="text-xs text-text-secondary">💕 Hearts</p>
+        </div>
+      </label>
+
+      <label class="holiday-effect-option cursor-pointer">
+        <input type="radio" name="holidayEffectsType" value="new-year" class="hidden holiday-effect-radio" <%= settings.holidayEffectsType === 'new-year' ? 'checked' : '' %>>
+        <div class="holiday-effect-card glass-effect rounded-xl p-4 text-center border-2 border-transparent">
+          <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+            <i class="fas fa-champagne-glasses text-white text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">New Year</h4>
+          <p class="text-xs text-text-secondary">🎉 Confetti</p>
+        </div>
+      </label>
+
+      <label class="holiday-effect-option cursor-pointer">
+        <input type="radio" name="holidayEffectsType" value="easter" class="hidden holiday-effect-radio" <%= settings.holidayEffectsType === 'easter' ? 'checked' : '' %>>
+        <div class="holiday-effect-card glass-effect rounded-xl p-4 text-center border-2 border-transparent">
+          <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-yellow-400 rounded-lg flex items-center justify-center mx-auto mb-2">
+            <i class="fas fa-egg text-white text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">Easter</h4>
+          <p class="text-xs text-text-secondary">🐰 Spring</p>
+        </div>
+      </label>
+
+      <label class="holiday-effect-option cursor-pointer">
+        <input type="radio" name="holidayEffectsType" value="black-friday" class="hidden holiday-effect-radio" <%= settings.holidayEffectsType === 'black-friday' ? 'checked' : '' %>>
+        <div class="holiday-effect-card glass-effect rounded-xl p-4 text-center border-2 border-transparent">
+          <div class="w-12 h-12 bg-gradient-to-br from-gray-900 to-yellow-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+            <i class="fas fa-tag text-white text-xl"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">Black Friday</h4>
+          <p class="text-xs text-text-secondary">💰 Sales</p>
+        </div>
+      </label>
+    </div>
+  </div>
+</section>
+
+            <div class="sticky bottom-6 z-10" data-aos="fade-up">
+              <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-2xl">
+                <i class="fas fa-save"></i>
+                <span>Save All Changes</span>
+              </button>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.querySelectorAll('.nav-item').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+
+        if (target) {
+          const offset = 100;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    const sections = document.querySelectorAll('.settings-section');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (window.pageYOffset >= (sectionTop - 150)) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === `#${current}`) {
+          item.classList.add('active');
+        }
+      });
+    });
+
+    function addNavTab() {
+      const container = document.getElementById('custom-nav-tabs');
+      const index = container.querySelectorAll('.bg-dark-lighter').length;
+
+      const emptyState = container.querySelector('.text-center');
+      if (emptyState) emptyState.remove();
+
+      const newTab = document.createElement('div');
+      newTab.className = 'flex flex-col sm:flex-row gap-2 items-stretch sm:items-center bg-dark-lighter rounded-lg p-2 border border-white/10';
+      newTab.innerHTML = `
+                <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customNavTabs[${index}][name]" placeholder="Link Text" required>
+                <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customNavTabs[${index}][link]" placeholder="https://..." required>
+                <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all w-full sm:w-auto" onclick="removeNavTab(this)">
+                    <i class="fas fa-trash text-sm"></i>
+                </button>
+            `;
+      container.appendChild(newTab);
+    }
+
+    function removeNavTab(button) {
+      const container = document.getElementById('custom-nav-tabs');
+      button.closest('.bg-dark-lighter').remove();
+
+      if (container.querySelectorAll('.bg-dark-lighter').length === 0) {
+        container.innerHTML = `
+                    <div class="text-center py-6 bg-dark-card rounded-xl">
+                        <i class="fas fa-link text-text-muted text-2xl mb-2"></i>
+                        <p class="text-text-secondary text-sm">No custom links added yet</p>
+                    </div>
+                `;
+      }
+    }
+
+    function addFAQ() {
+      const container = document.getElementById('custom-faqs');
+      const index = container.querySelectorAll('.bg-dark-card').length;
+
+      const emptyState = document.getElementById('emptyFAQState');
+      if (emptyState) emptyState.remove();
+
+      const newFAQ = document.createElement('div');
+      newFAQ.className = 'bg-dark-card rounded-xl p-4 border border-white/10';
+      newFAQ.innerHTML = `
+        <div class="space-y-3">
+            <div>
+                <label class="block text-xs font-medium text-text-secondary mb-1">Question</label>
+                <input 
+                    class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors" 
+                    type="text" 
+                    name="faqs[${index}][question]" 
+                    placeholder="e.g., How do I install the product?" 
+                    required
+                >
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-text-secondary mb-1">Answer</label>
+                <textarea 
+                    class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 text-sm focus:border-accent focus:outline-none transition-colors resize-none" 
+                    name="faqs[${index}][answer]" 
+                    rows="3"
+                    placeholder="Provide a detailed answer..."
+                    required></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button 
+                    type="button" 
+                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all text-sm" 
+                    onclick="removeFAQ(this)"
+                >
+                    <i class="fas fa-trash text-sm mr-1"></i> Remove
+                </button>
+            </div>
+        </div>
+    `;
+      container.appendChild(newFAQ);
+    }
+
+    function removeFAQ(button) {
+      const container = document.getElementById('custom-faqs');
+      button.closest('.bg-dark-card').remove();
+
+      if (container.querySelectorAll('.bg-dark-card').length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-6 bg-dark-card rounded-xl" id="emptyFAQState">
+                <i class="fas fa-question-circle text-text-muted text-2xl mb-2"></i>
+                <p class="text-text-secondary text-sm">No FAQs added yet</p>
+            </div>
+        `;
+      }
+    }
+
+    function addFooterTab() {
+      const container = document.getElementById('custom-footer-tabs');
+      const index = container.querySelectorAll('.bg-dark-lighter').length;
+
+      const emptyState = container.querySelector('.text-center');
+      if (emptyState) emptyState.remove();
+
+      const newTab = document.createElement('div');
+      newTab.className = 'flex flex-col sm:flex-row gap-2 items-stretch sm:items-center bg-dark-lighter rounded-lg p-2 border border-white/10';
+      newTab.innerHTML = `
+                <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customFooterTabs[${index}][name]" placeholder="Link Text" required>
+                <input class="flex-1 bg-dark-card text-white border-0 rounded px-3 py-1.5 text-sm" type="text" name="customFooterTabs[${index}][link]" placeholder="https://..." required>
+                <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded transition-all w-full sm:w-auto" onclick="removeFooterTab(this)">
+                    <i class="fas fa-trash text-sm"></i>
+                </button>
+            `;
+      container.appendChild(newTab);
+    }
+
+    function removeFooterTab(button) {
+      const container = document.getElementById('custom-footer-tabs');
+      button.closest('.bg-dark-lighter').remove();
+
+      if (container.querySelectorAll('.bg-dark-lighter').length === 0) {
+        container.innerHTML = `
+                    <div class="text-center py-6 bg-dark-card rounded-xl">
+                        <i class="fas fa-link text-text-muted text-2xl mb-2"></i>
+                        <p class="text-text-secondary text-sm">No footer links added yet</p>
+                    </div>
+                `;
+      }
+    }
+
+    const holidayEffectsToggle = document.getElementById('holidayEffectsToggle');
+    const holidayEffectsOptions = document.getElementById('holidayEffectsOptions');
+
+    if (holidayEffectsToggle) {
+      holidayEffectsToggle.addEventListener('change', function() {
+        if (this.checked) {
+          holidayEffectsOptions.classList.remove('hidden');
+        } else {
+          holidayEffectsOptions.classList.add('hidden');
+        }
+      });
+    }
+
+    function addFeature() {
+      const container = document.getElementById('custom-features');
+      const index = container.querySelectorAll('.feature-card').length;
+
+      const emptyState = document.getElementById('emptyFeaturesState');
+      if (emptyState) emptyState.remove();
+
+      const newFeature = document.createElement('div');
+      newFeature.className = 'feature-card bg-gradient-to-br from-dark-card to-dark-lighter rounded-xl p-5 border border-white/10 hover:border-accent/50 transition-all duration-300';
+      newFeature.innerHTML = `
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center">
+                    <span class="text-accent font-bold text-sm">#${index + 1}</span>
+                </div>
+                <h3 class="text-sm font-semibold text-white">Feature ${index + 1}</h3>
+            </div>
+            <button 
+                type="button" 
+                class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3 py-1.5 rounded-lg transition-all text-sm border border-red-600/30 hover:border-red-600" 
+                onclick="removeFeature(this)"
+            >
+                <i class="fas fa-trash text-xs mr-1"></i> Remove
+            </button>
+        </div>
+        
+        <div class="space-y-3">
+            <div>
+                <label class="block text-xs font-medium text-text-secondary mb-2">
+                    <i class="fas fa-icons mr-1"></i> Icon Class
+                </label>
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <input 
+                            class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg pl-10 pr-3 py-2.5 text-sm focus:border-accent focus:outline-none transition-colors" 
+                            type="text" 
+                            name="features[${index}][icon]" 
+                            placeholder="fas fa-star" 
+                            oninput="updateIconPreview(this)"
+                            required
+                        >
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-accent/20 rounded flex items-center justify-center icon-preview">
+                            <i class="fas fa-star text-accent text-xs"></i>
+                        </div>
+                    </div>
+                    <a 
+                        href="https://fontawesome.com/search?o=r&m=free" 
+                        target="_blank" 
+                        class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-4 py-2.5 rounded-lg transition-all text-sm border border-blue-600/30 hover:border-blue-600 flex items-center gap-2 whitespace-nowrap"
+                    >
+                        <i class="fab fa-font-awesome"></i>
+                        <span class="hidden sm:inline">Browse</span>
+                    </a>
+                </div>
+                <p class="text-xs text-text-muted mt-1.5">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Popular: fa-rocket, fa-shield-alt, fa-bolt, fa-star, fa-heart
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-text-secondary mb-2">
+                        <i class="fas fa-heading mr-1"></i> Title
+                    </label>
+                    <input 
+                        class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2.5 text-sm focus:border-accent focus:outline-none transition-colors" 
+                        type="text" 
+                        name="features[${index}][title]" 
+                        placeholder="Fast & Reliable" 
+                        maxlength="30"
+                        oninput="updateFeaturePreview(this)"
+                        required
+                    >
+                    <p class="text-xs text-text-muted mt-1">Keep it short and catchy</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-text-secondary mb-2">
+                        <i class="fas fa-align-left mr-1"></i> Description
+                    </label>
+                    <textarea 
+                        class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2.5 text-sm focus:border-accent focus:outline-none transition-colors resize-none" 
+                        name="features[${index}][description]" 
+                        rows="2"
+                        placeholder="Brief description of this feature..."
+                        maxlength="100"
+                        oninput="updateFeaturePreview(this)"
+                        required></textarea>
+                    <p class="text-xs text-text-muted mt-1">Max 100 characters</p>
+                </div>
+            </div>
+
+            <div class="bg-dark-card/50 rounded-lg p-4 border border-white/5">
+                <p class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">
+                    <i class="fas fa-eye mr-1"></i> Preview
+                </p>
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-accent/20 to-accent/5 rounded-xl flex items-center justify-center flex-shrink-0 feature-preview-icon">
+                        <i class="fas fa-star text-accent text-xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-bold text-white mb-1 feature-preview-title">Your Feature Title</h4>
+                        <p class="text-xs text-text-secondary leading-relaxed feature-preview-description">Your feature description will appear here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+      container.appendChild(newFeature);
+
+      newFeature.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+
+    function removeFeature(button) {
+      const container = document.getElementById('custom-features');
+      const featureCard = button.closest('.feature-card');
+
+      featureCard.style.opacity = '0';
+      featureCard.style.transform = 'scale(0.95)';
+      featureCard.style.transition = 'all 0.2s ease';
+
+      setTimeout(() => {
+        featureCard.remove();
+
+        container.querySelectorAll('.feature-card').forEach((card, index) => {
+          const badge = card.querySelector('.text-accent');
+          if (badge) badge.textContent = `#${index + 1}`;
+
+          const heading = card.querySelector('h3');
+          if (heading) heading.textContent = `Feature ${index + 1}`;
+        });
+
+        if (container.querySelectorAll('.feature-card').length === 0) {
+          container.innerHTML = `
+                <div class="text-center py-12 bg-dark-card rounded-xl border border-dashed border-white/10" id="emptyFeaturesState">
+                    <div class="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-boxes text-accent text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">No Features Added Yet</h3>
+                    <p class="text-text-secondary text-sm mb-4">Start showcasing your product's best features</p>
+                    <button 
+                        type="button" 
+                        class="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all text-sm" 
+                        onclick="addFeature()"
+                    >
+                        <i class="fas fa-plus"></i>
+                        <span>Add Your First Feature</span>
+                    </button>
+                </div>
+            `;
+        }
+      }, 200);
+    }
+
+    function updateIconPreview(input) {
+      const featureCard = input.closest('.feature-card');
+      const iconPreview = featureCard.querySelector('.icon-preview i');
+      const previewIcon = featureCard.querySelector('.feature-preview-icon i');
+
+      if (iconPreview && input.value.trim()) {
+        iconPreview.className = `${input.value.trim()} text-accent text-xs`;
+      }
+
+      if (previewIcon && input.value.trim()) {
+        previewIcon.className = `${input.value.trim()} text-accent text-xl`;
+      }
+    }
+
+    function updateFeaturePreview(input) {
+      const featureCard = input.closest('.feature-card');
+      const previewTitle = featureCard.querySelector('.feature-preview-title');
+      const previewDescription = featureCard.querySelector('.feature-preview-description');
+
+      if (input.name.includes('[title]') && previewTitle) {
+        previewTitle.textContent = input.value || 'Your Feature Title';
+      }
+
+      if (input.name.includes('[description]') && previewDescription) {
+        previewDescription.textContent = input.value || 'Your feature description will appear here...';
+      }
+    }
+  </script>
+</body>
+
+</html>

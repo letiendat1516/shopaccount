@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= product.name %> - <%= settings.storeName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <% 
+  const productUrl = `${config.baseURL}/product/${product.urlId}`;
+  const productImage = `${config.baseURL}/${product.bannerImage}`;
+  const productPrice = product.productType === 'digitalFree' ? 'Free' : 
+    (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) 
+    ? `${settings.currencySymbol}${product.salePrice.toFixed(2)}` 
+    : `${settings.currencySymbol}${product.price.toFixed(2)}`;
+  
+  let productDescription = `Price: ${productPrice}`;
+  
+  if (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) {
+    const discount = Math.round(((product.price - product.salePrice) / product.price) * 100);
+    productDescription += ` (${discount}% OFF)`;
+  }
+  
+  if (product.productType === 'serials') {
+    productDescription += ` • ${product.serials.length} in stock`;
+  }
+%>
+
+  <meta property="og:title" content="<%= product.name %>" />
+  <meta property="og:type" content="product" />
+  <meta property="og:url" content="<%= productUrl %>" />
+  <meta property="og:image" content="<%= productImage %>" />
+  <meta property="og:description" content="<%= productDescription %>" />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= product.name %>">
+  <meta name="twitter:description" content="<%= productDescription %>">
+  <meta name="twitter:image" content="<%= productImage %>">
+
+  <meta property="product:price:amount" content="<%= product.productType === 'digitalFree' ? '0' : (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) ? product.salePrice.toFixed(2) : product.price.toFixed(2) %>">
+  <meta property="product:price:currency" content="USD">
+  <% if (product.productType === 'serials' && product.serials.length > 0) { %>
+  <meta property="product:availability" content="in stock">
+  <% } else if (product.productType === 'serials' && product.serials.length === 0) { %>
+  <meta property="product:availability" content="out of stock">
+  <% } else { %>
+  <meta property="product:availability" content="in stock">
+  <% } %>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .tab-button {
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .tab-button.active {
+      color: var(--accent-color);
+    }
+
+    .tab-button.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .markdown-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #ffffff;
+    }
+
+    .markdown-body h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body h2 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body h3 {
+      font-size: 1.75rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body h4 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    .markdown-body a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    .markdown-body a:hover {
+      text-decoration: underline;
+    }
+
+    .markdown-body ul,
+    .markdown-body ol {
+      padding-left: 20px;
+      margin-bottom: 1rem;
+      list-style-type: disc;
+    }
+
+    .markdown-body strong,
+    .markdown-body b {
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+
+    .markdown-body code {
+      background-color: #161b22;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .markdown-body pre {
+      background-color: #161b22;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body blockquote {
+      padding: 10px 20px;
+      margin: 0 0 20px;
+      background-color: #161b22;
+      border-left: 5px solid var(--accent-color);
+    }
+
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body th,
+    .markdown-body td {
+      padding: 10px;
+      border: 1px solid #c9d1d9;
+    }
+
+    .markdown-body th {
+      background-color: #161b22;
+    }
+
+    .markdown-body td {
+      background-color: #0a0a0a;
+    }
+
+    .markdown-body .info,
+    .markdown-body .success,
+    .markdown-body .warning,
+    .markdown-body .danger {
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      color: #fff;
+    }
+
+    .markdown-body .info {
+      background-color: #017acd;
+    }
+
+    .markdown-body .success {
+      background-color: #28a745;
+    }
+
+    .markdown-body .warning {
+      background-color: #d39e00;
+    }
+
+    .markdown-body .danger {
+      background-color: #dc3545;
+    }
+
+    .markdown-body iframe {
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+      width: 100%;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .bundle-glow {
+      animation: bundle-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes bundle-glow {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.2);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.4);
+      }
+    }
+
+    .savings-badge {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .stacked-images {
+      position: relative;
+      height: 120px;
+      margin-bottom: 1rem;
+    }
+
+.stacked-image {
+  position: absolute;
+  width: 80%;
+  height: 80px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 2px solid rgba(var(--accent-rgb), 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+    .stacked-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user, existingUser }) %>
+
+  <div class="bg-dark-lighter">
+    <div class="container mx-auto px-6 py-4">
+<a href="<%= typeof backCategory !== 'undefined' && backCategory ? '/products/category/' + backCategory : '/products' %>" class="inline-flex items-center gap-2 px-4 py-2 bg-dark-card hover:bg-dark-border text-text-secondary hover:text-white border border-white/20 hover:border-accent/50 rounded-lg transition-all duration-300 hover-lift">
+  <i class="fas fa-arrow-left"></i>
+  <span>Back to Products</span>
+</a>
+    </div>
+  </div>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <div class="container mx-auto px-6 py-8">
+      <div class="grid lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+          <div class="glass-effect rounded-2xl p-6 hover-lift" data-aos="fade-right">
+            <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="w-full h-auto rounded-xl">
+          </div>
+
+          <div class="glass-effect rounded-2xl hover-lift" data-aos="fade-right" data-aos-delay="100">
+            <div class="flex border-b border-white/10 overflow-x-auto">
+              <button class="tab-button active px-6 py-4 font-semibold text-sm whitespace-nowrap" data-tab="description">
+                <i class="fas fa-info-circle mr-2"></i>Description
+              </button>
+              <% if (product.dependencies && product.dependencies.trim()) { %>
+              <button class="tab-button px-6 py-4 font-semibold text-sm whitespace-nowrap text-text-secondary" data-tab="dependencies">
+                <i class="fas fa-puzzle-piece mr-2"></i>Dependencies
+              </button>
+              <% } %>
+              <% if (reviews.length > 0 && settings.displayProductReviews) { %>
+              <button class="tab-button px-6 py-4 font-semibold text-sm whitespace-nowrap text-text-secondary" data-tab="reviews">
+                <i class="fas fa-star mr-2"></i>Reviews (<%= reviews.length %>)
+              </button>
+              <% } %>
+            </div>
+
+            <div class="p-6 lg:p-8">
+              <div class="tab-content active" id="description">
+                <div class="markdown-body">
+                  <% if (product.description && product.description.trim()) { %>
+                  <%- md.render(product.description) %>
+                  <% } else { %>
+                  <p class="text-text-secondary">No description available for this product.</p>
+                  <% } %>
+                </div>
+              </div>
+
+              <% if (product.dependencies && product.dependencies.trim()) { %>
+              <div class="tab-content" id="dependencies">
+                <div class="markdown-body">
+                  <%- md.render(product.dependencies) %>
+                </div>
+              </div>
+              <% } %>
+
+              <% if (reviews.length > 0 && settings.displayProductReviews) { %>
+              <div class="tab-content" id="reviews">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <% reviews.forEach((review) => { %>
+                  <div class="bg-dark-card rounded-xl p-6 border border-white/10">
+                    <div class="flex text-yellow-400 mb-3">
+                      <% for (let i = 0; i < review.rating; i++) { %>
+                      <i class="fas fa-star"></i>
+                      <% } %>
+                      <% for (let i = review.rating; i < 5; i++) { %>
+                      <i class="far fa-star text-text-muted"></i>
+                      <% } %>
+                    </div>
+
+                    <p class="text-text-secondary leading-relaxed mb-4 break-words">
+                      "<%= review.comment %>"
+                    </p>
+
+                    <div class="flex items-center gap-3 pt-3 border-t border-white/10">
+                      <img src="<%= review.discordAvatar %>" alt="<%= review.discordUsername %>" class="w-10 h-10 rounded-full border border-accent/30">
+                      <div class="min-w-0 flex-grow">
+                        <div class="font-semibold text-white text-sm truncate"><%= review.discordUsername %></div>
+                        <div class="text-xs text-text-muted">
+                          <%= new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1 space-y-6">
+          <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-left">
+            <h1 class="text-3xl font-bold text-white mb-4 leading-tight break-words">
+              <%= product.name %>
+            </h1>
+
+            <div class="mb-6">
+              <% if (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) { %>
+              <div class="inline-flex items-center gap-3 bg-gradient-to-r from-accent/20 to-transparent rounded-xl px-4 py-3 border border-accent/30">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-accent uppercase tracking-wide">Limited Offer</span>
+                  <div class="flex items-baseline gap-2 mt-1">
+                    <% if (product.productType === 'digitalFree') { %>
+                    <span class="text-2xl font-black text-accent">Free</span>
+                    <% } else { %>
+                    <span class="text-2xl font-black text-accent"><%= settings.currencySymbol %><%= product.salePrice.toFixed(2) %></span>
+                    <span class="text-sm text-text-muted line-through"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></span>
+                    <% } %>
+                  </div>
+                </div>
+                <% if (product.productType !== 'digitalFree') { %>
+                <div class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-bold">
+                  -<%= Math.round(((product.price - product.salePrice) / product.price) * 100) %>%
+                </div>
+                <% } %>
+              </div>
+              <% } else { %>
+              <div class="inline-flex items-center px-4 py-3 bg-dark-card rounded-xl border border-white/10">
+                <span class="text-2xl font-bold text-accent">
+                  <% if (product.productType === 'digitalFree') { %>
+                  Free
+                  <% } else { %>
+                  <%= settings.currencySymbol %><%= product.price.toFixed(2) %>
+                  <% } %>
+                </span>
+              </div>
+              <% } %>
+            </div>
+
+            <% if (product.productType === 'serials') { %>
+            <div class="flex items-center gap-3 p-4 bg-dark-card rounded-xl border <%= product.serials.length === 0 ? 'border-red-500/30' : 'border-accent/30' %> mb-6">
+              <i class="fas fa-key text-<%= product.serials.length === 0 ? 'red' : 'accent' %>-500"></i>
+              <div>
+                <span class="text-sm text-text-secondary">Stock: </span>
+                <span class="text-sm font-bold text-<%= product.serials.length === 0 ? 'red' : 'accent' %>-500">
+                  <%= product.serials.length %> available
+                </span>
+              </div>
+            </div>
+            <% } %>
+
+            <div class="space-y-3 mb-6">
+              <% if (product.hideProduct) { %>
+              <div class="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-sm">
+                <i class="fas fa-eye-slash text-yellow-500"></i>
+                <span class="text-yellow-500">Hidden from store</span>
+              </div>
+              <% } %>
+
+              <% if (product.pauseSelling) { %>
+              <div class="flex items-center gap-2 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg text-sm">
+                <i class="fas fa-pause text-orange-500"></i>
+                <span class="text-orange-500">Sales paused</span>
+              </div>
+              <% } %>
+
+              <% if (product.productType === 'serials' && product.serials.length === 0) { %>
+              <div class="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm">
+                <i class="fas fa-exclamation-triangle text-red-500"></i>
+                <span class="text-red-500">Out of stock</span>
+              </div>
+              <% } %>
+            </div>
+
+            <div class="space-y-4">
+              <% const isOwned = existingUser && existingUser.ownedProducts && existingUser.ownedProducts.some(p => p.equals(product._id)); %>
+
+              <div class="flex flex-col gap-3">
+                <% if (isOwned && product.productType === 'service') { %>
+                <a href="/profile/<%= existingUser.discordID %>" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+                  <i class="fas fa-user-circle"></i>
+                  <span>Go to Profile</span>
+                </a>
+                <% } else if ((isOwned || product.productType === 'digitalFree') && 
+                                    (product.productType !== 'serials' || (product.productType === 'serials' && product.serialRequiresFile))) { %>
+                <a href="/downloads/<%= product.urlId %>" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+                  <i class="fas fa-download"></i>
+                  <span>Download</span>
+                </a>
+                <% } %>
+
+                <% if (product.productType !== 'digitalFree') { %>
+                <% const isLoggedIn = user && existingUser; %>
+                <% const isOutOfStock = product.productType === 'serials' && product.serials.length === 0; %>
+                <form action="/cart/add/<%= product._id %>" method="POST" class="w-full">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none" <% if (!isLoggedIn || product.pauseSelling || isOutOfStock) { %>disabled<% } %>>
+                    <i class="fas fa-cart-plus"></i>
+                    <span>Add to Cart</span>
+                  </button>
+                </form>
+                <% } %>
+              </div>
+
+              <% if (!user || !existingUser) { %>
+              <p class="text-text-secondary text-sm text-center">
+                You must be logged in to add products to your cart.
+              </p>
+              <% } %>
+
+              <% if (isOwner) { %>
+              <div class="border-t border-white/10 pt-4 mt-6">
+                <div class="flex flex-col gap-3">
+                  <% if (product.productType !== 'serials' && product.productType !== 'service') { %>
+                  <a href="/staff/products/update/<%= product._id %>" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 hover-lift">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>Update Product</span>
+                  </a>
+                  <% } %>
+                  <a href="/staff/products/edit/<%= product._id %>" class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 hover-lift">
+                    <i class="fas fa-cog"></i>
+                    <span>Edit Product</span>
+                  </a>
+                </div>
+              </div>
+              <% } %>
+            </div>
+          </div>
+
+          <% if (relatedBundles && relatedBundles.length > 0) { %>
+          <div class="glass-effect rounded-2xl p-6 hover-lift bundle-glow" data-aos="fade-left" data-aos-delay="100">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-10 h-10 bg-gradient-to-br from-green-500/30 to-green-600/10 rounded-xl flex items-center justify-center">
+                <i class="fas fa-tags text-green-400 text-lg"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-white">Bundle Deals</h3>
+                <p class="text-xs text-text-secondary">Save up to <%= Math.max(...relatedBundles.map(b => b.discountPercentage)) %>%</p>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <% relatedBundles.forEach((bundle, bundleIndex) => { %>
+              <div class="bg-dark-card rounded-xl p-4 border border-accent/30 hover:border-accent/60 transition-all duration-300 relative overflow-hidden group" data-aos="fade-up" data-aos-delay="<%= bundleIndex * 50 %>">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-accent/5 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                
+                <div class="relative z-10">
+                  <div class="stacked-images">
+                    <% bundle.products.slice(0, 3).forEach((bundleProduct, idx) => { %>
+                    <div class="stacked-image" style="left: <%= idx * 15 %>%; top: <%= idx * 8 %>px; z-index: <%= 3 - idx %>;">
+                      <img src="/<%= bundleProduct.bannerImage %>" alt="<%= bundleProduct.name %>">
+                    </div>
+                    <% }); %>
+                  </div>
+
+                  <div class="flex items-start justify-between mb-3">
+                    <h4 class="text-sm font-bold text-white group-hover:text-accent transition-colors flex-1">
+                      <%= bundle.name %>
+                    </h4>
+                    <span class="savings-badge text-white px-2 py-1 rounded text-[10px] font-bold ml-2 flex-shrink-0">
+                      <%= bundle.discountPercentage %>% OFF
+                    </span>
+                  </div>
+
+                  <p class="text-xs text-text-secondary mb-3 line-clamp-2">
+                    <%= bundle.description %>
+                  </p>
+
+                  <div class="mb-3">
+                    <p class="text-[10px] text-text-muted uppercase tracking-wide font-semibold mb-2">
+                      <%= bundle.products.length %> Products Included:
+                    </p>
+                    <div class="flex flex-wrap gap-1.5">
+                      <% bundle.products.forEach((bundleProduct) => { %>
+                      <a href="/products/<%= bundleProduct.urlId %>" class="group/product flex items-center gap-1.5 bg-dark-lighter hover:bg-dark-border px-2 py-1 rounded border border-white/10 hover:border-accent/30 transition-all">
+                        <div class="w-4 h-4 rounded overflow-hidden flex-shrink-0">
+                          <img src="/<%= bundleProduct.bannerImage %>" alt="<%= bundleProduct.name %>" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[10px] text-text-secondary group-hover/product:text-white transition-colors truncate max-w-[80px]" title="<%= bundleProduct.name %>">
+                          <%= bundleProduct.name %>
+                        </span>
+                        <% if (bundleProduct._id.toString() === product._id.toString()) { %>
+                        <i class="fas fa-check text-accent text-[8px]"></i>
+                        <% } %>
+                      </a>
+                      <% }); %>
+                    </div>
+                  </div>
+
+                  <div class="flex items-end justify-between mb-3 pb-3 border-b border-white/10">
+                    <div>
+                      <p class="text-[10px] text-text-muted mb-0.5">Was <%= settings.currencySymbol %><%= bundle.originalPrice.toFixed(2) %></p>
+                      <p class="text-lg font-bold text-accent"><%= settings.currencySymbol %><%= bundle.bundlePrice.toFixed(2) %></p>
+                    </div>
+                    <div class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-center">
+                      <p class="text-[9px] font-semibold uppercase">Save</p>
+                      <p class="text-xs font-bold"><%= settings.currencySymbol %><%= (bundle.originalPrice - bundle.bundlePrice).toFixed(2) %></p>
+                    </div>
+                  </div>
+
+                  <form action="/cart/add-bundle/<%= bundle._id %>" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105">
+                      <i class="fas fa-cart-plus text-xs"></i>
+                      <span>Add to Cart</span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <% }); %>
+            </div>
+          </div>
+          <% } %>
+
+          <% if (settings.showProductStats) { %>
+          <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-left" data-aos-delay="<%= relatedBundles && relatedBundles.length > 0 ? 200 : 100 %>">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+              <i class="fas fa-chart-line text-accent"></i>
+              Product Statistics
+            </h3>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="text-center p-4 bg-dark-card rounded-xl border border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-calendar-plus text-accent"></i>
+                </div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Released</div>
+                <div class="text-sm font-semibold text-white">
+                  <%= new Date(product.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).replace(',', '') %>
+                </div>
+              </div>
+
+              <div class="text-center p-4 bg-dark-card rounded-xl border border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-shopping-cart text-accent"></i>
+                </div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Purchases</div>
+                <div class="text-sm font-semibold text-white">
+                  <%= product.totalPurchases.toLocaleString() %>
+                </div>
+              </div>
+
+              <div class="text-center p-4 bg-dark-card rounded-xl border border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-download text-accent"></i>
+                </div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Downloads</div>
+                <div class="text-sm font-semibold text-white">
+                  <%= product.totalDownloads.toLocaleString() %>
+                </div>
+              </div>
+
+              <div class="text-center p-4 bg-dark-card rounded-xl border border-white/10">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-sync-alt text-accent"></i>
+                </div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Updated</div>
+                <div class="text-sm font-semibold text-white">
+                  <% if (product.versions && product.versions.length > 0) { %>
+                  <%= new Date(product.versions[product.versions.length - 1].releaseDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).replace(',', '') %>
+                  <% } else { %>
+                  N/A
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 50
+    });
+
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.getAttribute('data-tab');
+
+        document.querySelectorAll('.tab-button').forEach(btn => {
+          btn.classList.remove('active');
+          btn.classList.add('text-text-secondary');
+        });
+        button.classList.add('active');
+        button.classList.remove('text-text-secondary');
+
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Edit Discount Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    .toggle-checkbox:checked+.toggle-switch {
+      background-color: var(--accent-color);
+    }
+
+    .toggle-checkbox:checked+.toggle-switch .toggle-dot {
+      transform: translateX(26px);
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'discount-codes' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">Edit Discount Code</h1>
+        <p class="text-text-secondary text-lg">Modify the details of an existing discount code.</p>
+      </div>
+
+      <div class="max-w-2xl mx-auto">
+        <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden mb-6" data-aos="fade-up">
+          <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+              <i class="fas fa-chart-bar text-accent"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Current Usage Statistics</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-dark-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-hashtag text-accent text-sm"></i>
+                </div>
+                <span class="text-xs text-text-secondary uppercase tracking-wider">Discount Code</span>
+              </div>
+              <p class="text-lg font-bold text-white"><%= discountCode.name %></p>
+            </div>
+
+            <div class="bg-dark-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-percentage text-accent text-sm"></i>
+                </div>
+                <span class="text-xs text-text-secondary uppercase tracking-wider">Discount Amount</span>
+              </div>
+              <p class="text-lg font-bold text-accent"><%= discountCode.discountPercentage %>%</p>
+            </div>
+
+            <div class="bg-dark-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-sync-alt text-accent text-sm"></i>
+                </div>
+                <span class="text-xs text-text-secondary uppercase tracking-wider">Times Used</span>
+              </div>
+              <p class="text-lg font-bold text-white"><%= discountCode.uses %> / <%= discountCode.maxUses !== null ? discountCode.maxUses : 'Unlimited' %></p>
+            </div>
+
+            <div class="bg-dark-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="far fa-calendar-alt text-accent text-sm"></i>
+                </div>
+                <span class="text-xs text-text-secondary uppercase tracking-wider">Expiration Date</span>
+              </div>
+              <p class="text-sm font-bold text-white">
+                <% if (discountCode.expiresAt) { %>
+                <%= discountCode.expiresAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                <% } else { %>
+                Never expires
+                <% } %>
+              </p>
+            </div>
+
+            <div class="bg-dark-card rounded-xl p-4 border border-white/10 sm:col-span-2">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-clock text-accent text-sm"></i>
+                </div>
+                <span class="text-xs text-text-secondary uppercase tracking-wider">Creation Date</span>
+              </div>
+              <p class="text-sm font-bold text-white">
+                <%= discountCode.createdAt ? discountCode.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown' %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <form id="editDiscountCodeForm" action="/staff/discount-codes/edit/<%= discountCode._id %>?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST">
+          <div class="glass-effect rounded-2xl p-8 hover-lift overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-accent-bar -mx-8 -mt-8 mb-6"></div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-tag text-accent"></i>
+              </div>
+              <h2 class="text-2xl font-bold text-white">Discount Details</h2>
+            </div>
+
+            <div class="space-y-6">
+              <div>
+                <label class="block text-white font-semibold mb-2">Discount Code</label>
+                <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors uppercase" type="text" name="name" value="<%= discountCode.name %>" required>
+                <p class="text-sm text-text-secondary mt-2">The code customers will enter at checkout (typically uppercase with no spaces)</p>
+              </div>
+
+              <div>
+                <label class="block text-white font-semibold mb-2">Discount Percentage</label>
+                <div class="relative">
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg pl-4 pr-12 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="discountPercentage" value="<%= discountCode.discountPercentage %>" min="1" max="95" required>
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-accent font-bold text-lg">%</div>
+                </div>
+                <p class="text-sm text-text-secondary mt-2">The percentage discount to apply to orders (1-95%)</p>
+              </div>
+
+              <div class="pt-6 border-t border-white/10">
+                <h3 class="text-xl font-bold text-accent mb-4">Usage Restrictions</h3>
+
+                <div class="mb-6">
+                  <label class="block text-white font-semibold mb-2">Maximum Uses</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="maxUses" value="<%= discountCode.maxUses || '' %>" min="<%= discountCode.uses %>" placeholder="Leave blank for unlimited">
+                  <p class="text-sm text-text-secondary mt-2">Maximum number of times this code can be used (leave blank for unlimited). Cannot be less than current uses (<%= discountCode.uses %>).</p>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between mb-4">
+                    <label class="text-white font-semibold">Set Expiration Date</label>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" id="limitByDate" class="sr-only toggle-checkbox" <%= discountCode.expiresAt ? 'checked' : '' %>>
+                      <div class="toggle-switch w-14 h-7 bg-dark-border rounded-full transition-colors">
+                        <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-1 left-1 transition-transform"></div>
+                      </div>
+                      <span class="ml-3 text-sm text-text-secondary" id="expiry-toggle-text">
+                        <%= discountCode.expiresAt ? 'Expires on selected date' : 'No expiration date' %>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div id="expiryDateField" style="display: <%= discountCode.expiresAt ? 'block' : 'none' %>;">
+                    <label class="block text-white font-semibold mb-2">Expiration Date</label>
+                    <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="date" name="expiresAt" id="expiresAt" value="<%= discountCode.expiresAt ? discountCode.expiresAt.toISOString().substring(0, 10) : '' %>">
+                    <p class="text-sm text-text-secondary mt-2">The date when this discount code will expire</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 mt-6" data-aos="fade-up" data-aos-delay="200">
+            <button type="submit" class="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+              <i class="fas fa-save"></i>
+              <span>Save Changes</span>
+            </button>
+            <a href="/staff/discount-codes" class="flex-1 bg-dark-card hover:bg-dark-border text-white border border-white/20 px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+              <i class="fas fa-times"></i>
+              <span>Cancel</span>
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const limitByDateCheckbox = document.getElementById('limitByDate');
+      const expiryDateField = document.getElementById('expiryDateField');
+      const expiryToggleText = document.getElementById('expiry-toggle-text');
+      const expiresAtInput = document.getElementById('expiresAt');
+
+      limitByDateCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          expiryDateField.style.display = 'block';
+          expiryToggleText.textContent = 'Expires on selected date';
+
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+          expiresAtInput.min = `${year}-${month}-${day}`;
+
+          if (!expiresAtInput.value) {
+            const thirtyDaysLater = new Date(today);
+            thirtyDaysLater.setDate(today.getDate() + 30);
+            const laterYear = thirtyDaysLater.getFullYear();
+            const laterMonth = String(thirtyDaysLater.getMonth() + 1).padStart(2, '0');
+            const laterDay = String(thirtyDaysLater.getDate()).padStart(2, '0');
+            expiresAtInput.value = `${laterYear}-${laterMonth}-${laterDay}`;
+          }
+        } else {
+          expiryDateField.style.display = 'none';
+          expiryToggleText.textContent = 'No expiration date';
+          expiresAtInput.value = '';
+        }
+      });
+
+      const form = document.getElementById('editDiscountCodeForm');
+      form.addEventListener('submit', function(e) {
+        if (!limitByDateCheckbox.checked) {
+          expiresAtInput.disabled = true;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

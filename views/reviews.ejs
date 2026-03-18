@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Reviews - <%= settings.storeName %></title>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <meta property="og:title" content="Customer Reviews | <%= settings.storeName %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= settings.baseURL %>" />
+  <meta property="og:image" content="<%= settings.logoPath %>" />
+  <meta property="og:description" content="See what our customers are saying about our products and services. Your feedback matters!" />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+  <meta property="og:locale" content="en_US" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'bounce-gentle': {
+              '0%, 100%': {
+                transform: 'translateY(0)'
+              },
+              '50%': {
+                transform: 'translateY(-8px)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    html, body {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    nav {
+      min-height: 64px;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--accent-color);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      top: 15%;
+      left: 10%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 0s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(2) {
+      top: 65%;
+      left: 15%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(3) {
+      top: 35%;
+      right: 12%;
+      width: 4px;
+      height: 4px;
+      animation-delay: 4s;
+      opacity: 0.5;
+    }
+
+    .particle:nth-child(4) {
+      bottom: 25%;
+      left: 18%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(5) {
+      bottom: 55%;
+      right: 20%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(6) {
+      top: 80%;
+      left: 80%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1.5s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(7) {
+      top: 25%;
+      left: 75%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3.5s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(8) {
+      bottom: 15%;
+      right: 80%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2.5s;
+      opacity: 0.3;
+    }
+
+    .hero-grid {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: float 20s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user, existingUser }) %>
+
+  <section class="relative flex items-center justify-center overflow-hidden py-16 md:py-20" style="
+        background: linear-gradient(
+            135deg,
+            rgba(var(--accent-rgb), 0.25) 0%,
+            rgba(0, 0, 0, 0.85) 30%,
+            rgba(0, 0, 0, 0.90) 70%,
+            rgba(var(--accent-rgb), 0.20) 100%
+        );
+    ">
+    <div class="absolute inset-0 hero-grid opacity-20"></div>
+
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-flex items-center gap-3 bg-dark-card px-5 py-1.5 rounded-full mb-4" data-aos="fade-down">
+          <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+          <span class="text-xs text-text-secondary font-medium">Customer Feedback</span>
+        </div>
+
+        <div class="space-y-4 mb-6" data-aos="fade-up" data-aos-duration="1000">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-white">
+            What Our <span class="text-accent">Customers</span> Say
+          </h1>
+
+          <div class="flex justify-center my-4">
+            <div class="relative w-32 h-0.5">
+              <div class="absolute inset-0 rounded-full" style="background: linear-gradient(to right, transparent, <%= settings.accentColor %>, transparent);"></div>
+              <div class="absolute inset-0 rounded-full blur-md opacity-75" style="background: linear-gradient(to right, transparent, <%= settings.accentColor %>, transparent);"></div>
+            </div>
+          </div>
+
+          <p class="text-lg sm:text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
+            Real experiences from <span class="text-accent font-semibold"><%= stats.totalReviews %>+</span> satisfied customers
+          </p>
+        </div>
+
+        <div class="inline-flex items-center gap-3 bg-dark-card/60 backdrop-blur-sm px-5 py-3 rounded-xl border border-white/10 mb-5" data-aos="fade-up" data-aos-duration="1200">
+          <div class="flex items-center gap-2.5">
+            <div class="text-3xl font-bold text-white"><%= stats.averageRating %></div>
+            <div class="text-left">
+              <div class="flex text-yellow-400 text-lg">
+                <% for(let i = 1; i <= 5; i++) { %>
+                <% if(i <= Math.floor(stats.averageRating)) { %>
+                <i class="fas fa-star"></i>
+                <% } else if(i - stats.averageRating < 1 && i - stats.averageRating > 0) { %>
+                <i class="fas fa-star-half-alt"></i>
+                <% } else { %>
+                <i class="far fa-star text-yellow-400/30"></i>
+                <% } %>
+                <% } %>
+              </div>
+              <div class="text-xs text-text-secondary">Average Rating</div>
+            </div>
+          </div>
+        </div>
+
+        <% if (user && products.length > 0) { %>
+        <div data-aos="fade-up" data-aos-duration="1400">
+          <button id="create-review-btn" class="group relative px-7 py-3 bg-accent rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 justify-center overflow-hidden hover-lift mx-auto">
+            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            <span class="relative z-10 text-white flex items-center gap-2">
+              <i class="fas fa-pencil-alt text-sm"></i>
+              <span>Write a Review</span>
+            </span>
+          </button>
+        </div>
+        <% } else if (user && products.length === 0) { %>
+        <div data-aos="fade-up" data-aos-duration="1400">
+          <p class="text-red-400 font-medium text-sm">Purchase a product to leave a review</p>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce-gentle">
+      <div class="text-text-secondary hover:text-accent transition-colors text-xl cursor-pointer" onclick="document.getElementById('reviews-section').scrollIntoView({ behavior: 'smooth' })">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews-section" class="py-20 bg-dark-lighter">
+    <div class="container mx-auto px-6">
+      <% if (reviews.length === 0) { %>
+      <div class="text-center py-20" data-aos="fade-up">
+        <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <i class="fas fa-comments text-accent text-3xl"></i>
+        </div>
+        <h3 class="text-3xl font-bold text-white mb-4">No Reviews Yet</h3>
+        <p class="text-text-secondary text-lg">Be the first to share your experience!</p>
+      </div>
+      <% } else { %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <% reviews.forEach((review, index) => { %>
+        <div data-aos="fade-up" data-aos-delay="<%= index * 50 %>" class="w-full">
+          <div class="glass-effect rounded-2xl p-6 hover-lift h-full flex flex-col">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-start gap-3 min-w-0 flex-1">
+                <img src="<%= review.displayAvatar %>" alt="<%= review.displayUsername %>" class="w-12 h-12 rounded-full border-2 border-accent/30 flex-shrink-0 object-cover">
+                <div class="min-w-0 flex-1">
+                  <div class="font-semibold text-white truncate"><%= review.displayUsername %></div>
+                  <div class="flex items-center gap-2 text-yellow-400 text-sm mt-1">
+                    <% for (let i = 0; i < review.rating; i++) { %>
+                    <i class="fas fa-star"></i>
+                    <% } %>
+                    <% for (let i = review.rating; i < 5; i++) { %>
+                    <i class="far fa-star text-yellow-400/30"></i>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <% if (user && (isOwner || (settings.allowReviewDeletion && existingUser && review.userId.toString() === existingUser._id.toString()))) { %>
+              <form action="/reviews/<%= review._id %>/delete" method="POST" class="flex-shrink-0 ml-2">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="text-text-muted hover:text-red-400 transition-colors duration-300 text-sm" onclick="return confirm('Are you sure you want to delete this review?');">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </form>
+              <% } %>
+            </div>
+
+            <div class="flex-grow mb-4">
+              <p class="text-text-secondary leading-relaxed break-words">
+                "<%= review.comment %>"
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-white/10 mt-auto">
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 text-accent bg-accent/10 px-3 py-1.5 rounded-lg">
+                  <i class="fas fa-box"></i>
+                  <span class="truncate max-w-[150px]"><%= review.productName %></span>
+                </div>
+                <div class="text-text-muted">
+                  <%= review.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <% if (totalPages > 1) { %>
+      <div class="flex justify-center items-center gap-2" data-aos="fade-up">
+        <% if (currentPage > 1) { %>
+        <a href="/reviews?page=<%= currentPage - 1 %>" class="px-4 py-2 bg-dark-card hover:bg-accent text-white border border-white/20 hover:border-accent rounded-lg transition-all duration-300 hover-lift">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+        <% } %>
+
+        <div class="flex items-center gap-2">
+          <% 
+                            let startPage = Math.max(1, currentPage - 2);
+                            let endPage = Math.min(totalPages, currentPage + 2);
+                            
+                            if (currentPage <= 3) {
+                                endPage = Math.min(5, totalPages);
+                            }
+                            if (currentPage > totalPages - 3) {
+                                startPage = Math.max(1, totalPages - 4);
+                            }
+                            %>
+
+          <% if (startPage > 1) { %>
+          <a href="/reviews?page=1" class="px-3 py-2 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift text-sm">1</a>
+          <% if (startPage > 2) { %>
+          <span class="text-text-muted px-2">...</span>
+          <% } %>
+          <% } %>
+
+          <% for (let i = startPage; i <= endPage; i++) { %>
+          <% if (i === currentPage) { %>
+          <span class="px-3 py-2 bg-accent text-white rounded-lg font-medium text-sm">
+            <%= i %>
+          </span>
+          <% } else { %>
+          <a href="/reviews?page=<%= i %>" class="px-3 py-2 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift text-sm">
+            <%= i %>
+          </a>
+          <% } %>
+          <% } %>
+
+          <% if (endPage < totalPages) { %>
+          <% if (endPage < totalPages - 1) { %>
+          <span class="text-text-muted px-2">...</span>
+          <% } %>
+          <a href="/reviews?page=<%= totalPages %>" class="px-3 py-2 bg-dark-card hover:bg-accent text-white rounded-lg transition-all duration-300 hover-lift text-sm"><%= totalPages %></a>
+          <% } %>
+        </div>
+
+        <% if (currentPage < totalPages) { %>
+        <a href="/reviews?page=<%= currentPage + 1 %>" class="px-4 py-2 bg-dark-card hover:bg-accent text-white border border-white/20 hover:border-accent rounded-lg transition-all duration-300 hover-lift">
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <% } %>
+      </div>
+      <% } %>
+      <% } %>
+    </div>
+  </section>
+
+  <div id="create-review-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 opacity-0 invisible transition-all duration-300">
+    <div class="glass-effect rounded-2xl max-w-md w-full transform scale-95 transition-transform duration-300">
+      <div class="flex items-center justify-between p-6 border-b border-white/10">
+        <h3 class="text-xl font-bold text-white flex items-center gap-3">
+          <i class="fas fa-edit text-accent"></i>
+          Write a Review
+        </h3>
+        <button id="close-modal" class="text-text-secondary hover:text-white transition-colors">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <form id="create-review-form" action="/reviews" method="POST" class="p-6 space-y-6">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div>
+          <label class="block text-white font-medium mb-3">Product</label>
+          <select name="productId" required class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+            <% products.forEach(product => { %>
+            <option value="<%= product._id %>" class="bg-dark-card">
+              <%= product.name || (product.productId && product.productId.name) || 'Unnamed Product' %>
+            </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-3">Rating</label>
+          <select id="rating-select" name="rating" required class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+            <option value="5">★★★★★ (5 stars)</option>
+            <option value="4">★★★★☆ (4 stars)</option>
+            <option value="3">★★★☆☆ (3 stars)</option>
+            <option value="2">★★☆☆☆ (2 stars)</option>
+            <option value="1">★☆☆☆☆ (1 star)</option>
+          </select>
+          <div id="rating-preview" class="flex text-yellow-400 text-xl mt-3 justify-center">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-3">Your Review</label>
+          <textarea name="comment" placeholder="Share your experience with this product..." maxlength="350" minlength="<%= settings.minimumReviewLength %>" required class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 h-32 resize-none focus:border-accent focus:outline-none transition-colors"></textarea>
+          <div class="flex justify-between items-center mt-2 text-xs text-text-muted">
+            <span>Minimum <%= settings.minimumReviewLength %> characters</span>
+            <span><span id="char-count">350</span> remaining</span>
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover-lift flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane"></i>
+            <span>Submit Review</span>
+          </button>
+          <button type="button" id="cancel-modal" class="px-6 py-3 bg-dark-card hover:bg-dark-border text-white rounded-lg transition-all duration-300 hover-lift">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    if (window.location.search.includes('page=')) {
+      setTimeout(() => {
+        document.getElementById('reviews-section').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    }
+
+    const createReviewBtn = document.getElementById('create-review-btn');
+    const modal = document.getElementById('create-review-modal');
+    const closeModal = document.getElementById('close-modal');
+    const cancelModal = document.getElementById('cancel-modal');
+    const commentTextarea = document.querySelector('textarea[name="comment"]');
+    const charCount = document.getElementById('char-count');
+    const ratingSelect = document.getElementById('rating-select');
+    const ratingPreview = document.getElementById('rating-preview');
+
+    if (createReviewBtn) {
+      createReviewBtn.addEventListener('click', () => {
+        modal.classList.remove('opacity-0', 'invisible');
+        modal.querySelector('.glass-effect').classList.remove('scale-95');
+        modal.querySelector('.glass-effect').classList.add('scale-100');
+      });
+    }
+
+    function hideModal() {
+      modal.classList.add('opacity-0', 'invisible');
+      modal.querySelector('.glass-effect').classList.add('scale-95');
+      modal.querySelector('.glass-effect').classList.remove('scale-100');
+    }
+
+    closeModal?.addEventListener('click', hideModal);
+    cancelModal?.addEventListener('click', hideModal);
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) hideModal();
+    });
+
+    if (commentTextarea && charCount) {
+      commentTextarea.addEventListener('input', () => {
+        const remaining = 350 - commentTextarea.value.length;
+        charCount.textContent = remaining;
+      });
+    }
+
+    function updateRatingPreview(rating) {
+      const stars = ratingPreview.querySelectorAll('i');
+      stars.forEach((star, index) => {
+        star.className = index < rating ? 'fas fa-star' : 'far fa-star text-yellow-400/30';
+      });
+    }
+
+    if (ratingSelect) {
+      ratingSelect.addEventListener('change', (e) => {
+        updateRatingPreview(parseInt(e.target.value));
+      });
+      updateRatingPreview(5);
+    }
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

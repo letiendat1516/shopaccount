@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - <%= settings.storeName %></title>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <meta property="og:title" content="Products | <%= settings.storeName %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= settings.baseURL %>" />
+  <meta property="og:image" content="<%= settings.logoPath %>" />
+  <meta property="og:description" content="Browse our diverse range of high-quality, easy-to-use products tailored to enhance your experience." />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+  <meta property="og:locale" content="en_US" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
+            'slide-up': 'slide-up 0.8s ease-out forwards',
+            'fade-in': 'fade-in 1s ease-out forwards',
+            'scale-in': 'scale-in 0.8s ease-out forwards',
+            'shimmer': 'shimmer 2s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'bounce-gentle': {
+              '0%, 100%': {
+                transform: 'translateY(0)'
+              },
+              '50%': {
+                transform: 'translateY(-8px)'
+              }
+            },
+            'slide-up': {
+              '0%': {
+                transform: 'translateY(20px)',
+                opacity: '0'
+              },
+              '100%': {
+                transform: 'translateY(0)',
+                opacity: '1'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0'
+              },
+              '100%': {
+                opacity: '1'
+              }
+            },
+            'scale-in': {
+              '0%': {
+                transform: 'scale(0.95)',
+                opacity: '0'
+              },
+              '100%': {
+                transform: 'scale(1)',
+                opacity: '1'
+              }
+            },
+            'shimmer': {
+              '0%, 100%': {
+                backgroundPosition: '0% 50%'
+              },
+              '50%': {
+                backgroundPosition: '100% 50%'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    html, body {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    nav {
+      min-height: 64px;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .accent-glow {
+      box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.15);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--accent-color);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      top: 15%;
+      left: 10%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 0s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(2) {
+      top: 65%;
+      left: 15%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(3) {
+      top: 35%;
+      right: 12%;
+      width: 4px;
+      height: 4px;
+      animation-delay: 4s;
+      opacity: 0.5;
+    }
+
+    .particle:nth-child(4) {
+      bottom: 25%;
+      left: 18%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(5) {
+      bottom: 55%;
+      right: 20%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3s;
+      opacity: 0.4;
+    }
+
+    .sale-badge-glow {
+      animation: glow-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes glow-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.5);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user, existingUser }) %>
+
+  <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden" style="
+        background: linear-gradient(
+            135deg,
+            rgba(var(--accent-rgb), 0.25) 0%,
+            rgba(0, 0, 0, 0.85) 30%,
+            rgba(0, 0, 0, 0.90) 70%,
+            rgba(var(--accent-rgb), 0.20) 100%
+        );
+    ">
+    <div class="absolute inset-0">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center max-w-4xl mx-auto">
+        <div class="space-y-6" data-aos="fade-up" data-aos-duration="1000">
+          <h1 class="text-4xl lg:text-6xl font-black leading-tight text-white mb-4">
+            <%= settings.productsPageTitle %>
+          </h1>
+          <p class="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
+            <%= settings.productsPageSubtitle %>
+          </p>
+        </div>
+
+        <div class="relative max-w-2xl mx-auto mt-12" data-aos="fade-up" data-aos-duration="1200">
+          <div class="relative">
+            <div class="absolute left-6 top-1/2 transform -translate-y-1/2 text-accent text-lg pointer-events-none z-10">
+              <i class="fas fa-search"></i>
+            </div>
+            <input type="text" id="productSearch" class="w-full bg-dark-card/80 backdrop-blur-xl text-white pl-14 pr-6 py-4 rounded-2xl border-0 outline-none transition-all duration-300 placeholder-text-muted" style="border: 1px solid rgba(var(--accent-rgb), 0.3) !important;" placeholder="Search products by name...">
+          </div>
+        </div>
+
+        <% if (settings.productCategories && settings.productCategories.length > 0) { %>
+        <div class="flex flex-wrap justify-center gap-4 mt-8" data-aos="fade-up" data-aos-duration="1400">
+          <% 
+                        const currentPath = typeof currentCategory !== 'undefined' ? currentCategory : null;
+                        %>
+          <a href="/products" class="group px-6 py-3 <%= !currentPath ? 'bg-accent border-accent text-white' : 'bg-dark-card border-accent/40 text-text-secondary hover:text-white' %> border rounded-xl transition-all duration-300 hover:bg-accent/20 <%= !currentPath ? '' : 'hover:border-accent' %> hover-lift relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10 flex items-center gap-2">
+              <i class="fas fa-th text-sm <%= !currentPath ? 'text-white' : 'text-accent' %>"></i>
+              <span class="font-medium">All Products</span>
+            </div>
+          </a>
+          <% settings.productCategories.forEach(category => { %>
+          <% const isActive = currentPath === category.url; %>
+          <a href="/products/category/<%= category.url %>" class="group px-6 py-3 <%= isActive ? 'bg-accent border-accent text-white' : 'bg-dark-card border-accent/40 text-text-secondary hover:text-white' %> border rounded-xl transition-all duration-300 hover:bg-accent/20 <%= isActive ? '' : 'hover:border-accent' %> hover-lift relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10 flex items-center gap-2">
+              <i class="fas fa-tag text-sm <%= isActive ? 'text-white' : 'text-accent' %>"></i>
+              <span class="font-medium"><%= category.name %></span>
+            </div>
+          </a>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-dark-lighter relative">
+    <div class="container mx-auto px-6">
+      <% if (products.length === 0) { %>
+      <div class="text-center py-20" data-aos="fade-up">
+        <div class="w-24 h-24 bg-dark-card rounded-3xl flex items-center justify-center mx-auto mb-8">
+          <i class="fas fa-box-open text-accent text-4xl"></i>
+        </div>
+        <h3 class="text-3xl font-bold text-white mb-4">No Products Found</h3>
+        <p class="text-text-secondary text-lg max-w-md mx-auto">
+          Please check back later or explore other categories.
+        </p>
+      </div>
+      <% } else { %>
+      <div class="flex flex-wrap justify-center gap-6" id="productList">
+        <% products.forEach((product, index) => { %>
+        <div class="group bg-dark-card rounded-2xl p-4 w-80 hover-lift transition-all duration-300 border border-white/10 hover:border-accent relative overflow-hidden <%= product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate) ? 'ring-2 ring-accent/50 shadow-lg shadow-accent/20' : '' %>" data-name="<%= product.name.toLowerCase() %>" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 20, 200) %>">
+
+          <% if (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) { %>
+          <div class="absolute top-4 right-4 z-10">
+            <div class="bg-gradient-to-br from-red-600 to-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-2xl flex items-center gap-2 border border-red-500/50">
+              <i class="fas fa-fire-flame-curved"></i>
+              <span><%= Math.round(((product.price - product.salePrice) / product.price) * 100) %>% OFF</span>
+            </div>
+          </div>
+          <% } %>
+
+          <div class="relative w-full h-52 rounded-xl mb-4 overflow-hidden flex items-center justify-center">
+            <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="max-w-full max-h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+          </div>
+
+          <div class="text-center space-y-3">
+            <h3 class="text-xl font-semibold text-white group-hover:text-accent transition-colors duration-300">
+              <%= product.name %>
+            </h3>
+
+            <% if (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) { %>
+            <div class="bg-gradient-to-br from-accent/20 via-accent/10 to-transparent rounded-2xl p-5 border border-accent/40 relative overflow-hidden">
+              <div class="absolute inset-0 bg-accent/5 animate-pulse-slow"></div>
+              <div class="relative z-10 space-y-3">
+                <div class="inline-block bg-accent/20 border border-accent/50 px-3 py-1 rounded-lg">
+                  <span class="text-xs font-bold text-accent uppercase tracking-wide flex items-center gap-1.5">
+                    <i class="fas fa-tag text-[10px]"></i>
+                    Limited Offer
+                  </span>
+                </div>
+                <div class="text-center">
+                  <% if (product.productType === 'digitalFree') { %>
+                  <span class="text-3xl font-black text-accent">Free</span>
+                  <% } else { %>
+                  <span class="text-3xl font-black text-accent"><%= settings.currencySymbol %><%= product.salePrice.toFixed(2) %></span>
+                  <% } %>
+                </div>
+                <div class="flex items-center justify-center gap-2">
+                  <span class="text-sm text-text-muted line-through"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></span>
+                  <span class="text-xs font-bold text-green-400 bg-green-400/20 px-2 py-1 rounded">
+                    Save <%= settings.currencySymbol %><%= (product.price - product.salePrice).toFixed(2) %>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <% } else { %>
+            <div class="inline-block px-6 py-3 bg-dark-card rounded-xl relative overflow-hidden transition-all duration-300 group-hover:bg-dark-lighter">
+              <span class="text-2xl font-bold text-accent">
+                <% if (product.productType === 'digitalFree') { %>
+                Free
+                <% } else { %>
+                <%= settings.currencySymbol %><%= product.price.toFixed(2) %>
+                <% } %>
+              </span>
+            </div>
+            <% } %>
+
+            <div class="flex justify-center gap-2 mt-4">
+<a href="/products/<%= product.urlId %><%= typeof currentCategory !== 'undefined' && currentCategory ? '?category=' + currentCategory : '' %>" class="px-4 py-2 bg-green-600/30 hover:bg-green-600/40 text-white border border-green-600/60 rounded-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium">
+  <i class="fas fa-eye"></i>
+  <span>View</span>
+</a>
+
+              <% if (!product.pauseSelling && product.productType !== 'digitalFree') { %>
+              <form action="/cart/add/<%= product._id %>" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="px-4 py-2 bg-dark-lighter hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium">
+                  <i class="fas fa-cart-plus"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </form>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+      <% } %>
+    </div>
+  </section>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 50
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const productSearch = document.getElementById('productSearch');
+      const productList = document.getElementById('productList');
+      const products = productList?.getElementsByClassName('group');
+
+      if (productSearch && products) {
+        productSearch.addEventListener('input', function() {
+          const filter = productSearch.value.toLowerCase();
+
+          for (let i = 0; i < products.length; i++) {
+            const productName = products[i].getAttribute('data-name');
+            if (productName && productName.includes(filter)) {
+              products[i].style.display = '';
+              products[i].style.animation = 'fade-in 0.3s ease-out';
+            } else {
+              products[i].style.display = 'none';
+            }
+          }
+        });
+      }
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Manage Sales</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    .sale-accent-bar {
+      height: 4px;
+      background: #2ecc71;
+      opacity: 0.7;
+    }
+
+    .custom-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      position: relative;
+      height: 22px;
+      width: 22px;
+      background-color: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 6px;
+      margin-right: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      background-color: rgba(var(--accent-rgb), 0.1);
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+
+    .custom-checkbox input:checked~.checkmark {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 11px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:checked~.checkmark:after {
+      display: block;
+    }
+
+    .sale-event-radio:checked+.sale-event-card {
+      border-color: var(--accent-color);
+      background: rgba(var(--accent-rgb), 0.1);
+      transform: scale(1.05);
+    }
+
+    .sale-event-card:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'sales' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">Manage Sales</h1>
+        <p class="text-text-secondary text-lg">Create limited-time discounts and special offers for your products.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 mb-8 hover-lift" data-aos="fade-up">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-tag text-green-400 text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Active Sales</h2>
+        </div>
+
+        <% if (activeSales.length > 0) { %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% activeSales.forEach((product, index) => { 
+                            const discountPercent = ((1 - (product.salePrice / product.price)) * 100).toFixed(0);
+                            const daysLeft = Math.ceil((new Date(product.saleEndDate) - new Date()) / (1000 * 60 * 60 * 24));
+                        %>
+          <div class="glass-effect rounded-2xl overflow-hidden hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 50 %>">
+            <div class="sale-accent-bar"></div>
+
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-white mb-4 truncate" title="<%= product.name %>">
+                <%= product.name %>
+              </h3>
+
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="bg-dark-card rounded-lg p-3">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Original</div>
+                  <div class="text-sm font-semibold text-white"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></div>
+                </div>
+                <div class="bg-dark-card rounded-lg p-3">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Sale Price</div>
+                  <div class="text-sm font-semibold text-green-400"><%= settings.currencySymbol %><%= product.salePrice.toFixed(2) %></div>
+                </div>
+                <div class="bg-dark-card rounded-lg p-3">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Discount</div>
+                  <div class="text-sm font-semibold text-green-400"><%= discountPercent %>% Off</div>
+                </div>
+                <div class="bg-dark-card rounded-lg p-3">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Status</div>
+                  <div class="text-sm font-semibold">
+                    <% if (daysLeft <= 1) { %>
+                    <span class="text-orange-400">Ending today</span>
+                    <% } else if (daysLeft <= 3) { %>
+                    <span class="text-orange-400">Ending soon</span>
+                    <% } else { %>
+                    <span class="text-green-400">Active</span>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-accent/10 rounded-lg p-3 mb-4">
+                <div class="flex items-center gap-2 text-sm text-white">
+                  <i class="far fa-calendar-alt text-accent"></i>
+                  <span>
+                    <%= new Date(product.saleStartDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) %>
+                    <span class="text-text-secondary mx-1">→</span>
+                    <%= new Date(product.saleEndDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                  </span>
+                </div>
+              </div>
+
+              <form action="/staff/sales/disable" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="productId" value="<%= product._id %>">
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover-lift" onclick="return confirm('Are you sure you want to end this sale early?');">
+                  <i class="fas fa-times"></i>
+                  <span>End Sale Early</span>
+                </button>
+              </form>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="text-center py-12">
+          <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-tag text-green-400 text-3xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-white mb-2">No Active Sales</h3>
+          <p class="text-text-secondary max-w-md mx-auto">You don't have any active sales at the moment. Create a new sale below to offer discounts on your products.</p>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 mb-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-bullhorn text-purple-400 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white">Sale Event Banner</h2>
+            <p class="text-text-secondary text-sm">Display a themed banner above the navbar to promote special sales</p>
+          </div>
+        </div>
+
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6 mb-8">
+          <div class="flex items-start gap-3">
+            <i class="fas fa-lightbulb text-yellow-400 mt-1 text-xl"></i>
+            <div>
+              <p class="text-yellow-400 font-semibold mb-1">Special Sale Events:</p>
+              <p class="text-yellow-300 text-sm">Enable a themed banner to attract more customers during special occasions. Only one event can be active at a time.</p>
+            </div>
+          </div>
+        </div>
+
+        <form action="/staff/sales/event" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="mb-6">
+            <label class="custom-checkbox mb-4 inline-flex">
+              <input type="checkbox" name="saleEventEnabled" value="true" <%= settings.saleEventEnabled ? 'checked' : '' %> id="saleEventToggle">
+              <span class="checkmark"></span>
+              <span class="font-semibold text-white text-lg">Enable Sale Event Banner</span>
+            </label>
+          </div>
+
+          <div id="saleEventOptions" class="<%= settings.saleEventEnabled ? '' : 'hidden' %>">
+            <div class="mb-6">
+              <label class="block text-white font-semibold mb-4">Choose Sale Event Type</label>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="black-friday" class="hidden sale-event-radio" <%= settings.saleEventType === 'black-friday' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-black to-gray-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-tag text-yellow-400 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">Black Friday</h4>
+                    <p class="text-xs text-text-secondary">Massive Deals</p>
+                  </div>
+                </label>
+
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="christmas" class="hidden sale-event-radio" <%= settings.saleEventType === 'christmas' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-gifts text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">Christmas</h4>
+                    <p class="text-xs text-text-secondary">Holiday Savings</p>
+                  </div>
+                </label>
+
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="easter" class="hidden sale-event-radio" <%= settings.saleEventType === 'easter' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-400 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-egg text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">Easter</h4>
+                    <p class="text-xs text-text-secondary">Spring Specials</p>
+                  </div>
+                </label>
+
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="new-year" class="hidden sale-event-radio" <%= settings.saleEventType === 'new-year' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-champagne-glasses text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">New Year</h4>
+                    <p class="text-xs text-text-secondary">Fresh Start Sale</p>
+                  </div>
+                </label>
+
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="summer" class="hidden sale-event-radio" <%= settings.saleEventType === 'summer' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-sun text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">Summer</h4>
+                    <p class="text-xs text-text-secondary">Hot Deals</p>
+                  </div>
+                </label>
+
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="halloween" class="hidden sale-event-radio" <%= settings.saleEventType === 'halloween' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-600 to-purple-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-ghost text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">Halloween</h4>
+                    <p class="text-xs text-text-secondary">Spooky Savings</p>
+                  </div>
+                </label>
+
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="valentines" class="hidden sale-event-radio" <%= settings.saleEventType === 'valentines' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-heart text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">Valentine's</h4>
+                    <p class="text-xs text-text-secondary">Love Savings</p>
+                  </div>
+                </label>
+
+                <label class="sale-event-option cursor-pointer">
+                  <input type="radio" name="saleEventType" value="cyber-monday" class="hidden sale-event-radio" <%= settings.saleEventType === 'cyber-monday' ? 'checked' : '' %>>
+                  <div class="sale-event-card glass-effect rounded-xl p-6 text-center transition-all duration-300 hover-lift border-2 border-transparent">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-laptop text-white text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">Cyber Monday</h4>
+                    <p class="text-xs text-text-secondary">Tech Deals</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label class="block text-white font-semibold mb-2">Custom Banner Message</label>
+              <input type="text" name="saleEventMessage" id="saleEventMessage" value="<%= settings.saleEventMessage || '' %>" placeholder="Customize your sale message" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
+              <p class="text-xs text-text-muted mt-2">Edit the default message or create your own custom text</p>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift text-lg">
+            <i class="fas fa-save"></i>
+            <span>Save Event Settings</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="150">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-plus-circle text-accent text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Create New Sale</h2>
+        </div>
+
+        <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6 mb-8">
+          <div class="flex items-start gap-3">
+            <i class="fas fa-info-circle text-blue-400 mt-1 text-xl"></i>
+            <div>
+              <p class="text-blue-400 font-semibold mb-1">How sales work:</p>
+              <p class="text-blue-300 text-sm">Set a date range and select which products to discount. Each product can have its own discount percentage.</p>
+            </div>
+          </div>
+        </div>
+
+        <form id="saleForm" action="/staff/sales" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="mb-8">
+            <label class="block text-white font-semibold mb-4">Sale Duration</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-text-secondary mb-2">
+                  <i class="fas fa-calendar-alt mr-2"></i>Start Date
+                </label>
+                <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="date" name="startDate" id="startDate" required>
+                <p class="text-xs text-text-muted mt-1">When the sale will begin</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-text-secondary mb-2">
+                  <i class="fas fa-calendar-alt mr-2"></i>End Date
+                </label>
+                <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="date" name="endDate" id="endDate" required>
+                <p class="text-xs text-text-muted mt-1">When the sale will end</p>
+              </div>
+            </div>
+            <p id="dateFeedback" class="hidden text-red-400 text-sm mt-2">
+              <i class="fas fa-exclamation-triangle mr-2"></i>
+              <span></span>
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <label class="block text-white font-semibold mb-2">Select Products for Sale</label>
+            <p class="text-text-secondary text-sm mb-6">Choose which products to discount and set the percentage off for each.</p>
+
+            <div class="space-y-4">
+              <% products.forEach((product, index) => { %>
+              <div class="glass-effect rounded-xl overflow-hidden hover-lift" data-id="<%= product._id %>">
+                <div class="p-4">
+                  <div class="flex items-center justify-between gap-4 mb-4">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                      <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-box text-accent"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-white font-semibold truncate" title="<%= product.name %>"><%= product.name %></div>
+                        <div class="text-sm text-accent font-semibold"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></div>
+                      </div>
+                    </div>
+                    <label class="custom-checkbox">
+                      <input type="checkbox" class="product-checkbox" name="productIds[]" value="<%= product._id %>" data-index="<%= index %>">
+                      <span class="checkmark"></span>
+                      <span class="text-sm font-semibold whitespace-nowrap">Add to Sale</span>
+                    </label>
+                  </div>
+
+                  <div class="discount-container hidden" id="discount-container-<%= index %>">
+                    <div class="bg-dark-card rounded-lg p-4 space-y-4">
+                      <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">Discount Percentage</label>
+                        <div class="relative">
+                          <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-4 py-3 pr-12 focus:border-accent focus:outline-none transition-colors discount-input" type="number" name="discounts[<%= product._id %>]" min="1" max="90" placeholder="Enter discount (1-90)" disabled data-price="<%= product.price %>" data-product-id="<%= product._id %>">
+                          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary font-semibold">%</span>
+                        </div>
+                      </div>
+
+                      <div class="hidden bg-green-500/10 border border-green-500/30 rounded-lg p-3" id="preview-<%= index %>">
+                        <div class="flex items-center justify-between gap-4">
+                          <span class="text-sm text-text-secondary">Preview:</span>
+                          <div class="flex items-center gap-3">
+                            <span class="text-sm text-text-muted line-through"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></span>
+                            <span class="text-lg font-bold text-green-400 sale-price"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></span>
+                            <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-semibold discount-badge">0% Off</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% }); %>
+            </div>
+          </div>
+
+          <button type="submit" id="submitSale" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift text-lg">
+            <i class="fas fa-tag"></i>
+            <span>Create Sale</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const today = new Date();
+      const nextWeek = new Date(today);
+      nextWeek.setDate(today.getDate() + 7);
+
+      const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
+      const startDateInput = document.getElementById("startDate");
+      const endDateInput = document.getElementById("endDate");
+      const dateFeedback = document.getElementById("dateFeedback");
+
+      startDateInput.value = formatDate(today);
+      startDateInput.min = formatDate(today);
+
+      endDateInput.value = formatDate(nextWeek);
+      endDateInput.min = formatDate(today);
+
+      function validateDates() {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+
+        if (startDate < currentDate) {
+          dateFeedback.querySelector('span').textContent = "Start date cannot be in the past.";
+          dateFeedback.classList.remove('hidden');
+          return false;
+        } else if (startDate >= endDate) {
+          dateFeedback.querySelector('span').textContent = "Start date must be before end date.";
+          dateFeedback.classList.remove('hidden');
+          return false;
+        } else {
+          dateFeedback.classList.add('hidden');
+          return true;
+        }
+      }
+
+      startDateInput.addEventListener("change", validateDates);
+      endDateInput.addEventListener("change", validateDates);
+
+      const productCheckboxes = document.querySelectorAll('.product-checkbox');
+
+      productCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const index = this.getAttribute('data-index');
+          const discountContainer = document.getElementById(`discount-container-${index}`);
+          const discountInput = discountContainer.querySelector('.discount-input');
+          const previewContainer = document.getElementById(`preview-${index}`);
+
+          if (this.checked) {
+            discountContainer.classList.remove('hidden');
+            discountInput.disabled = false;
+            discountInput.required = true;
+            discountInput.focus();
+          } else {
+            discountContainer.classList.add('hidden');
+            discountInput.disabled = true;
+            discountInput.required = false;
+            discountInput.value = '';
+            previewContainer.classList.add('hidden');
+          }
+        });
+      });
+
+      const discountInputs = document.querySelectorAll('.discount-input');
+
+      discountInputs.forEach((input, idx) => {
+        input.addEventListener('input', function() {
+          const productId = this.getAttribute('data-product-id');
+          const originalPrice = parseFloat(this.getAttribute('data-price'));
+          const discountPercent = parseFloat(this.value) || 0;
+
+          if (discountPercent < 0 || discountPercent > 90) {
+            return;
+          }
+
+          const salePrice = originalPrice * (1 - (discountPercent / 100));
+          const formattedSalePrice = salePrice.toFixed(2);
+
+          const previewContainer = document.getElementById(`preview-${idx}`);
+          const salePriceElement = previewContainer.querySelector('.sale-price');
+          const discountBadge = previewContainer.querySelector('.discount-badge');
+
+          salePriceElement.textContent = `<%= settings.currencySymbol %>${formattedSalePrice}`;
+          discountBadge.textContent = `${discountPercent}% Off`;
+
+          if (discountPercent > 0) {
+            previewContainer.classList.remove('hidden');
+          } else {
+            previewContainer.classList.add('hidden');
+          }
+        });
+      });
+
+      const saleForm = document.getElementById('saleForm');
+
+      saleForm.addEventListener('submit', function(e) {
+        if (!validateDates()) {
+          e.preventDefault();
+          return;
+        }
+
+        const checkedProducts = document.querySelectorAll('.product-checkbox:checked');
+        if (checkedProducts.length === 0) {
+          e.preventDefault();
+          alert('Please select at least one product for the sale.');
+          return;
+        }
+
+        let invalidDiscounts = false;
+
+        checkedProducts.forEach(checkbox => {
+          const productId = checkbox.value;
+          const discountInput = document.querySelector(`input[name="discounts[${productId}]"]`);
+          const discountValue = discountInput.value.trim();
+
+          if (!discountValue || isNaN(parseFloat(discountValue)) || parseFloat(discountValue) <= 0 || parseFloat(discountValue) > 90) {
+            invalidDiscounts = true;
+            discountInput.classList.add('border-red-500');
+          }
+        });
+
+        if (invalidDiscounts) {
+          e.preventDefault();
+          alert('Please enter valid discount percentages (1-90%) for all selected products.');
+        }
+      });
+
+      const saleEventToggle = document.getElementById('saleEventToggle');
+      const saleEventOptions = document.getElementById('saleEventOptions');
+
+      if (saleEventToggle) {
+        saleEventToggle.addEventListener('change', function() {
+          if (this.checked) {
+            saleEventOptions.classList.remove('hidden');
+          } else {
+            saleEventOptions.classList.add('hidden');
+          }
+        });
+      }
+    });
+
+    const saleEventMessages = {
+      'black-friday': '🔥 BLACK FRIDAY SALE - Up to 90% OFF on All Products!',
+      'christmas': '🎄 Christmas Sale - Special Holiday Discounts Inside!',
+      'easter': '🐰 Easter Sale - Hop Into Amazing Savings!',
+      'new-year': '🎉 New Year Sale - Start 2025 With Great Deals!',
+      'summer': '☀️ Summer Sale - Hot Deals for the Season!',
+      'halloween': '👻 Halloween Sale - Spooky Savings Await!',
+      'valentines': '💝 Valentine\'s Sale - Fall in Love With Our Prices!',
+      'cyber-monday': '💻 Cyber Monday - Unbeatable Tech Deals!'
+    };
+
+    const saleEventRadios = document.querySelectorAll('.sale-event-radio');
+    const saleEventMessageInput = document.getElementById('saleEventMessage');
+
+    const currentEventType = '<%= settings.saleEventType || "" %>';
+    const savedCustomMessage = '<%= settings.saleEventMessage || "" %>';
+
+    if (currentEventType) {
+      if (savedCustomMessage && savedCustomMessage !== saleEventMessages[currentEventType]) {
+        saleEventMessageInput.value = savedCustomMessage;
+      } else {
+        saleEventMessageInput.value = saleEventMessages[currentEventType];
+      }
+    }
+
+    saleEventRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        if (this.checked) {
+          const eventType = this.value;
+          const defaultMessage = saleEventMessages[eventType];
+
+          saleEventMessageInput.value = defaultMessage;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

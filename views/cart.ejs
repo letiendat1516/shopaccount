@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - <%= settings.storeName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <meta property="og:title" content="Cart | <%= settings.storeName %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= settings.baseURL %>" />
+  <meta property="og:image" content="<%= settings.logoPath %>" />
+  <meta property="og:description" content="Review the items in your cart and proceed to checkout to complete your purchase." />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+  <meta property="og:locale" content="en_US" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--accent-color);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      top: 15%;
+      left: 10%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 0s;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(2) {
+      top: 65%;
+      left: 15%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 2s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(3) {
+      top: 35%;
+      right: 12%;
+      width: 4px;
+      height: 4px;
+      animation-delay: 4s;
+      opacity: 0.5;
+    }
+
+    .particle:nth-child(4) {
+      bottom: 25%;
+      left: 18%;
+      width: 2px;
+      height: 2px;
+      animation-delay: 1s;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(5) {
+      bottom: 55%;
+      right: 20%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 3s;
+      opacity: 0.4;
+    }
+
+    .custom-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      position: relative;
+      height: 20px;
+      width: 20px;
+      background-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(var(--accent-rgb), 0.4);
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      background-color: rgba(var(--accent-rgb), 0.1);
+      border-color: rgba(var(--accent-rgb), 0.6);
+    }
+
+    .custom-checkbox input:checked+.checkmark {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    .custom-checkbox input:checked+.checkmark:after {
+      display: block;
+    }
+
+    .custom-checkbox .checkmark:after {
+      left: 7px;
+      top: 3px;
+      width: 6px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .bundle-recommendation {
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.1) 0%, rgba(var(--accent-rgb), 0.05) 100%);
+      border: 2px solid rgba(var(--accent-rgb), 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bundle-recommendation::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.1), transparent);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% {
+        left: -100%;
+      }
+
+      100% {
+        left: 100%;
+      }
+    }
+
+    .bundle-badge {
+      background: linear-gradient(135deg, var(--accent-color) 0%, rgba(var(--accent-rgb), 0.8) 100%);
+      box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.4);
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-badge {
+
+      0%,
+      100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.4);
+      }
+
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.6);
+      }
+    }
+
+    .bundle-products-grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    @media (max-width: 640px) {
+      .bundle-products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bundle-products-grid>div {
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .bundle-products-grid img {
+        flex-shrink: 0;
+      }
+
+      .bundle-products-grid .flex-1 {
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .bundle-products-grid p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .savings-highlight {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+      animation: glow-green 2s ease-in-out infinite;
+    }
+
+    @keyframes glow-green {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user, existingUser }) %>
+
+  <section class="py-20 bg-dark-lighter">
+    <div class="container mx-auto px-6">
+      <div class="mb-12" data-aos="fade-up">
+        <h1 class="text-3xl font-bold text-white mb-2">Shopping Cart (<%= cartProducts.length + cartBundles.length %>)</h1>
+        <p class="text-text-secondary">Review your selected products and proceed to checkout</p>
+      </div>
+
+      <% if (message) { %>
+      <div class="mb-6 animate-fade-in" data-aos="fade-down">
+        <% if (message === 'product_added') { %>
+        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-check-circle text-green-400 text-xl"></i>
+          <p class="text-green-400 font-semibold">Product added to cart successfully!</p>
+        </div>
+        <% } else if (message === 'already_in_cart') { %>
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
+          <p class="text-yellow-400 font-semibold">This product is already in your cart.</p>
+        </div>
+        <% } else if (message === 'already_owned') { %>
+        <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-info-circle text-blue-400 text-xl"></i>
+          <p class="text-blue-400 font-semibold">You already own this product.</p>
+        </div>
+        <% } else if (message === 'out_of_stock') { %>
+        <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-times-circle text-red-400 text-xl"></i>
+          <p class="text-red-400 font-semibold">This product is currently out of stock.</p>
+        </div>
+        <% } else if (message === 'bundle_added') { %>
+        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-check-circle text-green-400 text-xl"></i>
+          <p class="text-green-400 font-semibold">Bundle added to cart successfully!</p>
+        </div>
+        <% } else if (message === 'bundle_already_in_cart') { %>
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
+          <p class="text-yellow-400 font-semibold">This bundle is already in your cart.</p>
+        </div>
+        <% } else if (message === 'already_own_all_products') { %>
+        <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-info-circle text-blue-400 text-xl"></i>
+          <p class="text-blue-400 font-semibold">You already own all products in this bundle.</p>
+        </div>
+        <% } else if (message === 'bundle_out_of_stock') { %>
+        <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-times-circle text-red-400 text-xl"></i>
+          <p class="text-red-400 font-semibold">One or more products in this bundle are out of stock.</p>
+        </div>
+        <% } else if (message === 'bundle_added_products_removed') { %>
+        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 flex items-center gap-3">
+          <i class="fas fa-check-circle text-green-400 text-xl"></i>
+          <div>
+            <p class="text-green-400 font-semibold">Bundle added to cart successfully!</p>
+            <p class="text-green-300 text-sm mt-1">Individual products from this bundle were automatically removed to prevent duplicate purchases.</p>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      <% } %>
+
+      <% if (cartProducts.length > 0 || cartBundles.length > 0) { %>
+      <div class="flex flex-col xl:flex-row gap-8">
+        <div class="xl:w-2/3">
+          <div class="glass-effect rounded-2xl p-4 sm:p-8 hover-lift" data-aos="fade-up">
+            <div class="space-y-6">
+              <% if (cartProducts.length > 0) { %>
+              <div>
+                <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <i class="fas fa-box text-accent"></i>
+                  Individual Products
+                </h2>
+                <div class="space-y-4">
+                  <% cartProducts.forEach((product, index) => { %>
+                  <div class="flex flex-col sm:flex-row items-start gap-4 p-4 bg-dark-card rounded-xl border border-white/10 hover:border-accent/50 transition-all duration-300 hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 50 %>">
+                    <div class="flex-shrink-0 w-full sm:w-auto">
+                      <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="w-full sm:w-20 h-20 object-cover rounded-lg border border-accent/30">
+                    </div>
+
+                    <div class="flex-grow min-w-0 w-full">
+                      <h3 class="text-lg font-semibold text-white mb-3 break-words"><%= product.name %></h3>
+                      <% if (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) { %>
+                      <div class="bg-gradient-to-r from-accent/20 to-transparent rounded-lg p-3 border border-accent/30">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                          <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-accent uppercase tracking-wide bg-accent/20 px-2 py-1 rounded whitespace-nowrap">
+                              <i class="fas fa-tag text-[10px]"></i> Sale
+                            </span>
+                            <span class="text-xl sm:text-2xl font-black text-accent">
+                              <%= settings.currencySymbol %><%= product.salePrice.toFixed(2) %>
+                            </span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <span class="text-text-muted line-through text-sm sm:text-base">
+                              <%= settings.currencySymbol %><%= product.price.toFixed(2) %>
+                            </span>
+                            <span class="text-xs font-bold text-green-400 bg-green-400/20 px-2 py-1 rounded whitespace-nowrap">
+                              Save <%= settings.currencySymbol %><%= (product.price - product.salePrice).toFixed(2) %>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <% } else { %>
+                      <span class="text-xl font-bold text-accent">
+                        <%= settings.currencySymbol %><%= product.price.toFixed(2) %>
+                      </span>
+                      <% } %>
+                    </div>
+
+                    <div class="flex-shrink-0 self-start sm:self-center">
+                      <form action="/cart/remove/<%= product._id %>" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-colors duration-300">
+                          <i class="fas fa-times text-lg"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                  <% }); %>
+                </div>
+              </div>
+              <% } %>
+
+              <% if (cartBundles.length > 0) { %>
+              <div>
+                <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <i class="fas fa-box-open text-green-400"></i>
+                  Bundles
+                </h2>
+                <div class="space-y-4">
+                  <% cartBundles.forEach((bundle, index) => { %>
+                  <div class="p-5 bg-gradient-to-br from-dark-card to-dark-card/50 rounded-xl border-2 border-green-500/30 hover:border-green-500/60 transition-all duration-300 hover-lift" data-aos="fade-up" data-aos-delay="<%= (cartProducts.length + index) * 50 %>">
+                    <div class="flex items-start justify-between mb-4">
+                      <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                          <h3 class="text-xl font-bold text-white"><%= bundle.name %></h3>
+                          <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-bold">
+                            <%= bundle.discountPercentage %>% OFF
+                          </span>
+                        </div>
+                        <p class="text-sm text-text-secondary mb-3"><%= bundle.description %></p>
+                      </div>
+                      <form action="/cart/remove-bundle/<%= bundle._id %>" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-colors duration-300">
+                          <i class="fas fa-times text-lg"></i>
+                        </button>
+                      </form>
+                    </div>
+
+                    <div class="mb-4">
+                      <p class="text-xs text-text-muted uppercase tracking-wide font-semibold mb-2">
+                        Includes <%= bundle.products.length %> products:
+                      </p>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <% bundle.products.forEach((product) => { %>
+                        <div class="flex items-center gap-2 bg-dark-lighter/50 px-3 py-2 rounded-lg border border-white/10">
+                          <div class="w-10 h-10 rounded overflow-hidden flex-shrink-0">
+                            <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="w-full h-full object-cover">
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <p class="text-sm text-white truncate" title="<%= product.name %>"><%= product.name %></p>
+                            <p class="text-xs text-text-muted">
+                              <% 
+                              const currentDate = new Date();
+                              const isOnSale = product.onSale && 
+                                              product.saleStartDate <= currentDate && 
+                                              currentDate <= product.saleEndDate;
+                              const price = isOnSale ? product.salePrice : product.price;
+                              %>
+                              <%= settings.currencySymbol %><%= price.toFixed(2) %>
+                            </p>
+                          </div>
+                        </div>
+                        <% }); %>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                      <div class="flex items-center gap-4">
+                        <div>
+                          <p class="text-xs text-text-muted mb-1">Original Price</p>
+                          <p class="text-lg text-text-muted line-through"><%= settings.currencySymbol %><%= bundle.originalPrice.toFixed(2) %></p>
+                        </div>
+                        <div>
+                          <p class="text-xs text-green-400 font-semibold mb-1">Bundle Price</p>
+                          <p class="text-2xl font-bold text-green-400"><%= settings.currencySymbol %><%= bundle.bundlePrice.toFixed(2) %></p>
+                        </div>
+                      </div>
+                      <div class="bg-green-500/20 text-green-400 px-4 py-2 rounded-lg text-center">
+                        <p class="text-xs font-semibold uppercase">You Save</p>
+                        <p class="text-lg font-bold"><%= settings.currencySymbol %><%= bundle.savings.toFixed(2) %></p>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+                </div>
+              </div>
+              <% } %>
+            </div>
+
+            <% if (recommendedBundles && recommendedBundles.length > 0) { %>
+            <div class="mt-8 pt-6 border-t border-white/10">
+              <div class="flex items-center gap-3 mb-4">
+                <i class="fas fa-lightbulb text-yellow-400 text-xl"></i>
+                <h3 class="text-xl font-bold text-white">💰 Save More with Bundles</h3>
+              </div>
+
+              <div class="space-y-4">
+                <% recommendedBundles.forEach((bundle, index) => { %>
+                <div class="bundle-recommendation rounded-2xl p-6 hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+                  <div class="flex flex-col lg:flex-row gap-6">
+                    <div class="flex-1">
+                      <div class="flex flex-wrap items-start gap-3 mb-4">
+                        <div>
+                          <h4 class="text-xl font-bold text-white mb-2"><%= bundle.name %></h4>
+                          <p class="text-sm text-text-secondary mb-3"><%= bundle.description %></p>
+                        </div>
+                        <span class="bundle-badge text-white px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap">
+                          <%= bundle.discountPercentage %>% OFF
+                        </span>
+                      </div>
+
+                      <div class="mb-4">
+                        <div class="flex items-center gap-2 mb-3">
+                          <i class="fas fa-check-circle text-green-400 text-sm"></i>
+                          <p class="text-xs text-green-400 font-semibold uppercase tracking-wide">
+                            You already have <%= bundle.matchingProducts.length %> of <%= bundle.products.length %> products
+                          </p>
+                        </div>
+
+                        <div class="bundle-products-grid">
+                          <% bundle.products.forEach((product) => { 
+                            const isInCart = bundle.matchingProducts.some(p => p._id.toString() === product._id.toString());
+                            const currentDate = new Date();
+                            const isOnSale = product.onSale && 
+                                            product.saleStartDate <= currentDate && 
+                                            currentDate <= product.saleEndDate;
+                            const price = isOnSale ? product.salePrice : product.price;
+                          %>
+                          <div class="flex items-center gap-2 bg-dark-lighter/70 px-3 py-2 rounded-lg border <%= isInCart ? 'border-green-500/50 bg-green-500/10' : 'border-white/10' %> relative">
+                            <% if (isInCart) { %>
+                            <div class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                              <i class="fas fa-check text-xs"></i>
+                            </div>
+                            <% } %>
+                            <div class="w-10 h-10 rounded overflow-hidden flex-shrink-0">
+                              <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <p class="text-xs text-white truncate font-medium" title="<%= product.name %>"><%= product.name %></p>
+                              <p class="text-xs <%= isInCart ? 'text-green-400' : 'text-text-muted' %>">
+                                <%= isInCart ? 'In Cart' : settings.currencySymbol + price.toFixed(2) %>
+                              </p>
+                            </div>
+                          </div>
+                          <% }); %>
+                        </div>
+                      </div>
+
+                      <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex items-center gap-3">
+                          <div>
+                            <p class="text-xs text-text-muted mb-1">Regular Price</p>
+                            <p class="text-lg text-text-muted line-through"><%= settings.currencySymbol %><%= bundle.originalPrice.toFixed(2) %></p>
+                          </div>
+                          <i class="fas fa-arrow-right text-accent"></i>
+                          <div>
+                            <p class="text-xs text-accent font-semibold mb-1">Bundle Price</p>
+                            <p class="text-2xl font-bold text-accent"><%= settings.currencySymbol %><%= bundle.bundlePrice.toFixed(2) %></p>
+                          </div>
+                        </div>
+
+                        <div class="savings-highlight text-white px-4 py-3 rounded-lg text-center ml-auto">
+                          <p class="text-xs font-semibold uppercase tracking-wide">You Save</p>
+                          <p class="text-xl font-bold"><%= settings.currencySymbol %><%= bundle.savings.toFixed(2) %></p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-col justify-center gap-3 lg:w-48">
+                      <button onclick="addBundleToCart('<%= bundle._id %>')" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-bold transition-all duration-300 hover-lift flex items-center justify-center gap-2 group">
+                        <i class="fas fa-shopping-cart group-hover:scale-110 transition-transform"></i>
+                        <span>Add Bundle</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 pt-4 border-t border-white/10">
+                    <div class="flex items-center gap-2 text-sm text-text-secondary">
+                      <i class="fas fa-bolt text-yellow-400"></i>
+                      <span>Get <span class="text-white font-semibold"><%= bundle.products.length - bundle.matchingProducts.length %></span> more product<%= bundle.products.length - bundle.matchingProducts.length !== 1 ? 's' : '' %> and save <span class="text-green-400 font-bold"><%= settings.currencySymbol %><%= bundle.savings.toFixed(2) %></span></span>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+              </div>
+            </div>
+            <% } %>
+
+            <div class="mt-8 pt-6 border-t border-white/10">
+              <a href="/products" class="bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center sm:justify-start gap-3 hover-lift w-full sm:w-fit">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Continue Shopping</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="xl:w-1/3">
+          <div class="glass-effect rounded-2xl p-6 sm:p-8 hover-lift xl:sticky xl:top-8" data-aos="fade-up" data-aos-delay="200">
+            <div class="flex items-center gap-3 mb-6">
+              <i class="fas fa-receipt text-accent text-xl"></i>
+              <h3 class="text-xl font-bold text-white">Order Summary</h3>
+            </div>
+
+            <div class="mb-6">
+              <form action="/checkout/apply-discount" method="POST" class="space-y-3">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <input type="text" name="discountCode" placeholder="Discount code" class="flex-1 bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors text-sm">
+                  <button type="submit" class="w-full sm:w-auto px-4 py-3 bg-accent hover:bg-accent/90 text-white rounded-lg transition-colors duration-300 font-medium text-sm whitespace-nowrap">
+                    Apply
+                  </button>
+                </div>
+              </form>
+              <% if (discountError) { %>
+              <p class="text-red-400 text-sm mt-2 flex items-center gap-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <%= discountError %>
+              </p>
+              <% } %>
+            </div>
+
+            <div class="space-y-3 mb-6">
+              <% if (discountApplied) { %>
+              <div class="flex items-center justify-between text-green-400">
+                <span>Discount (<%= discountPercentage %>%):</span>
+                <span>-<%= settings.currencySymbol %><%= discountAmount.toFixed(2) %></span>
+              </div>
+              <% } %>
+
+              <% if (salesTaxAmount > 0) { %>
+              <div class="flex items-center justify-between text-text-secondary">
+                <span>Sales Tax:</span>
+                <span><%= settings.currencySymbol %><%= salesTaxAmount.toFixed(2) %></span>
+              </div>
+              <% } %>
+            </div>
+
+            <div class="pt-6 border-t border-white/10 mb-6">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-bold text-white">Total:</span>
+                <div class="text-right">
+                  <span class="text-2xl font-bold text-accent">
+                    <%= settings.currencySymbol %><%= totalPrice.toFixed(2) %>
+                  </span>
+                  <% if (discountApplied) { %>
+                  <div class="text-sm text-text-muted line-through">
+                    <%= settings.currencySymbol %><%= originalTotal.toFixed(2) %>
+                  </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="termsCheckbox">
+                <span class="checkmark"></span>
+                <span class="text-text-secondary text-sm">
+                  I agree to the
+                  <a href="/tos" target="_blank" class="text-accent hover:text-accent/80 underline">Terms of Service</a>
+                </span>
+              </label>
+            </div>
+
+            <div class="space-y-3">
+              <% if (paymentConfig.paypal.enabled) { %>
+              <% 
+            const paypalAction = paymentConfig.paypal.accountType === 'personal' 
+                ? '/checkout/paypal-standard' 
+                : '/checkout/paypal';
+        %>
+              <form action="<%= paypalAction %>" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" id="paypalButton" disabled class="w-full bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold py-4 rounded-lg transition-all duration-300 hover-lift flex items-center justify-center gap-3">
+                  <i class="fab fa-paypal text-xl"></i>
+                  <span class="text-sm sm:text-base">Checkout with PayPal</span>
+                </button>
+              </form>
+              <% } %>
+
+              <% if (paymentConfig.stripe.enabled) { %>
+              <form action="/checkout/stripe" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" id="stripeButton" disabled class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg transition-all duration-300 hover-lift flex items-center justify-center gap-3">
+                  <i class="fab fa-stripe text-xl"></i>
+                  <span class="text-sm sm:text-base">Checkout with Card</span>
+                </button>
+              </form>
+              <% } %>
+
+              <% if (paymentConfig.coinbase.enabled) { %>
+              <form action="/checkout/coinbase" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" id="cryptoButton" disabled class="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg transition-all duration-300 hover-lift flex items-center justify-center gap-3">
+                  <i class="fas fa-coins text-xl"></i>
+                  <span class="text-sm sm:text-base">Checkout with Crypto</span>
+                </button>
+              </form>
+              <% } %>
+
+              <% if (!paymentConfig.paypal.enabled && !paymentConfig.stripe.enabled && !paymentConfig.coinbase.enabled) { %>
+              <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <p class="text-yellow-400 text-sm text-center">
+                  <i class="fas fa-exclamation-triangle mr-2"></i>
+                  No payment methods are currently enabled. Please contact support.
+                </p>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="glass-effect rounded-2xl p-12 text-center hover-lift" data-aos="fade-up">
+        <div class="w-24 h-24 bg-dark-card rounded-3xl flex items-center justify-center mx-auto mb-8">
+          <i class="fas fa-shopping-cart text-accent text-4xl"></i>
+        </div>
+        <h3 class="text-3xl font-bold text-white mb-4">Your cart is empty</h3>
+        <p class="text-text-secondary text-lg mb-8">Add some products to get started with your purchase</p>
+        <a href="/products" class="bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center gap-3 hover-lift mx-auto w-fit">
+          <i class="fas fa-shopping-bag"></i>
+          <span>Browse Products</span>
+        </a>
+      </div>
+      <% } %>
+    </div>
+  </section>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const termsCheckbox = document.getElementById('termsCheckbox');
+      const paypalButton = document.getElementById('paypalButton');
+      const stripeButton = document.getElementById('stripeButton');
+      const cryptoButton = document.getElementById('cryptoButton');
+
+      if (termsCheckbox) {
+        termsCheckbox.addEventListener('change', function() {
+          const isChecked = termsCheckbox.checked;
+          if (paypalButton) paypalButton.disabled = !isChecked;
+          if (stripeButton) stripeButton.disabled = !isChecked;
+          if (cryptoButton) cryptoButton.disabled = !isChecked;
+        });
+      }
+    });
+
+    async function addBundleToCart(bundleId) {
+      try {
+        const response = await fetch(`/cart/add-bundle/${bundleId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'CSRF-Token': '<%= csrfToken %>'
+          }
+        });
+
+        if (response.ok) {
+          window.location.href = '/cart?message=bundle_added';
+        } else {
+          const data = await response.json();
+          alert(data.message || 'Failed to add bundle to cart');
+        }
+      } catch (error) {
+        console.error('Error adding bundle:', error);
+        alert('An error occurred while adding the bundle');
+      }
+    }
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

@@ -1,0 +1,434 @@
+<% if (settings.saleEventEnabled && settings.saleEventType) { %>
+<div id="sale-event-banner" class="sale-event-banner <%= settings.saleEventType %>-theme relative overflow-hidden">
+  <div class="absolute inset-0 sale-event-bg"></div>
+
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="flex items-center justify-center py-5 gap-4">
+      <div class="flex items-center gap-4 flex-1 justify-center">
+        <div class="sale-event-icon flex-shrink-0">
+          <% if (settings.saleEventType === 'black-friday') { %>
+          <i class="fas fa-tag text-4xl"></i>
+          <% } else if (settings.saleEventType === 'christmas') { %>
+          <i class="fas fa-gifts text-4xl"></i>
+          <% } else if (settings.saleEventType === 'easter') { %>
+          <i class="fas fa-egg text-4xl"></i>
+          <% } else if (settings.saleEventType === 'new-year') { %>
+          <i class="fas fa-champagne-glasses text-4xl"></i>
+          <% } else if (settings.saleEventType === 'summer') { %>
+          <i class="fas fa-sun text-4xl"></i>
+          <% } else if (settings.saleEventType === 'halloween') { %>
+          <i class="fas fa-ghost text-4xl"></i>
+          <% } else if (settings.saleEventType === 'valentines') { %>
+          <i class="fas fa-heart text-4xl"></i>
+          <% } else if (settings.saleEventType === 'cyber-monday') { %>
+          <i class="fas fa-laptop text-4xl"></i>
+          <% } %>
+        </div>
+
+        <div class="text-center">
+          <div class="sale-event-message font-black text-xl md:text-2xl mb-1">
+            <% if (settings.saleEventMessage) { %>
+            <%= settings.saleEventMessage %>
+            <% } else { %>
+            <% if (settings.saleEventType === 'black-friday') { %>
+            🔥 BLACK FRIDAY SALE - Up to 90% OFF on All Products!
+            <% } else if (settings.saleEventType === 'christmas') { %>
+            🎄 Christmas Sale - Special Holiday Discounts Inside!
+            <% } else if (settings.saleEventType === 'easter') { %>
+            🐰 Easter Sale - Hop Into Amazing Savings!
+            <% } else if (settings.saleEventType === 'new-year') { %>
+            🎉 New Year Sale - Start 2025 With Great Deals!
+            <% } else if (settings.saleEventType === 'summer') { %>
+            ☀️ Summer Sale - Hot Deals for the Season!
+            <% } else if (settings.saleEventType === 'halloween') { %>
+            👻 Halloween Sale - Spooky Savings Await!
+            <% } else if (settings.saleEventType === 'valentines') { %>
+            💝 Valentine's Sale - Fall in Love With Our Prices!
+            <% } else if (settings.saleEventType === 'cyber-monday') { %>
+            💻 Cyber Monday - Unbeatable Tech Deals!
+            <% } %>
+            <% } %>
+          </div>
+          <div class="text-sm font-semibold opacity-95">Limited time only - Shop now!</div>
+        </div>
+
+        <a href="/products" class="sale-event-cta px-8 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 whitespace-nowrap text-lg shadow-lg">
+          Shop Now →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sale-event-decorations"></div>
+  <div class="sale-event-shine"></div>
+</div>
+
+<style>
+  .sale-event-banner {
+    position: relative;
+    color: white;
+    animation: slideDown 0.5s ease-out;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .sale-event-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shine 3s infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      left: -100%;
+    }
+
+    50%,
+    100% {
+      left: 100%;
+    }
+  }
+
+  .black-friday-theme {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    border-bottom: 3px solid #FFD700;
+  }
+
+  .black-friday-theme .sale-event-icon {
+    color: #FFD700;
+    animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px #FFD700);
+  }
+
+  .black-friday-theme .sale-event-bg {
+    background: repeating-linear-gradient(45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 215, 0, 0.08) 10px,
+        rgba(255, 215, 0, 0.08) 20px);
+  }
+
+  .black-friday-theme .sale-event-cta {
+    background: #FFD700;
+    color: #000;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+  }
+
+  .black-friday-theme .sale-event-cta:hover {
+    background: #FFA500;
+    box-shadow: 0 6px 20px rgba(255, 165, 0, 0.6);
+  }
+
+  .black-friday-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .christmas-theme {
+    background: linear-gradient(135deg, #c41e3a 0%, #165B33 50%, #c41e3a 100%);
+    border-bottom: 3px solid #FFD700;
+  }
+
+  .christmas-theme .sale-event-icon {
+    animation: bounce 1s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+
+  .christmas-theme .sale-event-bg {
+    background-image:
+      radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: snow 20s linear infinite;
+  }
+
+  @keyframes snow {
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 20px 20px;
+    }
+  }
+
+  .christmas-theme .sale-event-cta {
+    background: white;
+    color: #c41e3a;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5);
+  }
+
+  .christmas-theme .sale-event-cta:hover {
+    background: #FFD700;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+  }
+
+  .christmas-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .easter-theme {
+    background: linear-gradient(135deg, #FF69B4 0%, #DDA0DD 50%, #87CEEB 100%);
+    border-bottom: 3px solid #FF69B4;
+  }
+
+  .easter-theme .sale-event-icon {
+    animation: wiggle 1s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+
+  @keyframes wiggle {
+
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+
+    25% {
+      transform: rotate(-10deg);
+    }
+
+    75% {
+      transform: rotate(10deg);
+    }
+  }
+
+  .easter-theme .sale-event-cta {
+    background: white;
+    color: #FF69B4;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.5);
+  }
+
+  .easter-theme .sale-event-cta:hover {
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.7);
+  }
+
+  .easter-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .new-year-theme {
+    background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #1e3a8a 100%);
+    border-bottom: 3px solid #FFD700;
+  }
+
+  .new-year-theme .sale-event-icon {
+    animation: sparkle 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+  }
+
+  @keyframes sparkle {
+
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    50% {
+      transform: scale(1.2);
+      opacity: 0.8;
+    }
+  }
+
+  .new-year-theme .sale-event-bg {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.25) 2px, transparent 2px);
+    background-size: 30px 30px;
+  }
+
+  .new-year-theme .sale-event-cta {
+    background: #FFD700;
+    color: #1e3a8a;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+  }
+
+  .new-year-theme .sale-event-cta:hover {
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.7);
+  }
+
+  .new-year-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .summer-theme {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FDC830 100%);
+    border-bottom: 3px solid #FF6B35;
+  }
+
+  .summer-theme .sale-event-icon {
+    animation: spin 3s linear infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .summer-theme .sale-event-cta {
+    background: white;
+    color: #FF6B35;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
+  }
+
+  .summer-theme .sale-event-cta:hover {
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.7);
+  }
+
+  .summer-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .halloween-theme {
+    background: linear-gradient(135deg, #FF6600 0%, #2D1B69 50%, #FF6600 100%);
+    border-bottom: 3px solid #FF6600;
+  }
+
+  .halloween-theme .sale-event-icon {
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 102, 0, 0.8));
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .halloween-theme .sale-event-cta {
+    background: #FF6600;
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 102, 0, 0.5);
+  }
+
+  .halloween-theme .sale-event-cta:hover {
+    box-shadow: 0 6px 20px rgba(255, 102, 0, 0.7);
+  }
+
+  .halloween-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(255, 102, 0, 0.5);
+  }
+
+  .valentines-theme {
+    background: linear-gradient(135deg, #FF1493 0%, #FF69B4 50%, #FFB6C1 100%);
+    border-bottom: 3px solid #FF1493;
+  }
+
+  .valentines-theme .sale-event-icon {
+    animation: heartbeat 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+
+  @keyframes heartbeat {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    25% {
+      transform: scale(1.1);
+    }
+
+    50% {
+      transform: scale(1);
+    }
+
+    75% {
+      transform: scale(1.1);
+    }
+  }
+
+  .valentines-theme .sale-event-cta {
+    background: white;
+    color: #FF1493;
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.5);
+  }
+
+  .valentines-theme .sale-event-cta:hover {
+    box-shadow: 0 6px 20px rgba(255, 20, 147, 0.7);
+  }
+
+  .valentines-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .cyber-monday-theme {
+    background: linear-gradient(135deg, #0066cc 0%, #00ccff 50%, #0066cc 100%);
+    border-bottom: 3px solid #00ccff;
+  }
+
+  .cyber-monday-theme .sale-event-bg {
+    background-image:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .cyber-monday-theme .sale-event-icon {
+    filter: drop-shadow(0 0 10px rgba(0, 204, 255, 0.8));
+  }
+
+  .cyber-monday-theme .sale-event-cta {
+    background: #00ccff;
+    color: #0066cc;
+    box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
+  }
+
+  .cyber-monday-theme .sale-event-cta:hover {
+    box-shadow: 0 6px 20px rgba(0, 204, 255, 0.7);
+  }
+
+  .cyber-monday-theme .sale-event-message {
+    text-shadow: 0 2px 10px rgba(0, 204, 255, 0.5);
+  }
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes bounce {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+</style>
+<% } %>

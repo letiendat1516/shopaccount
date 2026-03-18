@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Team Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    .custom-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .checkmark {
+      position: relative;
+      height: 20px;
+      width: 20px;
+      background-color: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 4px;
+      margin-right: 10px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+
+    .custom-checkbox input:checked~.checkmark {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:checked~.checkmark:after {
+      display: block;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-content {
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      min-width: 300px;
+      max-width: 500px;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .alert.fade-out {
+      animation: slideOutRight 0.3s ease forwards;
+    }
+
+    @keyframes slideOutRight {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .alert {
+        left: 20px;
+        right: 20px;
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'team' }) %>
+
+    <div class="container mx-auto px-4 sm:px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Team Management</h1>
+        <p class="text-text-secondary text-base sm:text-lg">Manage staff permissions and team access</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-4 sm:p-6 mb-8 hover-lift" data-aos="fade-up">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+          <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-user-plus text-accent"></i>
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-lg sm:text-xl font-bold text-white">Add Staff Member</h2>
+            <p class="text-text-secondary text-xs sm:text-sm">Grant permissions to a user</p>
+          </div>
+        </div>
+
+        <form action="/staff/team/add?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST" onsubmit="return handleFormSubmit(event)">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-white mb-2">
+                <i class="fas fa-id-card mr-2"></i>User ID or Discord ID
+              </label>
+              <input type="text" name="userId" placeholder="Enter User ID or Discord ID" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors text-sm sm:text-base" required />
+              <p class="text-xs text-text-muted mt-2">
+                <i class="fas fa-info-circle mr-1"></i>
+                Enter the User ID or Discord ID of the user you want to add as staff
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-white mb-3">
+                <i class="fas fa-key mr-2"></i>Permissions
+              </label>
+
+              <div class="space-y-3 bg-dark-card rounded-lg p-3 sm:p-4 max-h-[400px] overflow-y-auto">
+                <div class="pb-3 border-b border-white/10">
+                  <div class="text-xs font-bold text-accent uppercase tracking-wider mb-2">Products Management</div>
+                  <div class="space-y-2">
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canCreateProducts" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Create Products</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow creating new products</p>
+                      </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canUpdateProducts" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Update Products</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow editing existing products</p>
+                      </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canDeleteProducts" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Delete Products</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow deleting products</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="pb-3 border-b border-white/10">
+                  <div class="text-xs font-bold text-accent uppercase tracking-wider mb-2">User Management</div>
+                  <div class="space-y-2">
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canAddProducts" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Add Products to Users</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow adding products to user accounts</p>
+                      </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canRemoveProducts" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Remove Products from Users</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow removing products from user accounts</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="pb-3 border-b border-white/10">
+                  <div class="text-xs font-bold text-accent uppercase tracking-wider mb-2">Store Management</div>
+                  <div class="space-y-2">
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canViewInvoices" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">View Invoices</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow viewing all invoices</p>
+                      </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canManageDiscounts" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Manage Discount Codes</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow creating and managing discount codes</p>
+                      </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canManageSales" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Manage Sales</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow managing store-wide sales</p>
+                      </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="canManageAntiPiracy" value="true">
+                      <span class="checkmark"></span>
+                      <div class="flex-1 min-w-0">
+                        <span class="text-sm font-medium text-white">Manage Anti-Piracy</span>
+                        <p class="text-xs text-text-muted mt-0.5">Allow managing anti-piracy settings</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift text-sm sm:text-base">
+              <i class="fas fa-user-plus"></i>
+              <span>Add Staff Member</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="mb-8" data-aos="fade-up">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-3 mb-6">
+          <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-users text-accent"></i>
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-lg sm:text-xl font-bold text-white">Current Staff Members</h2>
+            <p class="text-text-secondary text-xs sm:text-sm"><%= staffMembers.length %> active staff member(s)</p>
+          </div>
+        </div>
+
+        <% if (staffMembers.length === 0) { %>
+        <div class="glass-effect rounded-2xl p-8 sm:p-12 text-center hover-lift">
+          <div class="stat-accent-bar rounded-t-2xl -mx-8 sm:-mx-12 -mt-8 sm:-mt-12 mb-8"></div>
+          <div class="w-20 h-20 sm:w-24 sm:h-24 bg-dark-card rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-user-shield text-accent text-3xl sm:text-4xl"></i>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">No Staff Members Yet</h3>
+          <p class="text-text-secondary text-base sm:text-lg">
+            Add your first staff member using the form above
+          </p>
+        </div>
+        <% } else { %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <% staffMembers.forEach((staffMember, index) => { 
+                            const displayName = staffMember.discordUsername || staffMember.username || staffMember.email.split('@')[0];
+                            const avatarUrl = staffMember.discordAvatar || '/images/default-avatar.png';
+                            const isOwner = config.OwnerID.includes(staffMember.getIdentifier());
+                        %>
+          <div class="glass-effect rounded-2xl overflow-hidden hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 50 %>">
+            <div class="stat-accent-bar"></div>
+
+            <div class="p-4 sm:p-6">
+              <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-white/10">
+                <img src="<%= avatarUrl %>" alt="<%= displayName %>'s avatar" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-accent flex-shrink-0" onerror="this.src='/images/default-avatar.png'">
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-white truncate mb-1" title="<%= displayName %>">
+                    <%= displayName %>
+                  </h3>
+                  <% if (isOwner) { %>
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 text-yellow-400 border border-yellow-500/30 rounded-lg text-xs font-bold">
+                    <i class="fas fa-crown"></i>
+                    Owner
+                  </span>
+                  <% } else { %>
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-accent/20 text-accent border border-accent/30 rounded-lg text-xs font-bold">
+                    <i class="fas fa-user-shield"></i>
+                    Staff
+                  </span>
+                  <% } %>
+                </div>
+              </div>
+
+              <div class="space-y-2 mb-4 sm:mb-6">
+                <div class="text-xs font-bold text-accent uppercase tracking-wider mb-2">Active Permissions</div>
+                <div class="flex flex-wrap gap-1.5">
+                  <% 
+                                            const perms = staffMember.staffPermissions || {};
+                                            const activePerms = [];
+                                            if (perms.canCreateProducts || isOwner) activePerms.push('Create');
+                                            if (perms.canUpdateProducts || isOwner) activePerms.push('Update');
+                                            if (perms.canDeleteProducts || isOwner) activePerms.push('Delete');
+                                            if (perms.canAddProducts || isOwner) activePerms.push('Add to Users');
+                                            if (perms.canRemoveProducts || isOwner) activePerms.push('Remove from Users');
+                                            if (perms.canViewInvoices || isOwner) activePerms.push('View Invoices');
+                                            if (perms.canManageDiscounts || isOwner) activePerms.push('Discounts');
+                                            if (perms.canManageSales || isOwner) activePerms.push('Sales');
+                                            if (perms.canManageAntiPiracy || isOwner) activePerms.push('Anti-Piracy');
+                                            
+                                            if (isOwner) {
+                                            %>
+                  <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded text-xs font-medium">
+                    Full Access
+                  </span>
+                  <% } else if (activePerms.length === 0) { %>
+                  <span class="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded text-xs font-medium">
+                    No Permissions
+                  </span>
+                  <% } else {
+                                                activePerms.slice(0, 3).forEach(perm => { %>
+                  <span class="px-2 py-1 bg-green-500/20 text-green-400 border border-green-500/30 rounded text-xs font-medium">
+                    <%= perm %>
+                  </span>
+                  <% });
+                                                if (activePerms.length > 3) { %>
+                  <span class="px-2 py-1 bg-accent/20 text-accent border border-accent/30 rounded text-xs font-medium">
+                    +<%= activePerms.length - 3 %> more
+                  </span>
+                  <% }
+                                            } %>
+                </div>
+
+                <div class="pt-3 border-t border-white/10 mt-3">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">User ID</div>
+                  <div class="text-xs sm:text-sm text-white font-mono truncate" title="<%= staffMember.getIdentifier() %>">
+                    <%= staffMember.getIdentifier() %>
+                  </div>
+                </div>
+              </div>
+
+              <% if (!isOwner) { %>
+              <div class="flex gap-2">
+                <button onclick='openEditModal(<%= JSON.stringify({
+                                                userId: staffMember.getIdentifier(),
+                                                name: displayName,
+                                                avatar: avatarUrl,
+                                                email: staffMember.email,
+                                                permissions: staffMember.staffPermissions || {}
+                                            }) %>)' class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm">
+                  <i class="fas fa-edit"></i>
+                  <span>Edit</span>
+                </button>
+                <form action="/staff/team/remove/<%= staffMember.getIdentifier() %>?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST" onsubmit="return confirmRemove(event, '<%= displayName %>')" class="flex-1">
+                  <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm">
+                    <i class="fas fa-user-minus"></i>
+                    <span>Remove</span>
+                  </button>
+                </form>
+              </div>
+              <% } else { %>
+              <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-2 sm:p-3 text-center">
+                <p class="text-xs text-yellow-400">
+                  <i class="fas fa-lock mr-1"></i>
+                  Owner permissions cannot be modified
+                </p>
+              </div>
+              <% } %>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal">
+    <div class="modal-content glass-effect rounded-2xl p-6 sm:p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl sm:text-2xl font-bold text-white">Edit Staff Member</h2>
+        <button onclick="closeEditModal()" class="text-text-secondary hover:text-white transition-colors">
+          <i class="fas fa-times text-xl sm:text-2xl"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10">
+        <img id="modalAvatar" src="" alt="Avatar" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-accent flex-shrink-0">
+        <div class="min-w-0">
+          <h3 id="modalName" class="text-lg sm:text-xl font-bold text-white mb-1 truncate"></h3>
+          <p id="modalEmail" class="text-text-secondary text-xs sm:text-sm truncate"></p>
+        </div>
+      </div>
+
+      <form id="editForm" method="POST" onsubmit="return handleEditSubmit(event)">
+        <div class="space-y-6">
+          <div class="bg-dark-card rounded-lg p-3 sm:p-4">
+            <div class="text-text-secondary mb-1 text-xs sm:text-sm">User ID</div>
+            <div id="modalUserId" class="text-white font-mono text-xs sm:text-sm break-all"></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-white mb-3">
+              <i class="fas fa-key mr-2"></i>Permissions
+            </label>
+
+            <div class="space-y-3 bg-dark-card rounded-lg p-3 sm:p-4 max-h-[400px] overflow-y-auto">
+              <div class="pb-3 border-b border-white/10">
+                <div class="text-xs font-bold text-accent uppercase tracking-wider mb-2">Products Management</div>
+                <div class="space-y-2">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canCreateProducts" value="true" id="modalCanCreateProducts">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Create Products</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow creating new products</p>
+                    </div>
+                  </label>
+
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canUpdateProducts" value="true" id="modalCanUpdateProducts">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Update Products</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow editing existing products</p>
+                    </div>
+                  </label>
+
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canDeleteProducts" value="true" id="modalCanDeleteProducts">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Delete Products</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow deleting products</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="pb-3 border-b border-white/10">
+                <div class="text-xs font-bold text-accent uppercase tracking-wider mb-2">User Management</div>
+                <div class="space-y-2">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canAddProducts" value="true" id="modalCanAddProducts">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Add Products to Users</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow adding products to user accounts</p>
+                    </div>
+                  </label>
+
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canRemoveProducts" value="true" id="modalCanRemoveProducts">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Remove Products from Users</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow removing products from user accounts</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="pb-3 border-b border-white/10">
+                <div class="text-xs font-bold text-accent uppercase tracking-wider mb-2">Store Management</div>
+                <div class="space-y-2">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canViewInvoices" value="true" id="modalCanViewInvoices">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">View Invoices</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow viewing all invoices</p>
+                    </div>
+                  </label>
+
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canManageDiscounts" value="true" id="modalCanManageDiscounts">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Manage Discount Codes</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow creating and managing discount codes</p>
+                    </div>
+                  </label>
+
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canManageSales" value="true" id="modalCanManageSales">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Manage Sales</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow managing store-wide sales</p>
+                    </div>
+                  </label>
+
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="canManageAntiPiracy" value="true" id="modalCanManageAntiPiracy">
+                    <span class="checkmark"></span>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm font-medium text-white">Manage Anti-Piracy</span>
+                      <p class="text-xs text-text-muted mt-0.5">Allow managing anti-piracy settings</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <button type="submit" class="flex-1 bg-accent hover:bg-accent/90 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 text-sm sm:text-base">
+              <i class="fas fa-save"></i>
+              <span>Save Changes</span>
+            </button>
+            <button type="button" onclick="closeEditModal()" class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 border border-white/10 text-sm sm:text-base">
+              <i class="fas fa-times"></i>
+              <span>Cancel</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    function showAlert(message, type = 'error') {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert glass-effect rounded-xl p-4 shadow-2xl border-2 ${
+                type === 'success' 
+                    ? 'border-green-500/50 bg-green-500/10' 
+                    : type === 'warning'
+                    ? 'border-yellow-500/50 bg-yellow-500/10'
+                    : 'border-red-500/50 bg-red-500/10'
+            }`;
+
+      const icon = type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-exclamation-circle';
+      const iconColor = type === 'success' ? 'text-green-400' : type === 'warning' ? 'text-yellow-400' : 'text-red-400';
+
+      alertDiv.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <i class="fas ${icon} ${iconColor} text-xl flex-shrink-0 mt-0.5"></i>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-semibold text-sm">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-text-secondary hover:text-white transition-colors flex-shrink-0">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+
+      document.body.appendChild(alertDiv);
+
+      setTimeout(() => {
+        alertDiv.classList.add('fade-out');
+        setTimeout(() => alertDiv.remove(), 300);
+      }, 5000);
+    }
+
+    function handleFormSubmit(event) {
+      const userId = event.target.userId.value.trim();
+      if (!userId) {
+        event.preventDefault();
+        showAlert('Please enter a User ID or Discord ID', 'error');
+        return false;
+      }
+      return true;
+    }
+
+    function handleEditSubmit(event) {
+      return true;
+    }
+
+    function confirmRemove(event, name) {
+      event.preventDefault();
+      if (confirm(`Are you sure you want to remove ${name} from staff? This action cannot be undone.`)) {
+        event.target.submit();
+      }
+      return false;
+    }
+
+    function openEditModal(data) {
+      document.getElementById('modalName').textContent = data.name;
+      document.getElementById('modalEmail').textContent = data.email;
+      document.getElementById('modalAvatar').src = data.avatar;
+      document.getElementById('modalUserId').textContent = data.userId;
+
+      document.getElementById('modalCanCreateProducts').checked = data.permissions.canCreateProducts || false;
+      document.getElementById('modalCanUpdateProducts').checked = data.permissions.canUpdateProducts || false;
+      document.getElementById('modalCanDeleteProducts').checked = data.permissions.canDeleteProducts || false;
+      document.getElementById('modalCanAddProducts').checked = data.permissions.canAddProducts || false;
+      document.getElementById('modalCanRemoveProducts').checked = data.permissions.canRemoveProducts || false;
+      document.getElementById('modalCanViewInvoices').checked = data.permissions.canViewInvoices || false;
+      document.getElementById('modalCanManageDiscounts').checked = data.permissions.canManageDiscounts || false;
+      document.getElementById('modalCanManageSales').checked = data.permissions.canManageSales || false;
+      document.getElementById('modalCanManageAntiPiracy').checked = data.permissions.canManageAntiPiracy || false;
+
+      document.getElementById('editForm').action = `/staff/team/edit/${data.userId}?_csrf=<%= encodeURIComponent(csrfToken) %>`;
+      document.getElementById('editModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('editModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeEditModal();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeEditModal();
+      }
+    });
+
+    <% if (typeof error !== 'undefined' && error) { %>
+    showAlert('<%= error %>', 'error');
+    <% } %>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+    showAlert('<%= success %>', 'success');
+    <% } %>
+  </script>
+</body>
+
+</html>

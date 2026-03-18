@@ -1,0 +1,922 @@
+<head>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<%- include('sale-event-banner') %>
+<%- include('holiday-effects') %>
+
+<style>
+  :root {
+    --accent-color: <%=settings.accentColor %>;
+    --accent-rgb: <%=accentColorRgb %>;
+  }
+
+  html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
+
+  html,
+  body {
+    font-family: '<%= settings.websiteFont || 'Rubik' %>', sans-serif;
+  }
+
+  .fas, .fab, .far, .fa {
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+    min-height: 64px;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  nav i {
+    width: 1em;
+    display: inline-block;
+  }
+
+  nav img {
+    display: block;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #0a0a0a;
+  }
+
+  .nav-glass {
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .accent-hover {
+    transition: all 0.3s ease;
+  }
+
+  .accent-hover:hover {
+    color: var(--accent-color) !important;
+  }
+
+  .cart-badge-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: .8;
+      transform: scale(1.05);
+    }
+  }
+
+.holiday-toggle-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(var(--accent-rgb), 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.holiday-toggle-btn:hover {
+  transform: scale(1.1);
+  border-color: rgba(var(--accent-rgb), 0.6);
+  box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.4);
+}
+
+.holiday-toggle-btn.disabled {
+  opacity: 0.5;
+  border-color: rgba(255, 255, 255, 0.2);
+  animation: none;
+}
+
+.holiday-toggle-btn.disabled:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.holiday-toggle-icon {
+  font-size: 24px;
+  transition: all 0.3s ease;
+}
+
+.holiday-toggle-btn:not(.disabled) .holiday-toggle-icon {
+  filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.6));
+}
+
+.holiday-toggle-btn.disabled .holiday-toggle-icon {
+  filter: grayscale(100%);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(var(--accent-rgb), 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 30px rgba(var(--accent-rgb), 0.4);
+  }
+}
+
+.holiday-toggle-tooltip {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.holiday-toggle-btn:hover .holiday-toggle-tooltip {
+  opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .holiday-toggle-btn {
+    width: 48px;
+    height: 48px;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .holiday-toggle-icon {
+    font-size: 20px;
+  }
+
+  .holiday-toggle-tooltip {
+    display: none;
+  }
+}
+
+  .holiday-nav-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType === 'christmas') { %>
+  .christmas-nav-lights-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .christmas-nav-light {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: nav-twinkle 2s infinite;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .christmas-nav-light:nth-child(1) { background: #ff0000; animation-delay: 0s; }
+  .christmas-nav-light:nth-child(2) { background: #00ff00; animation-delay: 0.5s; }
+  .christmas-nav-light:nth-child(3) { background: #0000ff; animation-delay: 1s; }
+  .christmas-nav-light:nth-child(4) { background: #ffff00; animation-delay: 1.5s; }
+  .christmas-nav-light:nth-child(5) { background: #ff00ff; animation-delay: 0.25s; }
+  .christmas-nav-light:nth-child(6) { background: #00ffff; animation-delay: 0.75s; }
+  .christmas-nav-light:nth-child(7) { background: #ff0000; animation-delay: 1.25s; }
+  .christmas-nav-light:nth-child(8) { background: #00ff00; animation-delay: 1.75s; }
+  .christmas-nav-light:nth-child(9) { background: #0000ff; animation-delay: 0.4s; }
+  .christmas-nav-light:nth-child(10) { background: #ffff00; animation-delay: 1.1s; }
+
+  @keyframes nav-twinkle {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 12px currentColor;
+    }
+    50% {
+      opacity: 0.3;
+      box-shadow: 0 0 4px currentColor;
+    }
+  }
+  <% } %>
+
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType === 'halloween') { %>
+  .halloween-nav-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      #ff6600 0%, 
+      #9933ff 25%, 
+      #ff6600 50%, 
+      #9933ff 75%, 
+      #ff6600 100%
+    );
+    background-size: 200% 100%;
+    animation: halloween-border-glow 3s linear infinite;
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.8), 0 0 40px rgba(153, 51, 255, 0.5);
+  }
+
+  @keyframes halloween-border-glow {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 0%;
+    }
+  }
+
+  .halloween-nav-accent {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    animation: halloween-float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(255, 102, 0, 0.9));
+    opacity: 0.8;
+  }
+
+  .halloween-nav-accent:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .halloween-nav-accent:nth-child(2) {
+    right: 10%;
+    animation-delay: 1.5s;
+  }
+
+  @keyframes halloween-float {
+    0%, 100% {
+      transform: translateY(-50%) scale(1);
+    }
+    50% {
+      transform: translateY(-50%) scale(1.15);
+    }
+  }
+  <% } %>
+
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType === 'valentines') { %>
+  .valentines-nav-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      #ff69b4 0%, 
+      #ff1493 50%, 
+      #ff69b4 100%
+    );
+    background-size: 200% 100%;
+    animation: valentines-border-pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+  }
+
+  @keyframes valentines-border-pulse {
+    0%, 100% {
+      background-position: 0% 0%;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+    }
+    50% {
+      background-position: 100% 0%;
+      box-shadow: 0 0 30px rgba(255, 105, 180, 1);
+    }
+  }
+
+  .valentines-nav-accent {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    animation: valentines-heartbeat 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(255, 105, 180, 0.8));
+    opacity: 0.7;
+  }
+
+  .valentines-nav-accent:nth-child(1) {
+    left: 12%;
+    animation-delay: 0s;
+  }
+
+  .valentines-nav-accent:nth-child(2) {
+    right: 12%;
+    animation-delay: 1s;
+  }
+
+  @keyframes valentines-heartbeat {
+    0%, 100% {
+      transform: translateY(-50%) scale(1);
+    }
+    10%, 30% {
+      transform: translateY(-50%) scale(1.2);
+    }
+    20%, 40% {
+      transform: translateY(-50%) scale(1);
+    }
+  }
+  <% } %>
+
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType === 'new-year') { %>
+  .new-year-nav-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      #ffd700 0%, 
+      #ffffff 25%, 
+      #ffd700 50%, 
+      #ffffff 75%, 
+      #ffd700 100%
+    );
+    background-size: 200% 100%;
+    animation: new-year-border-sparkle 2s linear infinite;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 255, 255, 0.6);
+  }
+
+  @keyframes new-year-border-sparkle {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 0%;
+    }
+  }
+
+  .new-year-nav-accent {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    animation: new-year-celebrate 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
+    opacity: 0.8;
+  }
+
+  .new-year-nav-accent:nth-child(1) {
+    left: 8%;
+    animation-delay: 0s;
+  }
+
+  .new-year-nav-accent:nth-child(2) {
+    right: 8%;
+    animation-delay: 1s;
+  }
+
+  @keyframes new-year-celebrate {
+    0%, 100% {
+      transform: translateY(-50%) scale(1) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-50%) scale(1.2) rotate(15deg);
+    }
+  }
+  <% } %>
+
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType === 'easter') { %>
+  .easter-nav-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      #ffb6c1 0%, 
+      #ffd700 25%, 
+      #98fb98 50%, 
+      #ffd700 75%, 
+      #ffb6c1 100%
+    );
+    background-size: 200% 100%;
+    animation: easter-border-flow 3s linear infinite;
+    box-shadow: 0 0 20px rgba(255, 182, 193, 0.6);
+  }
+
+  @keyframes easter-border-flow {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 0%;
+    }
+  }
+
+  .easter-nav-accent {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    animation: easter-hop 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(255, 182, 193, 0.8));
+    opacity: 0.7;
+  }
+
+  .easter-nav-accent:nth-child(1) {
+    left: 12%;
+    animation-delay: 0s;
+  }
+
+  .easter-nav-accent:nth-child(2) {
+    right: 12%;
+    animation-delay: 1s;
+  }
+
+  @keyframes easter-hop {
+    0%, 100% {
+      transform: translateY(-50%);
+    }
+    50% {
+      transform: translateY(-65%);
+    }
+  }
+  <% } %>
+
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType === 'black-friday') { %>
+  .black-friday-nav-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      #000000 0%, 
+      #ffd700 50%, 
+      #000000 100%
+    );
+    background-size: 200% 100%;
+    animation: black-friday-border-shine 2s linear infinite;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+
+  @keyframes black-friday-border-shine {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 0%;
+    }
+  }
+
+  .black-friday-nav-accent {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    animation: tag-flash 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
+    opacity: 0.8;
+  }
+
+  .black-friday-nav-accent:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .black-friday-nav-accent:nth-child(2) {
+    right: 10%;
+    animation-delay: 0.75s;
+  }
+
+  @keyframes tag-flash {
+    0%, 100% {
+      transform: translateY(-50%) scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translateY(-50%) scale(1.2);
+      opacity: 1;
+    }
+  }
+  <% } %>
+</style>
+
+<% if (settings?.siteBannerText && settings?.siteBannerText.length > 2) { %>
+<div class="bg-dark text-white px-6 py-4 text-center font-medium border-b" style="border-color: var(--accent-color); color: var(--accent-color); background: #0a0a0a;">
+  <%= settings.siteBannerText %>
+</div>
+<% } %>
+
+<nav class="nav-glass sticky top-0 z-50 transition-all duration-300">
+  <% if (settings.holidayEffectsEnabled && settings.holidayEffectsType) { %>
+  <div class="holiday-nav-overlay">
+    <% if (settings.holidayEffectsType === 'christmas') { %>
+    <div class="christmas-nav-lights-container">
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+      <div class="christmas-nav-light"></div>
+    </div>
+    
+    <% } else if (settings.holidayEffectsType === 'halloween') { %>
+    <div class="halloween-nav-border"></div>
+    <div class="halloween-nav-accent">🎃</div>
+    <div class="halloween-nav-accent">🎃</div>
+    
+    <% } else if (settings.holidayEffectsType === 'valentines') { %>
+    <div class="valentines-nav-border"></div>
+    <div class="valentines-nav-accent">💕</div>
+    <div class="valentines-nav-accent">💖</div>
+    
+    <% } else if (settings.holidayEffectsType === 'new-year') { %>
+    <div class="new-year-nav-border"></div>
+    <div class="new-year-nav-accent">🎉</div>
+    <div class="new-year-nav-accent">✨</div>
+
+    <% } else if (settings.holidayEffectsType === 'easter') { %>
+    <div class="easter-nav-border"></div>
+    <div class="easter-nav-accent">🥚</div>
+    <div class="easter-nav-accent">🐰</div>
+
+    <% } else if (settings.holidayEffectsType === 'black-friday') { %>
+    <div class="black-friday-nav-border"></div>
+    <div class="black-friday-nav-accent">🏷️</div>
+    <div class="black-friday-nav-accent">💰</div>
+    <% } %>
+  </div>
+  <% } %>
+  
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+
+      <button id="mobile-menu-btn" class="lg:hidden text-white hover:text-accent-color p-2 rounded-lg transition-colors">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+
+      <div class="hidden lg:flex items-center space-x-8">
+        <a href="/" class="text-white accent-hover font-medium px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/5 flex items-center gap-2">
+          <i class="fas fa-home text-sm"></i>
+          <span>Home</span>
+        </a>
+        <a href="/products" class="text-white accent-hover font-medium px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/5 flex items-center gap-2">
+          <i class="fas fa-box text-sm"></i>
+          <span>Products</span>
+        </a>
+        <a href="/reviews" class="text-white accent-hover font-medium px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/5 flex items-center gap-2">
+          <i class="fas fa-star text-sm"></i>
+          <span>Reviews</span>
+        </a>
+
+        <% if (settings.customNavTabs && settings.customNavTabs.length > 0) { %>
+        <% settings.customNavTabs.forEach(function(tab) { %>
+        <a href="<%= tab.link %>" target="_blank" rel="noopener noreferrer" class="text-white accent-hover font-medium px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/5 flex items-center gap-2">
+          <i class="fas fa-external-link-alt text-sm opacity-70"></i>
+          <span><%= tab.name %></span>
+        </a>
+        <% }); %>
+        <% } %>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <% if (user) { %>
+<a href="/cart" class="relative group">
+  <div class="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-all duration-300 hover:border-white/40" style="border-color: var(--accent-color); background: rgba(var(--accent-rgb), 0.1);">
+    <i class="fas fa-shopping-cart text-white group-hover:text-accent-color transition-colors" style="color: var(--accent-color);"></i>
+    <span class="hidden sm:inline text-white font-medium">Cart</span>
+    <% 
+      const cartProductCount = existingUser?.cart?.length || 0;
+      const cartBundleCount = existingUser?.cartBundles?.length || 0;
+      const totalCartCount = cartProductCount + cartBundleCount;
+    %>
+    <% if (totalCartCount > 0) { %>
+    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold cart-badge-pulse">
+      <%= totalCartCount %>
+    </span>
+    <% } %>
+  </div>
+</a>
+
+        <div class="relative" id="user-dropdown">
+          <button class="flex items-center gap-3 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-all duration-300 hover:border-white/40 group" style="border-color: var(--accent-color); background: rgba(var(--accent-rgb), 0.1);">
+            <% 
+    const displayUsername = existingUser?.username || existingUser?.discordUsername || user.username || 'User';
+    const userAvatar = existingUser?.avatar || user.avatar;
+    const userId = existingUser?.discordID || user.id;
+  %>
+
+            <% if (userAvatar && userId) { %>
+            <img src="https://cdn.discordapp.com/avatars/<%= userId %>/<%= userAvatar %>.webp?size=64" alt="Avatar" class="w-8 h-8 rounded-full border-2" style="border-color: var(--accent-color);">
+            <% } else { %>
+            <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-white text-sm"></i>
+            </div>
+            <% } %>
+            <span class="hidden sm:inline text-white font-medium max-w-24 truncate"><%= displayUsername %></span>
+            <i class="fas fa-chevron-down text-white text-sm group-hover:rotate-180 transition-transform duration-300" style="color: var(--accent-color);"></i>
+          </button>
+
+          <div id="user-dropdown-menu" class="absolute right-0 top-full mt-2 w-48 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl opacity-0 invisible transform translate-y-2 transition-all duration-300" style="background: rgba(10, 10, 10, 0.95);">
+            <div class="py-2">
+              <a href="/profile/<%= user.id %>" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 transition-colors">
+                <i class="fas fa-user w-4 text-center" style="color: var(--accent-color);"></i>
+                <span>Profile</span>
+              </a>
+              <% if (isOwner || (isStaff && staffPermissions && (
+  staffPermissions.canCreateProducts || 
+  staffPermissions.canUpdateProducts || 
+  staffPermissions.canDeleteProducts || 
+  staffPermissions.canAddProducts || 
+  staffPermissions.canRemoveProducts || 
+  staffPermissions.canViewInvoices || 
+  staffPermissions.canManageDiscounts || 
+  staffPermissions.canManageSales || 
+  staffPermissions.canManageAntiPiracy
+))) { %>
+              <a href="/staff/overview" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 transition-colors">
+                <i class="fas fa-cogs w-4 text-center" style="color: var(--accent-color);"></i>
+                <span>Staff Panel</span>
+              </a>
+              <% } %>
+              <div class="border-t border-white/10 my-2"></div>
+              <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition-colors">
+                <i class="fas fa-sign-out-alt w-4 text-center"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <% } else { %>
+        <a href="/login" class="flex items-center gap-2 px-6 py-2 border border-white/30 rounded-lg text-white hover:bg-white/10 transition-all duration-300 font-medium" style="border-color: var(--accent-color); color: var(--accent-color); background: rgba(var(--accent-rgb), 0.1);">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Sign In</span>
+        </a>
+        <% } %>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="lg:hidden overflow-hidden transition-all duration-300 max-h-0">
+      <div class="py-4 space-y-2 border-t border-white/10">
+        <a href="/" class="block px-4 py-3 text-white accent-hover font-medium rounded-lg transition-all duration-300 hover:bg-white/10 flex items-center gap-3">
+          <i class="fas fa-home text-sm"></i>
+          <span>Home</span>
+        </a>
+        <a href="/products" class="block px-4 py-3 text-white accent-hover font-medium rounded-lg transition-all duration-300 hover:bg-white/10 flex items-center gap-3">
+          <i class="fas fa-box text-sm"></i>
+          <span>Products</span>
+        </a>
+        <a href="/reviews" class="block px-4 py-3 text-white accent-hover font-medium rounded-lg transition-all duration-300 hover:bg-white/10 flex items-center gap-3">
+          <i class="fas fa-star text-sm"></i>
+          <span>Reviews</span>
+        </a>
+
+        <% if (settings.customNavTabs && settings.customNavTabs.length > 0) { %>
+        <% settings.customNavTabs.forEach(function(tab) { %>
+        <a href="<%= tab.link %>" target="_blank" rel="noopener noreferrer" class="block px-4 py-3 text-white accent-hover font-medium rounded-lg transition-all duration-300 hover:bg-white/10 flex items-center gap-3">
+          <i class="fas fa-external-link-alt text-sm opacity-70"></i>
+          <span><%= tab.name %></span>
+        </a>
+        <% }); %>
+        <% } %>
+
+        <% if (!user) { %>
+        <div class="pt-2 border-t border-white/10 mt-4">
+          <a href="/login" class="block px-4 py-3 text-white font-medium rounded-lg transition-all duration-300 hover:bg-white/10 flex items-center gap-3" style="color: var(--accent-color);">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Sign In</span>
+          </a>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<% if (settings.holidayEffectsEnabled && settings.holidayEffectsType) { %>
+<button id="holiday-effects-toggle" class="holiday-toggle-btn" aria-label="Toggle holiday effects">
+  <span class="holiday-toggle-tooltip" id="holiday-tooltip">Disable Holiday Effects</span>
+  <span class="holiday-toggle-icon" id="holiday-icon">
+    <% if (settings.holidayEffectsType === 'christmas') { %>❄️
+    <% } else if (settings.holidayEffectsType === 'halloween') { %>🎃
+    <% } else if (settings.holidayEffectsType === 'valentines') { %>💕
+    <% } else if (settings.holidayEffectsType === 'new-year') { %>🎉
+    <% } else if (settings.holidayEffectsType === 'easter') { %>🐰
+    <% } else if (settings.holidayEffectsType === 'black-friday') { %>🏷️
+    <% } %>
+  </span>
+</button>
+<% } %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuIcon = mobileMenuBtn.querySelector('i');
+
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', function() {
+        const isOpen = mobileMenu.style.maxHeight && mobileMenu.style.maxHeight !== '0px';
+
+        if (isOpen) {
+          mobileMenu.style.maxHeight = '0px';
+          mobileMenuIcon.className = 'fas fa-bars text-xl';
+        } else {
+          mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+          mobileMenuIcon.className = 'fas fa-times text-xl';
+        }
+      });
+    }
+
+    const userDropdown = document.getElementById('user-dropdown');
+    const userDropdownMenu = document.getElementById('user-dropdown-menu');
+
+    if (userDropdown && userDropdownMenu) {
+      const userDropdownBtn = userDropdown.querySelector('button');
+
+      userDropdownBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isVisible = userDropdownMenu.classList.contains('opacity-100');
+
+        if (isVisible) {
+          userDropdownMenu.classList.remove('opacity-100', 'visible');
+          userDropdownMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+        } else {
+          userDropdownMenu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+          userDropdownMenu.classList.add('opacity-100', 'visible');
+        }
+      });
+
+      document.addEventListener('click', function() {
+        userDropdownMenu.classList.remove('opacity-100', 'visible');
+        userDropdownMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+      });
+
+      userDropdownMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+
+    const mobileNavLinks = document.querySelectorAll('#mobile-menu a');
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (mobileMenu) {
+          mobileMenu.style.maxHeight = '0px';
+          mobileMenuIcon.className = 'fas fa-bars text-xl';
+        }
+      });
+    });
+
+    let lastScrollY = window.scrollY;
+    const navbar = document.querySelector('nav');
+
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 100) {
+        navbar.classList.add('bg-gray-900/95');
+        navbar.classList.remove('bg-transparent');
+      } else {
+        navbar.classList.remove('bg-gray-900/95');
+        navbar.classList.add('bg-transparent');
+      }
+
+      lastScrollY = currentScrollY;
+    });
+  });
+  
+const holidayToggleBtn = document.getElementById('holiday-effects-toggle');
+const holidayTooltip = document.getElementById('holiday-tooltip');
+const holidayEffectsContainer = document.getElementById('holiday-effects-container');
+const holidayNavOverlay = document.querySelector('.holiday-nav-overlay');
+const holidayFooterOverlay = document.querySelector('.holiday-footer-overlay');
+
+if (holidayToggleBtn) {
+  const savedState = sessionStorage.getItem('holidayEffectsEnabled');
+  
+  if (savedState === 'false') {
+    disableHolidayEffects();
+  }
+
+  holidayToggleBtn.addEventListener('click', function() {
+    const isCurrentlyEnabled = !holidayToggleBtn.classList.contains('disabled');
+    
+    if (isCurrentlyEnabled) {
+      disableHolidayEffects();
+      sessionStorage.setItem('holidayEffectsEnabled', 'false');
+    } else {
+      enableHolidayEffects();
+      sessionStorage.setItem('holidayEffectsEnabled', 'true');
+    }
+  });
+
+  function disableHolidayEffects() {
+    holidayToggleBtn.classList.add('disabled');
+    holidayTooltip.textContent = 'Enable Holiday Effects';
+    
+    if (holidayEffectsContainer) {
+      holidayEffectsContainer.style.display = 'none';
+    }
+    
+    if (holidayNavOverlay) {
+      holidayNavOverlay.style.display = 'none';
+    }
+    
+    if (holidayFooterOverlay) {
+      holidayFooterOverlay.style.display = 'none';
+    }
+
+    const christmasLights = document.querySelector('.christmas-nav-lights-container');
+    const halloweenBorder = document.querySelector('.halloween-nav-border');
+    const valentinesBorder = document.querySelector('.valentines-nav-border');
+    const newYearBorder = document.querySelector('.new-year-nav-border');
+    const easterBorder = document.querySelector('.easter-nav-border');
+    const blackFridayBorder = document.querySelector('.black-friday-nav-border');
+    const navAccents = document.querySelectorAll('.halloween-nav-accent, .valentines-nav-accent, .new-year-nav-accent, .easter-nav-accent, .black-friday-nav-accent');
+
+    if (christmasLights) christmasLights.style.display = 'none';
+    if (halloweenBorder) halloweenBorder.style.display = 'none';
+    if (valentinesBorder) valentinesBorder.style.display = 'none';
+    if (newYearBorder) newYearBorder.style.display = 'none';
+    if (easterBorder) easterBorder.style.display = 'none';
+    if (blackFridayBorder) blackFridayBorder.style.display = 'none';
+    navAccents.forEach(accent => accent.style.display = 'none');
+  }
+
+  function enableHolidayEffects() {
+    holidayToggleBtn.classList.remove('disabled');
+    holidayTooltip.textContent = 'Disable Holiday Effects';
+    
+    if (holidayEffectsContainer) {
+      holidayEffectsContainer.style.display = 'block';
+    }
+    
+    if (holidayNavOverlay) {
+      holidayNavOverlay.style.display = 'block';
+    }
+    
+    if (holidayFooterOverlay) {
+      holidayFooterOverlay.style.display = 'block';
+    }
+
+    const christmasLights = document.querySelector('.christmas-nav-lights-container');
+    const halloweenBorder = document.querySelector('.halloween-nav-border');
+    const valentinesBorder = document.querySelector('.valentines-nav-border');
+    const newYearBorder = document.querySelector('.new-year-nav-border');
+    const easterBorder = document.querySelector('.easter-nav-border');
+    const blackFridayBorder = document.querySelector('.black-friday-nav-border');
+    const navAccents = document.querySelectorAll('.halloween-nav-accent, .valentines-nav-accent, .new-year-nav-accent, .easter-nav-accent, .black-friday-nav-accent');
+
+    if (christmasLights) christmasLights.style.display = 'flex';
+    if (halloweenBorder) halloweenBorder.style.display = 'block';
+    if (valentinesBorder) valentinesBorder.style.display = 'block';
+    if (newYearBorder) newYearBorder.style.display = 'block';
+    if (easterBorder) easterBorder.style.display = 'block';
+    if (blackFridayBorder) blackFridayBorder.style.display = 'block';
+    navAccents.forEach(accent => accent.style.display = 'block');
+  }
+}
+
+</script>

@@ -1,0 +1,137 @@
+<div class="bg-dark-lighter border-b border-accent/30 mb-8">
+  <div class="container mx-auto px-6 py-6">
+    <div class="glass-effect rounded-2xl p-6">
+      <div class="text-center mb-6">
+        <h2 class="text-3xl font-bold text-accent uppercase tracking-wider">Staff Panel</h2>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="/staff/overview" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'overview' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-tachometer-alt text-lg transition-transform group-hover:scale-110"></i>
+          <span>Overview</span>
+        </a>
+
+        <% if (staffPermissions && (staffPermissions.canCreateProducts || staffPermissions.canUpdateProducts || staffPermissions.canDeleteProducts)) { %>
+        <a href="/staff/products" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'products' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-box text-lg transition-transform group-hover:scale-110"></i>
+          <span>Products</span>
+        </a>
+        <% } %>
+
+        <% if (staffPermissions && (staffPermissions.canCreateProducts || staffPermissions.canUpdateProducts || staffPermissions.canDeleteProducts)) { %>
+        <a href="/staff/bundles" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'bundles' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-box-open text-lg transition-transform group-hover:scale-110"></i>
+          <span>Bundles</span>
+        </a>
+        <% } %>
+
+        <% if (staffPermissions && staffPermissions.canManageDiscounts) { %>
+        <a href="/staff/discount-codes" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'discount-codes' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-tags text-lg transition-transform group-hover:scale-110"></i>
+          <span>Discount Codes</span>
+        </a>
+        <% } %>
+
+        <% if (staffPermissions && staffPermissions.canViewInvoices) { %>
+        <a href="/staff/invoices" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'invoices' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-file-invoice-dollar text-lg transition-transform group-hover:scale-110"></i>
+          <span>Invoices</span>
+        </a>
+        <% } %>
+
+        <% if (staffPermissions && staffPermissions.canManageAntiPiracy) { %>
+        <a href="/staff/anti-piracy" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'anti-piracy' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-shield-alt text-lg transition-transform group-hover:scale-110"></i>
+          <span>Anti-Piracy</span>
+        </a>
+        <% } %>
+
+        <% if (isOwner) { %>
+        <a href="/staff/team" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'team' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-user-shield text-lg transition-transform group-hover:scale-110"></i>
+          <span>Team</span>
+        </a>
+        <% } %>
+
+        <% if (isOwner) { %>
+        <a href="/staff/users" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'users' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-users text-lg transition-transform group-hover:scale-110"></i>
+          <span>Users</span>
+        </a>
+        <% } %>
+
+        <% if (staffPermissions && staffPermissions.canManageSales) { %>
+        <a href="/staff/sales" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'sales' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-percent text-lg transition-transform group-hover:scale-110"></i>
+          <span>Sales</span>
+        </a>
+        <% } %>
+
+        <% if (isOwner) { %>
+        <a href="/staff/page-customization" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'page-customization' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-paint-brush text-lg transition-transform group-hover:scale-110"></i>
+          <span>Page Customization</span>
+        </a>
+
+        <a href="/staff/settings" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'settings' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-cogs text-lg transition-transform group-hover:scale-110"></i>
+          <span>Settings</span>
+        </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .text-accent {
+    color: var(--accent-color);
+  }
+
+  .bg-accent {
+    background-color: var(--accent-color);
+  }
+
+  .hover\:bg-accent\/15:hover {
+    background-color: rgba(var(--accent-rgb), 0.15);
+  }
+
+  .hover\:border-accent:hover {
+    border-color: var(--accent-color);
+  }
+
+  .border-accent\/30 {
+    border-color: rgba(var(--accent-rgb), 0.3);
+  }
+
+  @media screen and (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .glass-effect {
+      padding: 1rem;
+    }
+
+    .flex-wrap>a {
+      flex: 1 1 calc(50% - 0.75rem);
+      min-width: 140px;
+    }
+
+    .flex-wrap>a span:last-child {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .flex-wrap {
+      flex-direction: column;
+    }
+
+    .flex-wrap>a {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+</style>

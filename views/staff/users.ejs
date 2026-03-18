@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Users</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.625rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .auth-badge-discord {
+      background-color: rgba(88, 101, 242, 0.2);
+      color: #5865F2;
+      border: 1px solid rgba(88, 101, 242, 0.3);
+    }
+
+    .auth-badge-local {
+      background-color: rgba(var(--accent-rgb), 0.2);
+      color: var(--accent-color);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+    }
+
+    .auth-badge-both {
+      background: linear-gradient(135deg, rgba(88, 101, 242, 0.2) 0%, rgba(var(--accent-rgb), 0.2) 100%);
+      color: #ffffff;
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'users' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">User Management</h1>
+        <p class="text-text-secondary text-lg">View and manage all user accounts registered on your platform.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-6 mb-8 hover-lift" data-aos="fade-up">
+        <form method="GET" action="/staff/users" class="flex flex-col md:flex-row gap-4">
+          <input type="text" name="search" value="<%= search %>" placeholder="Search by username, email, User ID, or Discord ID..." class="flex-1 bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" />
+
+          <select name="sortBy" class="bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors md:w-64">
+            <option value="joinedAt" <%= sortBy === 'joinedAt' ? 'selected' : '' %>>Sort by Join Date</option>
+            <option value="totalSpent" <%= sortBy === 'totalSpent' ? 'selected' : '' %>>Sort by Total Spent</option>
+            <option value="authMethod" <%= sortBy === 'authMethod' ? 'selected' : '' %>>Sort by Auth Method</option>
+          </select>
+
+          <select name="authFilter" class="bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors md:w-48">
+            <option value="all" <%= authFilter === 'all' ? 'selected' : '' %>>All Users</option>
+            <option value="discord" <%= authFilter === 'discord' ? 'selected' : '' %>>Discord Only</option>
+            <option value="local" <%= authFilter === 'local' ? 'selected' : '' %>>Local Only</option>
+            <option value="both" <%= authFilter === 'both' ? 'selected' : '' %>>Both Methods</option>
+          </select>
+
+          <button type="submit" class="bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift md:w-auto">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+          </button>
+        </form>
+      </div>
+
+      <% if (users.length === 0) { %>
+      <div class="glass-effect rounded-2xl p-12 text-center hover-lift" data-aos="fade-up">
+        <div class="stat-accent-bar rounded-t-2xl -mx-12 -mt-12 mb-8"></div>
+        <div class="w-24 h-24 bg-dark-card rounded-3xl flex items-center justify-center mx-auto mb-6">
+          <i class="fas fa-users text-accent text-4xl"></i>
+        </div>
+        <h3 class="text-3xl font-bold text-white mb-4">No users found</h3>
+        <p class="text-text-secondary text-lg mb-8">
+          There are no users matching your search criteria. Try adjusting your search or view all users.
+        </p>
+        <a href="/staff/users" class="inline-flex items-center gap-3 bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover-lift">
+          <i class="fas fa-users"></i>
+          <span>View All Users</span>
+        </a>
+      </div>
+      <% } else { %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% users.forEach((userItem, index) => { 
+                        const isDiscordUser = userItem.authMethod === 'discord' || userItem.authMethod === 'both';
+                        const isLocalUser = userItem.authMethod === 'local' || userItem.authMethod === 'both';
+                        const displayName = userItem.discordUsername || userItem.username || userItem.email.split('@')[0];
+                        const avatarUrl = userItem.discordAvatar || '/images/default-avatar.png';
+                    %>
+        <div class="glass-effect rounded-2xl overflow-hidden hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 50 %>">
+          <div class="stat-accent-bar"></div>
+
+          <div class="p-6">
+            <div class="flex items-center gap-4 mb-6 pb-6 border-b border-white/10">
+              <img src="<%= avatarUrl %>" alt="<%= displayName %>'s avatar" class="w-16 h-16 rounded-full border-2 border-accent flex-shrink-0" onerror="this.src='/images/default-avatar.png'">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold text-white truncate mb-1" title="<%= displayName %>">
+                  <%= displayName %>
+                </h3>
+
+                <% if (userItem.authMethod === 'discord') { %>
+                <span class="auth-badge auth-badge-discord">
+                  <i class="fab fa-discord"></i>
+                  Discord
+                </span>
+                <% } else if (userItem.authMethod === 'local') { %>
+                <span class="auth-badge auth-badge-local">
+                  <i class="fas fa-envelope"></i>
+                  Email
+                </span>
+                <% } else if (userItem.authMethod === 'both') { %>
+                <span class="auth-badge auth-badge-both">
+                  <i class="fas fa-link"></i>
+                  Discord + Email
+                </span>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="space-y-3 mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-envelope text-accent text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-0.5">Email</div>
+                  <div class="text-sm text-white truncate" title="<%= userItem.email %>">
+                    <%= userItem.email %>
+                    <% if (isLocalUser && userItem.emailVerified) { %>
+                    <i class="fas fa-check-circle text-green-400 ml-1" title="Email Verified"></i>
+                    <% } else if (isLocalUser && !userItem.emailVerified) { %>
+                    <i class="fas fa-exclamation-circle text-yellow-400 ml-1" title="Email Not Verified"></i>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <% if (isLocalUser && userItem.username) { %>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-user text-accent text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-0.5">Username</div>
+                  <div class="text-sm text-white truncate" title="<%= userItem.username %>">
+                    <%= userItem.username %>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+
+<div class="flex items-center gap-3">
+  <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+    <i class="<%= isDiscordUser ? 'fab fa-discord' : 'fas fa-id-card' %> text-accent text-sm"></i>
+  </div>
+  <div class="flex-1 min-w-0">
+    <div class="text-xs text-text-secondary uppercase tracking-wider mb-0.5">
+      <%= isDiscordUser ? 'Discord ID' : 'User ID' %>
+    </div>
+    <div class="text-sm text-white font-mono truncate" title="<%= userItem.displayId %>">
+      <%= userItem.displayId %>
+    </div>
+  </div>
+</div>
+
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-calendar-alt text-accent text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-0.5">Joined</div>
+                  <div class="text-sm text-white">
+                    <%= userItem.joinedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-coins text-accent text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-0.5">Total Spent</div>
+                  <div class="text-sm font-bold text-accent">
+                    <%= settings.currencySymbol %><%= userItem.totalSpent.toFixed(2) %>
+                  </div>
+                </div>
+              </div>
+
+              <% if (userItem.banned) { %>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-ban text-red-400 text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs text-text-secondary uppercase tracking-wider mb-0.5">Status</div>
+                  <div class="text-sm font-bold text-red-400">
+                    Banned
+                  </div>
+                </div>
+              </div>
+              <% } %>
+            </div>
+
+            <form action="/profile/<%= userItem.discordID || userItem._id %>" method="GET" class="pt-6 border-t border-white/10">
+              <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover-lift">
+                <i class="fas fa-eye"></i>
+                <span>View Profile</span>
+              </button>
+            </form>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+
+      <div class="flex justify-center mt-12" data-aos="fade-up">
+        <nav class="glass-effect rounded-xl overflow-hidden inline-flex">
+          <% if (currentPage > 1) { %>
+          <a href="/staff/users?page=<%= currentPage - 1 %>&search=<%= search %>&sortBy=<%= sortBy %>&authFilter=<%= authFilter %>" class="px-4 py-3 bg-dark-card hover:bg-accent text-text-secondary hover:text-white transition-all duration-300 border-r border-white/10">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+          <% } else { %>
+          <span class="px-4 py-3 bg-dark-card text-text-muted cursor-not-allowed border-r border-white/10">
+            <i class="fas fa-chevron-left"></i>
+          </span>
+          <% } %>
+
+          <% 
+                            let startPage = Math.max(1, currentPage - 2);
+                            let endPage = Math.min(totalPages, currentPage + 2);
+                            
+                            if (startPage > 1) { 
+                        %>
+          <a href="/staff/users?page=1&search=<%= search %>&sortBy=<%= sortBy %>&authFilter=<%= authFilter %>" class="px-4 py-3 bg-dark-card hover:bg-accent text-text-secondary hover:text-white transition-all duration-300 border-r border-white/10">
+            1
+          </a>
+
+          <% if (startPage > 2) { %>
+          <span class="px-4 py-3 bg-dark-card text-text-muted border-r border-white/10">...</span>
+          <% } %>
+          <% } %>
+
+          <% for (let i = startPage; i <= endPage; i++) { %>
+          <a href="/staff/users?page=<%= i %>&search=<%= search %>&sortBy=<%= sortBy %>&authFilter=<%= authFilter %>" class="px-4 py-3 <%= currentPage === i ? 'bg-accent text-white' : 'bg-dark-card hover:bg-accent text-text-secondary hover:text-white' %> transition-all duration-300 border-r border-white/10 font-semibold">
+            <%= i %>
+          </a>
+          <% } %>
+
+          <% if (endPage < totalPages) { %>
+          <% if (endPage < totalPages - 1) { %>
+          <span class="px-4 py-3 bg-dark-card text-text-muted border-r border-white/10">...</span>
+          <% } %>
+
+          <a href="/staff/users?page=<%= totalPages %>&search=<%= search %>&sortBy=<%= sortBy %>&authFilter=<%= authFilter %>" class="px-4 py-3 bg-dark-card hover:bg-accent text-text-secondary hover:text-white transition-all duration-300 border-r border-white/10">
+            <%= totalPages %>
+          </a>
+          <% } %>
+
+          <% if (currentPage < totalPages) { %>
+          <a href="/staff/users?page=<%= currentPage + 1 %>&search=<%= search %>&sortBy=<%= sortBy %>&authFilter=<%= authFilter %>" class="px-4 py-3 bg-dark-card hover:bg-accent text-text-secondary hover:text-white transition-all duration-300">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+          <% } else { %>
+          <span class="px-4 py-3 bg-dark-card text-text-muted cursor-not-allowed">
+            <i class="fas fa-chevron-right"></i>
+          </span>
+          <% } %>
+        </nav>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+  </script>
+</body>
+
+</html>

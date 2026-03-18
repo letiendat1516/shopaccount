@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= userInfo.username || userInfo.discordUsername || 'User' %>'s Profile - <%= settings.storeName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+
+  <% 
+    const displayName = userInfo.username || userInfo.discordUsername || 'User';
+    const userId = userInfo.discordID || userInfo._id.toString();
+    let avatarUrl = '/images/default-avatar.png';
+    
+    if (fullUser && fullUser.avatar && userInfo.discordID) {
+      avatarUrl = `https://cdn.discordapp.com/avatars/${userInfo.discordID}/${fullUser.avatar}.png`;
+    }
+  %>
+
+  <meta property="og:title" content="<%= displayName %>'s Profile | <%= settings.storeName %>" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:url" content="<%= config.baseURL %>/profile/<%= userId %>" />
+  <meta property="og:image" content="<%= avatarUrl %>" />
+  <meta property="og:description" content="User profile for <%= displayName %> on <%= settings.storeName %>" />
+  <meta name="theme-color" content="<%= settings.accentColor %>">
+  <meta property="og:site_name" content="<%= settings.storeName %>" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="profile:username" content="<%= displayName %>" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fade-in 0.3s ease-out forwards;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .markdown-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #ffffff;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3,
+    .markdown-body h4 {
+      color: #ffffff;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body p {
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    .markdown-body a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    .markdown-body a:hover {
+      text-decoration: underline;
+    }
+
+    .markdown-body code {
+      background-color: #161b22;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .product-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-color), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.1) 0%, rgba(26, 26, 26, 0.8) 100%);
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter py-12">
+    <div class="container mx-auto px-6 max-w-7xl">
+
+      <div class="glass-effect rounded-3xl overflow-hidden mb-8" data-aos="fade-up">
+        <div class="relative h-32 bg-gradient-to-r from-accent/20 via-accent/10 to-transparent">
+          <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.02&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); opacity: 0.3;"></div>
+        </div>
+
+        <div class="px-8 pb-8 -mt-16">
+          <div class="flex flex-col md:flex-row gap-6 items-start md:items-end">
+            <div class="relative">
+              <img src="<%= avatarUrl %>" alt="<%= displayName %>" class="w-32 h-32 rounded-2xl border-4 border-dark-lighter shadow-2xl ring-2 ring-accent/50" onerror="this.src='/images/default-avatar.png'">
+              <% if (userInfo.authMethod && !isPublicView) { %>
+              <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-accent rounded-full flex items-center justify-center border-4 border-dark-lighter">
+                <i class="<%= userInfo.authMethod === 'discord' ? 'fab' : 'fas' %> fa-<%= userInfo.authMethod === 'discord' ? 'discord' : userInfo.authMethod === 'local' ? 'envelope' : 'link' %> text-white text-sm"></i>
+              </div>
+              <% } %>
+            </div>
+
+            <div class="flex-1 relative z-10">
+              <div class="flex items-center gap-2 mb-1">
+                <p class="text-xs text-text-muted font-mono" style="user-select: text; -webkit-user-select: text; -moz-user-select: text;" title="<%= userId %>">
+                  ID: <%= userId %>
+                </p>
+                <button onclick="copyUserId('<%= userId %>')" id="copyUserIdBtn" style="position: relative; z-index: 100;" class="px-2 py-1 bg-dark-card hover:bg-accent text-text-muted hover:text-white rounded text-xs transition-all duration-300 flex items-center gap-1 cursor-pointer">
+                  <i class="fas fa-copy text-[10px]"></i>
+                  <span class="text-[10px]">Copy</span>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-3 mb-2">
+                <h1 class="text-3xl md:text-4xl font-black text-white" style="user-select: text; -webkit-user-select: text; -moz-user-select: text; position: relative; z-index: 10;"><%= displayName %></h1>
+
+                <% if (isBanned) { %>
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-500/20 border border-red-500/30 rounded-lg text-sm font-semibold text-red-400 animate-pulse">
+                  <i class="fas fa-ban"></i>
+                  <span>BANNED</span>
+                </span>
+                <% } %>
+
+                <% if (userInfo.staffPermissions && userInfo.staffPermissions.isStaff) { %>
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-accent/20 border border-accent/30 rounded-lg text-sm font-semibold text-accent shadow-lg">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>STAFF</span>
+                </span>
+                <% } %>
+              </div>
+
+              <% if (!isPublicView) { %>
+              <div class="flex flex-wrap gap-3 mb-4">
+                <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
+                  <i class="fas fa-calendar-alt text-accent"></i>
+                  Joined <%= userInfo.joinedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) %>
+                </span>
+                <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
+                  <i class="fas fa-wallet text-accent"></i>
+                  <%= settings.currencySymbol %><%= userInfo.totalSpent.toFixed(2) %> spent
+                </span>
+                <% if (userInfo.authMethod) { %>
+                <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
+                  <i class="fas fa-shield-alt text-accent"></i>
+                  <%= userInfo.authMethod === 'discord' ? 'Discord' : userInfo.authMethod === 'local' ? 'Email' : 'Linked' %> Account
+                </span>
+                <% } %>
+              </div>
+              <% } else { %>
+              <div class="flex flex-wrap gap-3 mb-4">
+                <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
+                  <i class="fas fa-calendar-alt text-accent"></i>
+                  Joined <%= userInfo.joinedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) %>
+                </span>
+              </div>
+              <% } %>
+            </div>
+
+            <% if (staffPermissions && (staffPermissions.canBanUser || staffPermissions.canTransferProducts || staffPermissions.canViewDownloadHistory)) { %>
+            <div class="flex flex-wrap gap-2">
+              <% if (staffPermissions.canBanUser) { %>
+              <form action="/profile/<%= userId %>/ban" method="POST" class="inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <% if (user.id === userId) { %>
+                <button type="button" disabled class="px-4 py-2 bg-gray-600 text-gray-400 rounded-lg cursor-not-allowed text-sm">
+                  <i class="fas fa-ban"></i>
+                </button>
+                <% } else if (isBanned) { %>
+                <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-300 text-sm hover-lift" title="Unban User">
+                  <i class="fas fa-check-circle"></i>
+                  <span class="ml-1">Unban</span>
+                </button>
+                <% } else { %>
+                <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-300 text-sm hover-lift" title="Ban User">
+                  <i class="fas fa-ban"></i>
+                  <span class="ml-1">Ban</span>
+                </button>
+                <% } %>
+              </form>
+              <% } %>
+
+              <% if (staffPermissions.canTransferProducts) { %>
+              <button onclick="openTransferModal()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-all duration-300 text-sm hover-lift">
+                <i class="fas fa-exchange-alt"></i>
+              </button>
+              <% } %>
+
+              <% if (staffPermissions.canViewDownloadHistory) { %>
+              <a href="/download-history/<%= userId %>" class="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 text-sm hover-lift">
+                <i class="fas fa-history"></i>
+              </a>
+              <% } %>
+            </div>
+            <% } %>
+          </div>
+
+          <% if (!isPublicView) { %>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            <div class="stat-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-box text-accent"></i>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-white"><%= ownedProducts.length %></div>
+                  <div class="text-xs text-text-secondary">Products</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-key text-accent"></i>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-white"><%= (userInfo.ownedSerials && userInfo.ownedSerials.length) || 0 %></div>
+                  <div class="text-xs text-text-secondary">Serials</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-file-invoice text-accent"></i>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-white"><%= invoices.length %></div>
+                  <div class="text-xs text-text-secondary">Invoices</div>
+                </div>
+              </div>
+            </div>
+
+            <% if (isOwner || (user && (user.id === userId || user.id === userInfo.discordID))) { %>
+            <div class="stat-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-envelope text-accent"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="text-sm text-white break-all select-all" title="<%= userInfo.email || 'No email' %>">
+                    <%= userInfo.email || 'No email set' %>
+                  </div>
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="text-xs text-text-secondary">Email Address</div>
+                    <% if (user && (user.id === userId || user.id === userInfo.discordID)) { %>
+                    <button onclick="openEmailEditModal()" class="text-xs text-accent hover:text-accent/80 transition-colors flex items-center gap-1 cursor-pointer">
+                      <i class="fas fa-edit"></i>
+                      <span>Edit</span>
+                    </button>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } else { %>
+            <div class="stat-card rounded-xl p-4 border border-white/10">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-envelope text-accent"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="text-sm text-text-muted break-all" title="Hidden">
+                    ••••••@•••••.•••
+                  </div>
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="text-xs text-text-secondary">Email Address</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <% if (isPublicView) { %>
+      <div class="glass-effect rounded-2xl p-12 text-center" data-aos="fade-up">
+        <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <i class="fas fa-lock text-accent text-3xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">Private Profile</h3>
+        <p class="text-text-secondary mb-4">This user's detailed profile information is private.</p>
+        <p class="text-text-muted text-sm">Only the profile owner and staff members can view products, invoices, and other details.</p>
+      </div>
+      <% } else { %>
+
+      <div class="glass-effect rounded-2xl p-1.5 mb-8 overflow-x-auto" data-aos="fade-up">
+        <div class="flex gap-2 min-w-max">
+          <button class="tab-btn active px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap" data-tab="products">
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+            <span class="px-2 py-0.5 bg-dark rounded-md text-xs"><%= ownedProducts.length %></span>
+          </button>
+          <button class="tab-btn px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap" data-tab="serials">
+            <i class="fas fa-key"></i>
+            <span>Serials</span>
+            <span class="px-2 py-0.5 bg-dark rounded-md text-xs"><%= (userInfo.ownedSerials && userInfo.ownedSerials.length) || 0 %></span>
+          </button>
+          </button>
+          <% if (staffPermissions && staffPermissions.canViewInvoices) { %>
+          <button class="tab-btn px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap" data-tab="invoices">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Invoices</span>
+            <span class="px-2 py-0.5 bg-dark rounded-md text-xs"><%= invoices.length %></span>
+          </button>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="tab-contents">
+        <div id="products-tab" class="tab-content active">
+          <% if (staffPermissions && staffPermissions.canAddProducts) { %>
+          <div class="glass-effect rounded-2xl p-6 mb-6 hover-lift" data-aos="fade-up">
+            <h4 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <i class="fas fa-plus-circle text-accent"></i>
+              Add Product to User
+            </h4>
+            <form action="/profile/<%= userId %>/add-product" method="POST" class="flex flex-wrap gap-3 items-end">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <div class="flex-1 min-w-64">
+                <select name="productId" id="product-select" required class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none">
+                  <option value="">Select Product</option>
+                  <% products.forEach(product => { %>
+                  <option value="<%= product._id %>"><%= product.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <button type="submit" id="add-product-btn" disabled class="px-6 py-3 bg-accent hover:bg-accent/90 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
+                <i class="fas fa-plus"></i>
+                <span>Add</span>
+              </button>
+            </form>
+          </div>
+          <% } %>
+
+          <% if (ownedProducts.length > 0) { %>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <% ownedProducts.forEach((product, index) => { %>
+            <% if (product.productType !== 'serials' || product.serialRequiresFile) { %>
+            <div class="product-card glass-effect rounded-2xl overflow-hidden hover-lift group" data-aos="fade-up" data-aos-delay="<%= index * 30 %>">
+              <div class="aspect-video relative overflow-hidden bg-dark-card">
+                <img src="/<%= product.bannerImage %>" alt="<%= product.name %>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-card to-transparent opacity-60"></div>
+              </div>
+
+              <div class="p-4">
+                <h3 class="text-lg font-bold text-white mb-3 line-clamp-1" title="<%= product.name %>">
+                  <%= product.name %>
+                </h3>
+
+                <div class="flex gap-2">
+                  <% if (product.productType === 'service') { %>
+                  <button onclick="openServiceModal('<%= product.name.replace(/'/g, "\\'") %>', `<%= product.serviceMessage.replace(/`/g, '\\`').replace(/'/g, "\\'") %>`)" class="flex-1 px-4 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm font-semibold">
+                    <i class="fas fa-info-circle"></i>
+                    <span>View</span>
+                  </button>
+                  <% } else { %>
+                  <a href="/downloads/<%= product.urlId %>" class="flex-1 px-4 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm font-semibold">
+                    <i class="fas fa-download"></i>
+                    <span>Download</span>
+                  </a>
+                  <% } %>
+
+                  <% if (staffPermissions && staffPermissions.canRemoveProducts) { %>
+                  <form action="/profile/<%= userId %>/delete/<%= product._id %>" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" onclick="return confirm('Remove this product?');" class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-300 text-sm">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <% } %>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <div class="glass-effect rounded-2xl p-12 text-center" data-aos="fade-up">
+            <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-box-open text-accent text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">No Products Yet</h3>
+            <p class="text-text-secondary">This user doesn't own any products.</p>
+          </div>
+          <% } %>
+        </div>
+
+        <div id="serials-tab" class="tab-content">
+          <% if (staffPermissions && staffPermissions.canAddProducts) { %>
+          <div class="glass-effect rounded-2xl p-6 mb-6 hover-lift" data-aos="fade-up">
+            <h4 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <i class="fas fa-plus-circle text-accent"></i>
+              Add Serial to User
+            </h4>
+            <form action="/profile/<%= userId %>/add-serial" method="POST" class="flex flex-wrap gap-3 items-end">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <div class="flex-1 min-w-64">
+                <select name="productId" id="serial-select" required class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none">
+                  <option value="">Select Serial Product</option>
+                  <% serialProducts.forEach(product => { %>
+                  <option value="<%= product._id %>" <%= product.stockCount === 0 ? 'disabled class="text-gray-500"' : '' %>>
+                    <%= product.name %> (<%= product.stockCount %> available)<%= product.stockCount === 0 ? ' - Out of Stock' : '' %>
+                  </option>
+                  <% }) %>
+                </select>
+              </div>
+              <button type="submit" id="add-serial-btn" disabled class="px-6 py-3 bg-accent hover:bg-accent/90 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
+                <i class="fas fa-plus"></i>
+                <span>Add</span>
+              </button>
+            </form>
+          </div>
+          <% } %>
+
+          <% if (userInfo.ownedSerials && userInfo.ownedSerials.length > 0) { %>
+          <div class="grid gap-4">
+            <% userInfo.ownedSerials.forEach((serial, index) => { %>
+            <div class="glass-effect rounded-2xl p-6 hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 30 %>">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                  <h3 class="text-lg font-bold text-white mb-1"><%= serial.productName %></h3>
+                  <div class="text-sm text-text-secondary flex items-center gap-2">
+                    <i class="fas fa-calendar-alt text-accent"></i>
+                    <%= new Date(serial.purchaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 bg-dark-card rounded-xl p-4 border border-white/10">
+                <code class="flex-1 text-accent font-mono text-sm break-all select-all"><%= serial.key.key || serial.key %></code>
+                <button onclick="copySerial(this, '<%= serial.key.key || serial.key %>')" class="px-4 py-2 bg-dark hover:bg-accent text-text-secondary hover:text-white rounded-lg transition-all duration-300 flex-shrink-0 cursor-pointer">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <div class="glass-effect rounded-2xl p-12 text-center" data-aos="fade-up">
+            <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-key text-accent text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">No Serial Keys</h3>
+            <p class="text-text-secondary">This user doesn't have any serial keys.</p>
+          </div>
+          <% } %>
+        </div>
+
+        <div id="invoices-tab" class="tab-content">
+          <% if (invoices.length > 0) { %>
+          <div class="grid gap-4">
+            <% invoices.forEach((invoice, index) => { %>
+            <div class="glass-effect rounded-2xl p-6 hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 30 %>">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-file-invoice text-accent"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-bold text-white text-lg">#<%= invoice.ID %></span>
+                      <span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs font-semibold">
+                        Completed
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm text-text-secondary mt-1">
+                      <span class="flex items-center gap-1">
+                        <i class="fas fa-calendar-alt text-accent"></i>
+                        <%= new Date(invoice.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                      </span>
+                      <span class="flex items-center gap-1">
+                        <i class="fa<%= invoice.paymentMethod === 'paypal' ? 'b fa-paypal' : invoice.paymentMethod === 'stripe' ? 's fa-credit-card' : 'b fa-bitcoin' %> text-accent"></i>
+                        <%= invoice.paymentMethod ? invoice.paymentMethod.charAt(0).toUpperCase() + invoice.paymentMethod.slice(1) : 'Unknown' %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-2xl font-bold text-accent">
+                  <%= settings.currencySymbol %><%= (invoice.totalPaid !== undefined) ? invoice.totalPaid.toFixed(2) : '0.00' %>
+                </div>
+              </div>
+
+              <div class="bg-dark-card rounded-xl p-4 mb-4">
+                <div class="flex flex-wrap gap-2">
+                  <% invoice.products.forEach(product => { %>
+                  <span class="px-3 py-1.5 bg-accent/20 text-accent rounded-lg text-sm font-semibold">
+                    <%= product.name %>
+                  </span>
+                  <% }); %>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <a href="/invoice/<%= invoice.transactionID %>" class="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center gap-2 text-sm font-semibold">
+                  <i class="fas fa-eye"></i>
+                  <span>View Details</span>
+                </a>
+                <% if (invoice.transactionID && invoice.invoicePath) { %>
+                <a href="/invoice/<%= invoice.transactionID %>/view" target="_blank" class="px-4 py-2 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 flex items-center gap-2 text-sm font-semibold">
+                  <i class="fas fa-file-pdf"></i>
+                  <span>PDF</span>
+                </a>
+                <% } %>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <div class="glass-effect rounded-2xl p-12 text-center" data-aos="fade-up">
+            <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-receipt text-accent text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">No Purchase History</h3>
+            <p class="text-text-secondary">This user hasn't made any purchases yet.</p>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <% } %>
+
+  </div>
+  </div>
+
+  <div id="serviceModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 opacity-0 invisible transition-all duration-300">
+    <div class="glass-effect rounded-2xl max-w-2xl w-full transform scale-95 transition-transform duration-300">
+      <div class="flex items-center justify-between p-6 border-b border-white/10">
+        <h3 id="serviceModalTitle" class="text-xl font-bold text-white"></h3>
+        <button onclick="closeServiceModal()" class="text-text-secondary hover:text-white text-xl transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-6 max-h-96 overflow-y-auto">
+        <div id="serviceModalMessage" class="markdown-body"></div>
+      </div>
+      <div class="flex justify-end p-6 border-t border-white/10">
+        <button onclick="closeServiceModal()" class="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="transferModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 opacity-0 invisible transition-all duration-300">
+    <div class="glass-effect rounded-2xl max-w-md w-full transform scale-95 transition-transform duration-300">
+      <div class="flex items-center justify-between p-6 border-b border-white/10">
+        <h3 class="text-xl font-bold text-white">Transfer Products</h3>
+        <button onclick="closeTransferModal()" class="text-text-secondary hover:text-white text-xl transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="p-6">
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6">
+          <div class="flex items-start gap-3">
+            <i class="fas fa-exclamation-triangle text-yellow-500 mt-1"></i>
+            <div class="text-sm">
+              <p class="font-semibold text-yellow-500 mb-2">This will transfer:</p>
+              <ul class="text-yellow-400 space-y-1 text-xs">
+                <li>• <strong><%= ownedProducts.length %></strong> products</li>
+                <li>• <strong><%= (userInfo.ownedSerials && userInfo.ownedSerials.length) || 0 %></strong> serial keys</li>
+                <li>• Cannot be undone</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <form id="transferForm" action="/profile/<%= userId %>/transfer" method="POST" class="space-y-4">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div>
+            <label class="block text-white font-medium mb-2">Target User ID</label>
+            <input type="text" name="targetUserId" required placeholder="Enter User ID" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none">
+            <p class="text-text-secondary text-xs mt-2">Target user must have logged in before.</p>
+          </div>
+
+          <div id="transferError" class="hidden bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+            <div class="flex items-center gap-2 text-red-400 text-sm">
+              <i class="fas fa-exclamation-circle"></i>
+              <span id="errorMessage"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="flex gap-3 p-6 border-t border-white/10">
+        <button id="transferButton" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-semibold hover-lift">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Confirm Transfer</span>
+        </button>
+        <button onclick="closeTransferModal()" class="px-6 py-3 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 font-semibold">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="emailEditModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 opacity-0 invisible transition-all duration-300">
+    <div class="glass-effect rounded-2xl max-w-md w-full transform scale-95 transition-transform duration-300">
+      <div class="flex items-center justify-between p-6 border-b border-white/10">
+        <h3 class="text-xl font-bold text-white">Change Email Address</h3>
+        <button onclick="closeEmailEditModal()" class="text-text-secondary hover:text-white text-xl transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="emailEditForm" class="p-6 space-y-4">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div class="bg-accent/10 border border-accent/30 rounded-xl p-4 mb-4">
+          <div class="flex items-start gap-3">
+            <i class="fas fa-info-circle text-accent mt-1"></i>
+            <div class="text-sm text-accent">
+              <p class="font-semibold mb-1">Verification Required</p>
+              <p class="text-xs">You'll receive a verification email at your new address. Your email won't change until you verify it.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-2 text-sm">Current Email</label>
+          <input type="email" value="<%= userInfo.email || '' %>" disabled class="w-full bg-dark-card text-text-muted border border-white/10 rounded-lg px-4 py-3 cursor-not-allowed">
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-2 text-sm">New Email Address</label>
+          <div class="relative">
+            <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <input type="email" id="newEmail" name="newEmail" required placeholder="your@newemail.com" class="w-full bg-dark-card text-white pl-12 pr-4 py-3 rounded-lg border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-2 text-sm">Confirm New Email</label>
+          <div class="relative">
+            <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <input type="email" id="confirmEmail" name="confirmEmail" required placeholder="your@newemail.com" class="w-full bg-dark-card text-white pl-12 pr-4 py-3 rounded-lg border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
+          </div>
+        </div>
+
+        <div id="emailEditError" class="hidden bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 text-red-400 text-sm">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="emailErrorMessage"></span>
+          </div>
+        </div>
+
+        <div id="emailEditSuccess" class="hidden bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 text-green-400 text-sm">
+            <i class="fas fa-check-circle"></i>
+            <span id="emailSuccessMessage"></span>
+          </div>
+        </div>
+      </form>
+
+      <div class="flex gap-3 p-6 border-t border-white/10">
+        <button id="emailEditButton" onclick="submitEmailChange()" class="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-semibold hover-lift">
+          <i class="fas fa-paper-plane"></i>
+          <span>Send Verification Email</span>
+        </button>
+        <button onclick="closeEmailEditModal()" class="px-6 py-3 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 font-semibold">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    function copyUserId(userId) {
+      const button = document.getElementById('copyUserIdBtn');
+      const originalHTML = button.innerHTML;
+
+      navigator.clipboard.writeText(userId).then(() => {
+        button.innerHTML = '<i class="fas fa-check text-[10px]"></i> <span class="text-[10px]">Copied!</span>';
+        button.classList.add('bg-green-600', 'text-white');
+        button.classList.remove('bg-dark-card', 'text-text-muted');
+
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('bg-green-600', 'text-white');
+          button.classList.add('bg-dark-card', 'text-text-muted');
+        }, 2000);
+      }).catch(() => {
+        const textArea = document.createElement('textarea');
+        textArea.value = userId;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        button.innerHTML = '<i class="fas fa-check text-[10px]"></i> <span class="text-[10px]">Copied!</span>';
+        button.classList.add('bg-green-600', 'text-white');
+        button.classList.remove('bg-dark-card', 'text-text-muted');
+
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('bg-green-600', 'text-white');
+          button.classList.add('bg-dark-card', 'text-text-muted');
+        }, 2000);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      function switchTab(tabName) {
+        const tabExists = Array.from(tabButtons).some(btn => btn.dataset.tab === tabName);
+        if (!tabExists) {
+          switchTab('products');
+          return;
+        }
+
+        tabButtons.forEach(btn => {
+          if (btn.dataset.tab === tabName) {
+            btn.classList.add('active', 'bg-accent', 'text-white');
+            btn.classList.remove('text-text-secondary', 'hover:bg-white/10');
+          } else {
+            btn.classList.remove('active', 'bg-accent', 'text-white');
+            btn.classList.add('text-text-secondary', 'hover:bg-white/10');
+          }
+        });
+
+        tabContents.forEach(content => {
+          if (content.id === `${tabName}-tab`) {
+            content.classList.add('active');
+          } else {
+            content.classList.remove('active');
+          }
+        });
+      }
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabName = btn.dataset.tab;
+          window.location.hash = tabName;
+          switchTab(tabName);
+        });
+      });
+
+      if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        switchTab(hash);
+      } else {
+        switchTab('products');
+      }
+
+      const productSelect = document.getElementById('product-select');
+      const addProductBtn = document.getElementById('add-product-btn');
+
+      if (productSelect && addProductBtn) {
+        productSelect.addEventListener('change', function() {
+          addProductBtn.disabled = !this.value;
+        });
+      }
+
+      const serialSelect = document.getElementById('serial-select');
+      const addSerialBtn = document.getElementById('add-serial-btn');
+
+      if (serialSelect && addSerialBtn) {
+        serialSelect.addEventListener('change', function() {
+          addSerialBtn.disabled = !this.value;
+        });
+      }
+    });
+
+    function openServiceModal(productName, serviceMessage) {
+      const modal = document.getElementById('serviceModal');
+      const modalTitle = document.getElementById('serviceModalTitle');
+      const modalMessage = document.getElementById('serviceModalMessage');
+      const md = window.markdownit();
+
+      modalTitle.textContent = productName;
+      modalMessage.innerHTML = md.render(serviceMessage);
+
+      modal.classList.remove('opacity-0', 'invisible');
+      modal.querySelector('.glass-effect').classList.remove('scale-95');
+      modal.querySelector('.glass-effect').classList.add('scale-100');
+    }
+
+    function closeServiceModal() {
+      const modal = document.getElementById('serviceModal');
+      modal.classList.add('opacity-0', 'invisible');
+      modal.querySelector('.glass-effect').classList.add('scale-95');
+      modal.querySelector('.glass-effect').classList.remove('scale-100');
+    }
+
+    function openTransferModal() {
+      const modal = document.getElementById('transferModal');
+      modal.classList.remove('opacity-0', 'invisible');
+      modal.querySelector('.glass-effect').classList.remove('scale-95');
+      modal.querySelector('.glass-effect').classList.add('scale-100');
+    }
+
+    function closeTransferModal() {
+      const modal = document.getElementById('transferModal');
+      modal.classList.add('opacity-0', 'invisible');
+      modal.querySelector('.glass-effect').classList.add('scale-95');
+      modal.querySelector('.glass-effect').classList.remove('scale-100');
+    }
+
+    function copySerial(button, serialKey) {
+      navigator.clipboard.writeText(serialKey).then(() => {
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        button.classList.add('bg-green-600', 'text-white');
+
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('bg-green-600', 'text-white');
+        }, 2000);
+      }).catch(() => {
+        const textArea = document.createElement('textarea');
+        textArea.value = serialKey;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        button.classList.add('bg-green-600', 'text-white');
+
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('bg-green-600', 'text-white');
+        }, 2000);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const transferForm = document.getElementById('transferForm');
+      const transferError = document.getElementById('transferError');
+      const errorMessage = document.getElementById('errorMessage');
+      const transferButton = document.getElementById('transferButton');
+
+      if (transferForm && transferButton) {
+        transferButton.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          const formData = new FormData(transferForm);
+          const data = Object.fromEntries(formData.entries());
+
+          transferError.classList.add('hidden');
+
+          fetch(transferForm.action, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                window.location.href = data.redirect || window.location.pathname;
+              } else {
+                errorMessage.textContent = data.message;
+                transferError.classList.remove('hidden');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+              transferError.classList.remove('hidden');
+            });
+        });
+      }
+
+      document.getElementById('serviceModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeServiceModal();
+      });
+
+      document.getElementById('transferModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeTransferModal();
+      });
+    });
+
+    function openEmailEditModal() {
+      const modal = document.getElementById('emailEditModal');
+      const emailEditError = document.getElementById('emailEditError');
+      const emailEditSuccess = document.getElementById('emailEditSuccess');
+      const form = document.getElementById('emailEditForm');
+
+      emailEditError.classList.add('hidden');
+      emailEditSuccess.classList.add('hidden');
+      form.reset();
+
+      modal.classList.remove('opacity-0', 'invisible');
+      modal.querySelector('.glass-effect').classList.remove('scale-95');
+      modal.querySelector('.glass-effect').classList.add('scale-100');
+    }
+
+    function closeEmailEditModal() {
+      const modal = document.getElementById('emailEditModal');
+      modal.classList.add('opacity-0', 'invisible');
+      modal.querySelector('.glass-effect').classList.add('scale-95');
+      modal.querySelector('.glass-effect').classList.remove('scale-100');
+    }
+
+    function submitEmailChange() {
+      const newEmail = document.getElementById('newEmail').value;
+      const confirmEmail = document.getElementById('confirmEmail').value;
+      const emailEditError = document.getElementById('emailEditError');
+      const emailErrorMessage = document.getElementById('emailErrorMessage');
+      const emailEditSuccess = document.getElementById('emailEditSuccess');
+      const emailSuccessMessage = document.getElementById('emailSuccessMessage');
+      const emailEditButton = document.getElementById('emailEditButton');
+      const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+      emailEditError.classList.add('hidden');
+      emailEditSuccess.classList.add('hidden');
+
+      if (!newEmail || !confirmEmail) {
+        emailErrorMessage.textContent = 'Please fill in all fields';
+        emailEditError.classList.remove('hidden');
+        return;
+      }
+
+      if (newEmail !== confirmEmail) {
+        emailErrorMessage.textContent = 'Email addresses do not match';
+        emailEditError.classList.remove('hidden');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newEmail)) {
+        emailErrorMessage.textContent = 'Please enter a valid email address';
+        emailEditError.classList.remove('hidden');
+        return;
+      }
+
+      emailEditButton.disabled = true;
+      emailEditButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Sending...</span>';
+
+      fetch('/api/change-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrfToken
+          },
+          body: JSON.stringify({
+            newEmail
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          emailEditButton.disabled = false;
+          emailEditButton.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Send Verification Email</span>';
+
+          if (data.success) {
+            emailSuccessMessage.textContent = data.message;
+            emailEditSuccess.classList.remove('hidden');
+
+          } else {
+            emailErrorMessage.textContent = data.message;
+            emailEditError.classList.remove('hidden');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          emailEditButton.disabled = false;
+          emailEditButton.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Send Verification Email</span>';
+          emailErrorMessage.textContent = 'An error occurred. Please try again.';
+          emailEditError.classList.remove('hidden');
+        });
+    }
+
+    document.getElementById('emailEditModal')?.addEventListener('click', function(e) {
+      if (e.target === this) closeEmailEditModal();
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

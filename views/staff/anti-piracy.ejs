@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | Anti-Piracy Placeholders</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a',
+            'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a',
+            'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#71717a'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'fade-in': 'fade-in 0.3s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {
+                transform: 'translateY(0px)'
+              },
+              '50%': {
+                transform: 'translateY(-10px)'
+              }
+            },
+            'fade-in': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(10px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --accent-color: <%=settings.accentColor %>;
+      --accent-rgb: <%=accentColorRgb %>;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb), 0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.1);
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-accent {
+      background-color: var(--accent-color);
+    }
+
+    .border-accent {
+      border-color: var(--accent-color);
+    }
+
+    .stat-accent-bar {
+      height: 4px;
+      background: var(--accent-color);
+      opacity: 0.7;
+    }
+
+    .custom-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      position: relative;
+      height: 22px;
+      width: 22px;
+      background-color: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 6px;
+      margin-right: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .custom-checkbox:hover .checkmark {
+      background-color: rgba(var(--accent-rgb), 0.1);
+      border-color: rgba(var(--accent-rgb), 0.5);
+    }
+
+    .custom-checkbox input:checked~.checkmark {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 11px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:checked~.checkmark:after {
+      display: block;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white">
+  <%- include('../partials/navbar', { user, existingUser }) %>
+
+  <div class="min-h-screen bg-dark-lighter">
+    <%- include('../partials/staff-navbar', { user, currentPage: 'anti-piracy' }) %>
+
+    <div class="container mx-auto px-6 py-8">
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-white mb-2">Anti-Piracy Placeholders</h1>
+        <p class="text-text-secondary text-lg">Protect your products from unauthorized distribution with unique user identifiers.</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 mb-8 hover-lift" data-aos="fade-up">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-shield-alt text-accent text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">How Anti-Piracy Works</h2>
+        </div>
+
+        <div class="space-y-4 text-text-secondary leading-relaxed">
+          <p class="text-lg text-white font-semibold">
+            What are Anti-Piracy Placeholders?
+          </p>
+          <p>
+            Think of placeholders as special codes you add to your files before uploading them. When someone downloads your product, these codes are automatically swapped out with information unique to that buyer. It's like giving each customer a personalized copy that can be traced back to them if it's leaked.
+          </p>
+
+          <div class="bg-accent/10 border border-accent/30 rounded-xl p-6 my-6">
+            <h3 class="text-white font-semibold text-lg mb-4 flex items-center gap-2">
+              <i class="fas fa-book-open text-accent"></i>
+              Quick Start Guide
+            </h3>
+
+            <div class="space-y-6">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  1
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-white font-semibold mb-2">Add Placeholders to Your Files</h4>
+                  <p class="text-text-secondary text-sm">
+                    Before uploading, open your files and insert the placeholders wherever you want them. You can use as many or as few as you like, and spread them across multiple files. Common places include comments in code, headers in documentation, or metadata in your files.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  2
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-white font-semibold mb-2">Upload to Plex Store</h4>
+                  <p class="text-text-secondary text-sm">
+                    Upload your product file normally. That's it! The system will handle everything else automatically.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  3
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-white font-semibold mb-2">Automatic Protection</h4>
+                  <p class="text-text-secondary text-sm">
+                    When someone downloads your product, all placeholders get replaced instantly with their personal information. Each download is unique and traceable.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  4
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-white font-semibold mb-2">Track Leaked Files</h4>
+                  <p class="text-text-secondary text-sm">
+                    If you find your product leaked online, check for the NONCE ID in the file and search for it below. You'll see exactly who downloaded it, when, and from where.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p>
+            <a href="https://docs.plexdevelopment.net/plex-store/anti-piracy-placeholders" target="_blank" class="text-accent hover:text-accent/80 font-semibold inline-flex items-center gap-2 transition-colors">
+              <i class="fas fa-external-link-alt"></i>
+              <span>Read the full documentation</span>
+            </a>
+          </p>
+
+          <div class="bg-dark-card rounded-xl p-6 mt-6">
+            <h4 class="text-white font-semibold mb-4 flex items-center gap-2">
+              <i class="fas fa-code text-accent"></i>
+              Available Placeholders
+            </h4>
+
+            <div class="space-y-4">
+              <div class="flex flex-col sm:flex-row gap-3 pb-4 border-b border-white/10">
+                <code class="px-3 py-1.5 bg-accent/20 text-accent rounded-lg font-mono text-sm font-semibold whitespace-nowrap self-start">
+                  <%= '377716' %>
+                </code>
+                <p class="text-text-secondary flex-1">
+                  Replaced with the buyer's Discord user ID
+                </p>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-3 pb-4 border-b border-white/10">
+                <code class="px-3 py-1.5 bg-accent/20 text-accent rounded-lg font-mono text-sm font-semibold whitespace-nowrap self-start">
+                  <%= '%%__PRODUCT__%%' %>
+                </code>
+                <p class="text-text-secondary flex-1">
+                  Replaced with the product name
+                </p>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-3 pb-4 border-b border-white/10">
+                <code class="px-3 py-1.5 bg-accent/20 text-accent rounded-lg font-mono text-sm font-semibold whitespace-nowrap self-start">
+                  <%= '63eb0982462f9224b98a541d09cd1873' %>
+                </code>
+                <p class="text-text-secondary flex-1">
+                  <span class="text-white font-semibold">Most Important!</span> A unique tracking code created for each download. This cannot be faked or changed. Use this to identify leaked files.
+                </p>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-3">
+                <code class="px-3 py-1.5 bg-accent/20 text-accent rounded-lg font-mono text-sm font-semibold whitespace-nowrap self-start">
+                  <%= '%%__PLEXSTORE__%%' %>
+                </code>
+                <p class="text-text-secondary flex-1">
+                  Always returns 'true' for legitimate store downloads
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mt-6">
+              <div class="flex items-start gap-3">
+                <i class="fas fa-lightbulb text-blue-400 mt-1"></i>
+                <div class="text-sm">
+                  <p class="text-blue-400 font-semibold mb-2">Pro Tips:</p>
+                  <ul class="text-blue-300 space-y-1 text-xs list-disc list-inside">
+                    <li>Use <code class="px-1 bg-blue-500/20 rounded">63eb0982462f9224b98a541d09cd1873</code> in multiple places throughout your files for better tracking</li>
+                    <li>Add placeholders in comments where they won't affect functionality</li>
+                    <li>You don't need to use all placeholders - pick what works for your product</li>
+                    <li>Works with any file type: code files, documents, configs, etc.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 mb-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-cog text-accent text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Anti-Piracy Settings</h2>
+        </div>
+
+        <form action="/staff/anti-piracy?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST">
+          <div class="bg-dark-card rounded-xl p-6 mb-6">
+            <label class="custom-checkbox flex items-start">
+              <input type="checkbox" name="antiPiracyEnabled" value="true" <% if (settings.antiPiracyEnabled) { %>checked<% } %>>
+              <span class="checkmark"></span>
+              <div>
+                <div class="text-white font-semibold mb-1">Enable Anti-Piracy placeholder injection</div>
+                <p class="text-text-secondary text-sm">
+                  When enabled, placeholders in your product files will be replaced with user-specific data on download.
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <button type="submit" class="bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-3 hover-lift">
+            <i class="fas fa-save"></i>
+            <span>Save Settings</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-search text-accent text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Find Download by Nonce</h2>
+        </div>
+
+        <p class="text-text-secondary mb-6">
+          Enter a nonce ID to find information about the user who downloaded the file.
+        </p>
+
+        <form id="nonce-search-form" class="flex flex-col sm:flex-row gap-3 mb-6">
+          <input class="flex-1 bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="nonce" id="nonce-input" placeholder="Enter Nonce ID" required>
+          <button type="submit" class="bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+          </button>
+        </form>
+
+        <div id="nonce-result" class="hidden bg-dark-card rounded-xl p-6 border border-accent/30 animate-fade-in">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    AOS.init({
+      duration: 400,
+      easing: 'ease-out',
+      once: true,
+      offset: 100
+    });
+
+    document.getElementById('nonce-search-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const nonce = document.getElementById('nonce-input').value;
+      const resultDiv = document.getElementById('nonce-result');
+
+      if (nonce.trim() === '') {
+        return;
+      }
+
+      resultDiv.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin text-accent text-2xl"></i>
+                    <p class="text-text-secondary mt-3">Searching...</p>
+                </div>
+            `;
+      resultDiv.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`/staff/anti-piracy/find?nonce=${encodeURIComponent(nonce)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        let html = '';
+        if (data && data.downloadInfo) {
+          const info = data.downloadInfo;
+
+          let fileSizeDisplay = 'N/A';
+          if (info.fileSize) {
+            const sizeInMB = (info.fileSize / (1024 * 1024)).toFixed(2);
+            fileSizeDisplay = `${sizeInMB} MB`;
+          }
+
+          let downloadTimeDisplay = 'N/A';
+          if (info.timeToDownload) {
+            const seconds = (info.timeToDownload / 1000).toFixed(2);
+            downloadTimeDisplay = `${seconds} seconds`;
+          }
+
+          html = `
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-white">Download Information Found</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Product</div>
+                                <div class="text-white font-semibold">${info.productName}</div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Version</div>
+                                <div class="text-white font-semibold">${info.versionNumber || 'Latest version'}</div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4 md:col-span-2">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Discord User</div>
+                                <div class="text-white font-semibold">${info.discordUsername} <span class="text-text-secondary">(${info.discordUserId})</span></div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Nonce ID</div>
+                                <div class="text-accent font-mono text-sm break-all">${info.nonce}</div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Download Date</div>
+                                <div class="text-white font-semibold">${new Date(info.downloadDate).toLocaleString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric', 
+                                    hour: 'numeric', 
+                                    minute: 'numeric', 
+                                    hour12: true 
+                                })}</div>
+                            </div>
+
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">IP Address</div>
+                                <div class="text-white font-semibold">${info.ipAddress || 'Not recorded'}</div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4 md:col-span-2">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">User Agent</div>
+                                <div class="text-white font-semibold break-words text-sm">${info.userAgent || 'Not recorded'}</div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">File Size</div>
+                                <div class="text-white font-semibold">${fileSizeDisplay}</div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Download Time</div>
+                                <div class="text-white font-semibold">${downloadTimeDisplay}</div>
+                            </div>
+                            
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Completed</div>
+                                <div class="font-semibold ${info.downloadCompleted ? 'text-green-400' : 'text-red-400'}">
+                                    <i class="fas fa-${info.downloadCompleted ? 'check-circle' : 'times-circle'} mr-2"></i>
+                                    ${info.downloadCompleted ? 'Yes' : 'No'}
+                                </div>
+                            </div>
+                            
+                            ${info.transactionId ? `
+                            <div class="bg-dark-lighter rounded-lg p-4">
+                                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Transaction ID</div>
+                                <div class="text-white font-semibold break-all">${info.transactionId}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${info.error ? `
+                            <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 md:col-span-2">
+                                <div class="text-xs text-red-400 uppercase tracking-wider mb-1">Error</div>
+                                <div class="text-red-400 font-semibold">${info.error}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+        } else {
+          html = `
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-exclamation-circle text-yellow-400 text-2xl"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold text-white mb-2">No Results Found</h4>
+                            <p class="text-text-secondary">No download information found for the provided nonce ID.</p>
+                        </div>
+                    `;
+        }
+
+        resultDiv.innerHTML = html;
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        console.error('Error fetching nonce data:', error);
+        resultDiv.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-exclamation-triangle text-red-400 text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold text-white mb-2">Error</h4>
+                        <p class="text-red-400">Failed to fetch data. Please try again later.</p>
+                    </div>
+                `;
+        resultDiv.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+
+</html>
