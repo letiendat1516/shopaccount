@@ -1,0 +1,106 @@
+# ===========================================================================
+# Plex Store Configuration - EXAMPLE
+# 
+# IMPORTANT: Copy this file to config.yml and fill in your actual values
+# DO NOT commit config.yml to version control!
+# 
+# If you find any issues, need support, or have a suggestion for the product, let us know in our Discord server.
+# Discord: https://discord.gg/plexdev
+# Documentation: https://docs.plexdevelopment.net/
+# ===========================================================================
+
+# MongoDB Connection String
+# Examples:
+#   Local:    "mongodb://localhost:27017/plexstore"
+#   Atlas:    "mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/plexstore"
+MongoURI: "CONNECTION_URL"
+
+# Enable debug logging
+DebugMode: false
+
+# Discord User IDs that have full admin access (can add multiple)
+OwnerID: ["DISCORD_USER_ID", "DISCORD_USER_ID"]
+
+# ===========================================================================
+# DISCORD BOT
+# ===========================================================================
+# The discord bot is used for store logs, automatically giving roles, and adding users to the server
+
+# Discord Bot Token (get from https://discord.com/developers/applications)
+Token: "BOT_TOKEN"
+
+# Discord Server ID (right-click server icon and copy ID)
+GuildID: "GUILD_ID"
+
+# Automatically add users to Discord server when they login
+autoJoinUsers: false
+
+# ===========================================================================
+# AUTHENTICATION SETTINGS
+# ===========================================================================
+Authentication:
+  # Authentication mode:
+  # "discord" - Only Discord OAuth
+  # "local" - Only Email/Password
+  # "both" - Both Discord and Email/Password
+  mode: "both"
+  
+  Discord:
+    enabled: true
+    autoJoinUsers: false
+    clientID: "CLIENT_ID"
+    clientSecret: "CLIENT_SECRET"
+    callbackURL: "http://localhost:3000/auth/discord/callback"
+  
+  Local:
+    enabled: true
+    requireEmailVerification: true
+    minPasswordLength: 8
+    sessionRememberDays: 30
+
+# Session encryption key (use https://www.dashlane.com/features/password-generator)
+# Generate a random 20+ character string
+secretKey: "GENERATE_A_RANDOM_STRING_HERE"
+
+# HTTPS/SSL Settings
+Secure: false
+trustProxy: 0
+SessionExpires: "7d"
+
+# ===========================================================================
+# WEBSERVER
+# ===========================================================================
+baseURL: "http://localhost:3000"
+Port: 3000
+
+# ===========================================================================
+# STORE SETTINGS
+# ===========================================================================
+productVersions:
+  autoDeleteOldFiles: false
+  maxVersionsToKeep: 5
+
+# ===========================================================================
+# EMAIL CONFIGURATION
+# ===========================================================================
+# Email settings are now configured in the Staff Panel
+# Navigate to: Staff Panel > Settings > Email Configuration
+
+# ===========================================================================
+# CUSTOM REDIRECTS
+# ===========================================================================
+Redirects:
+  - path: "/api/v1/*"
+    target: "https://external.api.com/:wildcard"
+    method: "GET"
+    statusCode: 301
+
+  - path: "/assets/*"
+    target: "https://cdn.mysite.com/:wildcard"
+    statusCode: 302
+
+  - path: "/discord"
+    target: "https://discord.gg/plexdev"
+    method: "GET"
+    statusCode: 301
+

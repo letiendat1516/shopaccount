@@ -769,6 +769,7 @@
       const paypalButton = document.getElementById('paypalButton');
       const stripeButton = document.getElementById('stripeButton');
       const cryptoButton = document.getElementById('cryptoButton');
+      const vietqrButton = document.getElementById('vietqrButton');
 
       if (termsCheckbox) {
         termsCheckbox.addEventListener('change', function() {
@@ -776,6 +777,7 @@
           if (paypalButton) paypalButton.disabled = !isChecked;
           if (stripeButton) stripeButton.disabled = !isChecked;
           if (cryptoButton) cryptoButton.disabled = !isChecked;
+          if (vietqrButton) vietqrButton.disabled = !isChecked;
         });
       }
     });

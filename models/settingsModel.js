@@ -198,6 +198,16 @@ We value your privacy and are committed to safeguarding the personal information
       enabled: { type: Boolean, default: false },
       apiKey: { type: String, default: '' },
       webhookSecret: { type: String, default: '' }
+  },
+    vietqr: {
+      enabled: { type: Boolean, default: false },
+      bankCode: { type: String, default: '970405' }, // VietinBank code
+      accountNumber: { type: String, default: '' },
+      accountName: { type: String, default: '' },
+      accountType: { type: Number, default: 0 }, // 0 = Bank Account, 1 = Business
+      webhookUrl: { type: String, default: '' }, // For third-party webhook
+      webhookSecret: { type: String, default: '' }, // Secret key for webhook verification
+      autoConfirmTimeout: { type: Number, default: 300000 } // 5 minutes in milliseconds
   }
 }
 });

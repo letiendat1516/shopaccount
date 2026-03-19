@@ -34,6 +34,7 @@ const ms = require('parse-duration');
 const sharp = require('sharp');
 const Discord = require('discord.js');
 const { encrypt, decrypt } = require('./utils/encryption');
+const vietqr = require('./utils/vietqr');
 
 const md = new markdownIt({
   html: true,
@@ -7185,6 +7186,224 @@ const pdfBuffer = await utils.generateInvoicePdf(
       if(config.DebugMode) console.error('\x1b[31m%s\x1b[0m', `[COINBASE WEBHOOK] ✗ ERROR: ${error.message}`);
       if(config.DebugMode) console.error('\x1b[31m%s\x1b[0m', `[COINBASE WEBHOOK] Stack: ${error.stack}`);
       return res.status(500).send('Server error');
+  }
+});
+
+// =================== VIETQR PAYMENT INTEGRATION ===================
+
+app.post('/checkout/vietqr', checkAuthenticated, csrfProtection, async (req, res, next) => {
+  try {
+    const paymentConfig = res.locals.paymentConfig;
+    if (!paymentConfig.vietqr || !paymentConfig.vietqr.enabled) {
+      return res.status(400).send('VietQR is not enabled');
+    }
+
+    let user = await userModel.findOne({ discordID: req.user.id })
+      .populate('cart')
+      .populate({
+        path: 'cartBundles.bundleId',
+        populate: { path: 'products' }
+      });
+
+    if (!user && mongoose.Types.ObjectId.isValid(req.user.id)) {
+      user = await userModel.findById(req.user.id)
+        .populate('cart')
+        .populate({
+          path: 'cartBundles.bundleId',
+          populate: { path: 'products' }
+        });
+    }
+    
+    if (!user || (!user.cart.length && (!user.cartBundles || !user.cartBundles.length))) {
+      return res.status(400).send('Cart is empty');
+    }
+
+    const ipAddress = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.ip || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+
+    const currentDate = new Date();
+    let subtotal = 0;
+    const cartSnapshotItems = [];
+    const cartSnapshotBundles = [];
+    let discountPercentage = 0;
+
+    if (req.session.discountCode) {
+      const discountCode = await DiscountCodeModel.findOne({
+        name: { $regex: new RegExp(`^${req.session.discountCode}$`, 'i') }
+      });
+
+      if (discountCode) {
+        discountPercentage = discountCode.discountPercentage;
+      }
+    }
+
+    // Process cart items
+    for (const cartItem of user.cart) {
+      const product = await productModel.findById(cartItem._id);
+      if (!product) continue;
+
+      const isOnSale = product.onSale && product.saleStartDate <= currentDate && currentDate <= product.saleEndDate;
+      const validPrice = isOnSale ? product.salePrice : product.price;
+
+      subtotal += validPrice;
+
+      cartSnapshotItems.push({
+        productId: product._id,
+        price: product.price,
+        salePrice: isOnSale ? product.salePrice : null,
+        discountedPrice: validPrice,
+      });
+    }
+
+    // Process bundles
+    for (const bundleItem of user.cartBundles || []) {
+      const bundle = bundleItem.bundleId;
+      
+      if (!bundle || !bundle.active) {
+        continue;
+      }
+
+      let bundleOriginalPrice = 0;
+      const bundleProducts = [];
+
+      for (const product of bundle.products) {
+        const isOnSale = product.onSale && product.saleStartDate <= currentDate && currentDate <= product.saleEndDate;
+        const salePrice = isOnSale ? product.salePrice : null;
+        const basePrice = isOnSale ? product.salePrice : product.price;
+
+        bundleOriginalPrice += basePrice;
+
+        bundleProducts.push({
+          productId: product._id,
+          price: product.price,
+          salePrice: salePrice || null,
+          discountedPrice: basePrice,
+        });
+      }
+
+      const bundlePrice = parseFloat((bundleOriginalPrice * (1 - bundle.discountPercentage / 100)).toFixed(2));
+      const bundleDiscountMultiplier = bundlePrice / bundleOriginalPrice;
+
+      bundleProducts.forEach(bp => {
+        bp.discountedPrice = parseFloat((bp.discountedPrice * bundleDiscountMultiplier).toFixed(2));
+      });
+
+      subtotal += bundlePrice;
+
+      cartSnapshotBundles.push({
+        bundleId: bundle._id,
+        bundleName: bundle.name,
+        discountPercentage: bundle.discountPercentage,
+        originalPrice: bundleOriginalPrice,
+        bundlePrice: bundlePrice,
+        products: bundleProducts
+      });
+    }
+
+    const discountAmount = subtotal * (discountPercentage / 100);
+    const discountedSubtotal = subtotal - discountAmount;
+
+    let salesTaxAmount = 0;
+    if (globalSettings.salesTax) {
+      salesTaxAmount = parseFloat((discountedSubtotal * (globalSettings.salesTax / 100)).toFixed(2));
+    }
+
+    const totalPrice = parseFloat((discountedSubtotal + salesTaxAmount).toFixed(2));
+
+    const cartSnapshot = await CartSnapshot.create({
+      userId: user._id,
+      items: cartSnapshotItems,
+      bundles: cartSnapshotBundles,
+      total: totalPrice,
+      ipAddress: ipAddress,
+      userAgent: userAgent,
+    });
+
+    // Generate VietQR code
+    const transferData = {
+      bankCode: paymentConfig.vietqr.bankCode,
+      accountNumber: paymentConfig.vietqr.accountNumber,
+      accountName: paymentConfig.vietqr.accountName,
+      amount: totalPrice,
+      description: `${globalSettings.storeName} - Payment ${cartSnapshot._id.toString().substring(0, 8)}`,
+      transactionId: cartSnapshot._id.toString()
+    };
+
+    const qrResult = await vietqr.generateVietQRCode(transferData);
+
+    if (!qrResult.success) {
+      return res.status(500).render('error', {
+        errorMessage: 'Failed to generate QR code. Please try again later.'
+      });
+    }
+
+    // Render VietQR payment page
+    res.render('checkout-vietqr', {
+      user: req.user,
+      existingUser: await findUserById(req.user.id),
+      qrCode: qrResult.qrUrl,
+      cartSnapshot,
+      totalPrice: totalPrice.toFixed(2),
+      storeName: globalSettings.storeName,
+      transferData: vietqr.formatPaymentInfo(transferData),
+      config: config
+    });
+
+  } catch (error) {
+    console.error('[ERROR] VietQR checkout failed:', error.message);
+    next(error);
+  }
+});
+
+app.get('/checkout/vietqr/verify/:snapshotId', checkAuthenticated, async (req, res, next) => {
+  try {
+    const { snapshotId } = req.params;
+    
+    const cartSnapshot = await CartSnapshot.findById(snapshotId);
+    if (!cartSnapshot) {
+      return res.json({ success: false, message: 'Payment not found' });
+    }
+
+    if (cartSnapshot.status === 'processed') {
+      const payment = await paymentModel.findOne({ userId: cartSnapshot.userId }).sort({ createdAt: -1 });
+      return res.json({ 
+        success: true, 
+        message: 'Payment completed', 
+        transactionId: payment ? payment.transactionID : null
+      });
+    }
+
+    return res.json({ 
+      success: false, 
+      message: 'Waiting for payment confirmation',
+      status: cartSnapshot.status
+    });
+
+  } catch (error) {
+    console.error('Error verifying VietQR payment:', error);
+    res.json({ success: false, message: 'Verification failed' });
+  }
+});
+
+app.post('/checkout/vietqr/webhook', express.json(), async (req, res) => {
+  try {
+    const { snapshotId, status } = req.body;
+    
+    if (status === 'success' || status === 'completed') {
+      const cartSnapshot = await CartSnapshot.findById(snapshotId);
+      if (!cartSnapshot) {
+        return res.json({ success: false });
+      }
+
+      cartSnapshot.status = 'processed';
+      cartSnapshot.processedAt = new Date();
+      await cartSnapshot.save();
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[VietQR Webhook] Error:', error.message);
+    res.status(500).json({ success: false });
   }
 });
 

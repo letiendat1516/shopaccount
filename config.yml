@@ -4,7 +4,7 @@
 # Discord: https://discord.gg/plexdev
 # Documentation: https://docs.plexdevelopment.net/
 # ===========================================================================
-MongoURI: "mongodb+srv://USERNAME:PASSWORD@cluster0.xxxxx.mongodb.net/plexstore?retryWrites=true&w=majority"
+MongoURI: "CONNECTION_URL"
 DebugMode: false
 
 OwnerID: ["DISCORD_USER_ID", "DISCORD_USER_ID"] # The Discord User ID's that will have full access to the store, you can add multiple
@@ -42,7 +42,7 @@ Authentication:
     minPasswordLength: 8 # Minimum password length
     sessionRememberDays: 30 # How many days should "Remember Me" last?
 
-secretKey: "uNLmkcssGY3112k8s0mj" # This can be anything, We recommend using this https://www.dashlane.com/features/password-generator with at least 20 characters, ({{USERNAME}})
+secretKey: "GENERATE_YOUR_OWN_SECRET_KEY_HERE" # This can be anything, We recommend using this https://www.dashlane.com/features/password-generator with at least 20 characters, ({{USERNAME}})
 
 Secure: false # Enable if you are using HTTPS
 trustProxy: 0 # Set to 0 to disable, or use a number equal to how many reverse proxies your app sits behind (e.g., 1 for Nginx, 2 for Nginx + Cloudflare, etc.)

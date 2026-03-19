@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VietQR Payment - <%= storeName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+    }
+
+    .glass-effect {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(94, 153, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(94, 153, 255, 0.1);
+    }
+
+    .qr-container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .qr-container img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .payment-info {
+      background: rgba(94, 153, 255, 0.1);
+      border-left: 4px solid #5e99ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+
+    .copy-button {
+      background: #5e99ff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .copy-button:hover {
+      background: #4a80d5;
+      transform: translateY(-2px);
+    }
+
+    .copy-button.copied {
+      background: #22c55e;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255,255,255,0.1);
+      border-left-color: #5e99ff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .status-waiting {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    .status-success {
+      background: #22c55e;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl">
+      <div class="glass-effect rounded-2xl p-6 sm:p-12">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold mb-2">Scan to Pay with VietQR</h1>
+          <p class="text-text-secondary">Complete your payment using the QR code below</p>
+        </div>
+
+        <!-- Status Badge -->
+        <div class="text-center mb-8">
+          <span class="status-badge status-waiting">
+            <i class="fas fa-hourglass-half mr-2"></i>
+            Waiting for Payment
+          </span>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="flex justify-center mb-8">
+          <div class="qr-container">
+            <img src="<%= qrCode %>" alt="VietQR Payment Code" width="300" height="300">
+          </div>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="space-y-4 mb-8">
+          <!-- Bank Account -->
+          <div class="payment-info">
+            <p class="text-sm font-semibold mb-2 flex items-center gap-2">
+              <i class="fas fa-bank"></i>
+              Bank Account
+            </p>
+            <div class="flex items-center justify-between bg-dark-card p-3 rounded-lg">
+              <code class="text-sm"><%= transferData.accountNumber %></code>
+              <button class="copy-button" onclick="copyToClipboard('<%= transferData.accountNumber %>', this)">
+                <i class="fas fa-copy mr-1"></i>Copy
+              </button>
+            </div>
+          </div>
+
+          <!-- Account Name -->
+          <div class="payment-info">
+            <p class="text-sm font-semibold mb-2 flex items-center gap-2">
+              <i class="fas fa-user-circle"></i>
+              Account Name
+            </p>
+            <p class="text-lg font-bold text-white"><%= transferData.accountName %></p>
+          </div>
+
+          <!-- Amount -->
+          <div class="payment-info">
+            <p class="text-sm font-semibold mb-2 flex items-center gap-2">
+              <i class="fas fa-money-bill-wave"></i>
+              Payment Amount
+            </p>
+            <p class="text-2xl font-bold text-accent"><%= totalPrice %> <%= transferData.bankCode ? transferData.bankCode : 'VND' %></p>
+          </div>
+
+          <!-- Description -->
+          <div class="payment-info">
+            <p class="text-sm font-semibold mb-2 flex items-center gap-2">
+              <i class="fas fa-info-circle"></i>
+              Payment Description
+            </p>
+            <div class="flex items-center justify-between bg-dark-card p-3 rounded-lg">
+              <code class="text-sm"><%= cartSnapshot._id.toString().substring(0, 8) %></code>
+              <button class="copy-button" onclick="copyToClipboard('<%= cartSnapshot._id.toString().substring(0, 8) %>', this)">
+                <i class="fas fa-copy mr-1"></i>Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-dark-card p-6 rounded-lg mb-8 border border-white/10">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <i class="fas fa-directions text-accent"></i>
+            How to Pay
+          </h3>
+          <ol class="space-y-2 text-sm">
+            <li class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">1</span>
+              <span>Open your mobile banking app or QR scanner</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">2</span>
+              <span>Scan the QR code displayed above</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">3</span>
+              <span>Verify the payment amount and account details</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">4</span>
+              <span>Confirm and complete the payment</span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Status Checking Section -->
+        <div class="text-center">
+          <div class="spinner" id="statusSpinner"></div>
+          <p class="text-text-secondary mb-4">Checking payment status...</p>
+
+          <div id="paymentStatus" class="hidden">
+            <p class="text-green-400 text-lg font-bold mb-4">
+              <i class="fas fa-check-circle mr-2"></i>
+              Payment Received!
+            </p>
+            <a href="/" class="inline-block bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300">
+              <i class="fas fa-home mr-2"></i>
+              Return to Home
+            </a>
+          </div>
+        </div>
+
+        <!-- Cancel Button -->
+        <div class="mt-8 text-center border-t border-white/10 pt-6">
+          <a href="/cart" class="text-text-secondary hover:text-white transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Return to Cart
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const snapshotId = '<%= cartSnapshot._id %>';
+    let checkAttempts = 0;
+    const maxChecks = 300; // Check for 5 minutes (300 * 1 second)
+
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.innerHTML;
+        button.classList.add('copied');
+        button.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+
+        setTimeout(() => {
+          button.classList.remove('copied');
+          button.innerHTML = originalText;
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+    }
+
+    function checkPaymentStatus() {
+      checkAttempts++;
+
+      fetch(`/checkout/vietqr/verify/${snapshotId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.transactionId) {
+            // Payment completed
+            document.getElementById('statusSpinner').style.display = 'none';
+            document.getElementById('paymentStatus').classList.remove('hidden');
+
+            setTimeout(() => {
+              window.location.href = `/invoice/${data.transactionId}`;
+            }, 3000);
+          } else if (checkAttempts < maxChecks) {
+            // Keep checking
+            setTimeout(checkPaymentStatus, 1000);
+          } else {
+            // Timeout - redirect to cart
+            document.getElementById('statusSpinner').style.display = 'none';
+            const statusDiv = document.getElementById('paymentStatus');
+            statusDiv.innerHTML = `
+              <p class="text-orange-400 text-lg font-bold mb-4">
+                <i class="fas fa-clock mr-2"></i>
+                Payment verification timeout
+              </p>
+              <p class="text-text-secondary mb-4">
+                Your payment may still be processing. Please check your bank account or contact support if you have any questions.
+              </p>
+              <a href="/cart" class="inline-block bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300">
+                Return to Cart
+              </a>
+            `;
+            statusDiv.classList.remove('hidden');
+          }
+        })
+        .catch(error => {
+          console.error('Error checking payment status:', error);
+          if (checkAttempts < maxChecks) {
+            setTimeout(checkPaymentStatus, 1000);
+          }
+        });
+    }
+
+    // Start checking payment status
+    checkPaymentStatus();
+  </script>
+</body>
+</html>
+
