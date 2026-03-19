@@ -881,6 +881,17 @@
                       </div>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Client ID <span class="text-text-muted">(Optional - VietQR API)</span></label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="text" name="vietqrClientId" value="<%= settings.paymentMethods?.vietqr?.clientId || '' %>" placeholder="Lấy từ developers.vietqr.io">
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">API Key <span class="text-text-muted">(Optional - VietQR API)</span></label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="password" name="vietqrApiKey" placeholder="Để trống nếu không dùng API">
+                      </div>
+                    </div>
+
                     <div>
                       <label class="block text-sm font-medium text-white mb-2">Webhook URL (Optional)</label>
                       <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="text" name="vietqrWebhookUrl" value="<%= settings.paymentMethods?.vietqr?.webhookUrl || '' %>" placeholder="https://your-bank-provider/webhook">
@@ -889,7 +900,7 @@
                     <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
                       <p class="text-xs text-blue-300">
                         <i class="fas fa-info-circle mr-1"></i>
-                        Use bank code <span class="font-semibold">970405</span> for VietinBank. Auto-confirm works via polling; webhook is optional.
+                        QR sẽ được tạo tự động qua <span class="font-semibold">img.vietqr.io</span> (không cần API key). Nếu muốn dùng VietQR API chính thức, lấy Client ID & API Key tại <span class="font-semibold">developers.vietqr.io</span>.
                       </p>
                     </div>
                   </div>

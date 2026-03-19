@@ -44,49 +44,68 @@ function generateQRCS(transferData) {
 }
 
 /**
- * Tạo mã QR từ URL VietQR API
+ * Tạo mã QR từ VietQR
+ * Ưu tiên: img URL (không cần API key) → POST API (nếu có clientId/apiKey)
  */
 async function generateVietQRCode(transferData) {
-  try {
-    const {
-      bankCode,
-      accountNumber,
-      accountName,
-      amount,
-      description,
-      transactionId
-    } = transferData;
+  const {
+    bankCode,
+    accountNumber,
+    accountName,
+    amount,
+    description,
+    transactionId,
+    clientId,
+    apiKey
+  } = transferData;
 
-    // Gọi VietQR API để tạo mã QR
-    const response = await axios.get(`${VIETQR_API_BASE}/generate`, {
-      params: {
+  const addInfo = description || transactionId || '';
+
+  // --- Phương thức 1: VietQR POST API (nếu có clientId và apiKey) ---
+  if (clientId && apiKey) {
+    try {
+      const response = await axios.post(`${VIETQR_API_BASE}/generate`, {
         accountNo: accountNumber,
         accountName: accountName,
         acqId: bankCode,
-        amount: amount,
-        addInfo: description || transactionId,
-        accountType: 0, // 0 = Bank Account
-        template: 'compact' // Template compact
-      }
-    });
+        amount: Math.round(amount),
+        addInfo: addInfo,
+        template: 'compact'
+      }, {
+        headers: {
+          'x-client-id': clientId,
+          'x-api-key': apiKey,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
 
-    if (response.data && response.data.code === '00') {
-      const qrImageUrl = response.data.data.qrDataURL;
-      
-      // Convert URL QR sang Base64 hoặc trả về URL trực tiếp
-      return {
-        success: true,
-        qrUrl: qrImageUrl,
-        qrData: response.data.data
-      };
-    } else {
-      return {
-        success: false,
-        error: response.data.message || 'Failed to generate QR code'
-      };
+      if (response.data && response.data.code === '00') {
+        return {
+          success: true,
+          qrUrl: response.data.data.qrDataURL,
+          qrData: response.data.data
+        };
+      }
+      console.warn('[VietQR] API returned non-success code:', response.data?.code, response.data?.desc);
+    } catch (apiError) {
+      console.warn('[VietQR] POST API failed, falling back to img URL:', apiError.message);
     }
+  }
+
+  // --- Phương thức 2 (mặc định): Img URL không cần API key ---
+  try {
+    const encodedAddInfo = encodeURIComponent(addInfo);
+    const encodedAccountName = encodeURIComponent(accountName || '');
+    const imgUrl = `https://img.vietqr.io/image/${bankCode}-${accountNumber}-compact.jpg?amount=${Math.round(amount)}&addInfo=${encodedAddInfo}&accountName=${encodedAccountName}`;
+
+    return {
+      success: true,
+      qrUrl: imgUrl,
+      qrData: null
+    };
   } catch (error) {
-    console.error('VietQR Generation Error:', error);
+    console.error('[VietQR] Img URL generation error:', error);
     return {
       success: false,
       error: error.message
@@ -282,9 +301,9 @@ function formatPaymentInfo(transferData) {
 
   return {
     bankCode,
-    accountNumber: accountNumber.slice(-4).padStart(accountNumber.length, '*'),
+    accountNumber: accountNumber, // Hiển thị đầy đủ để người dùng copy chính xác
     accountName,
-    amount: amount.toLocaleString('vi-VN'),
+    amount: Math.round(amount).toLocaleString('vi-VN'),
     description: description || 'Thanh toán đơn hàng'
   };
 }

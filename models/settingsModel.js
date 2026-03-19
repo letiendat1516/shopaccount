@@ -205,6 +205,8 @@ We value your privacy and are committed to safeguarding the personal information
       accountNumber: { type: String, default: '' },
       accountName: { type: String, default: '' },
       accountType: { type: Number, default: 0 }, // 0 = Bank Account, 1 = Business
+      clientId: { type: String, default: '' }, // VietQR API Client ID (optional)
+      apiKey: { type: String, default: '' },   // VietQR API Key (optional)
       webhookUrl: { type: String, default: '' }, // For third-party webhook
       webhookSecret: { type: String, default: '' }, // Secret key for webhook verification
       autoConfirmTimeout: { type: Number, default: 300000 } // 5 minutes in milliseconds

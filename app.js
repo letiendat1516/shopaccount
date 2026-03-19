@@ -508,6 +508,10 @@ function getDecryptedPaymentConfig(settings) {
       accountType: Number.isFinite(settings.paymentMethods?.vietqr?.accountType)
         ? settings.paymentMethods.vietqr.accountType
         : 0,
+      clientId: settings.paymentMethods?.vietqr?.clientId || '',
+      apiKey: settings.paymentMethods?.vietqr?.apiKey
+        ? decrypt(settings.paymentMethods.vietqr.apiKey)
+        : '',
       webhookUrl: settings.paymentMethods?.vietqr?.webhookUrl || '',
       webhookSecret: settings.paymentMethods?.vietqr?.webhookSecret || '',
       autoConfirmTimeout: settings.paymentMethods?.vietqr?.autoConfirmTimeout || 300000
@@ -3823,6 +3827,8 @@ settings.paymentMethods = {
     accountNumber: (req.body.vietqrAccountNumber || settings.paymentMethods?.vietqr?.accountNumber || '').trim(),
     accountName: (req.body.vietqrAccountName || settings.paymentMethods?.vietqr?.accountName || '').trim(),
     accountType: req.body.vietqrAccountType === '1' ? 1 : 0,
+    clientId: (req.body.vietqrClientId || settings.paymentMethods?.vietqr?.clientId || '').trim(),
+    apiKey: req.body.vietqrApiKey ? encrypt(req.body.vietqrApiKey) : settings.paymentMethods?.vietqr?.apiKey || '',
     webhookUrl: (req.body.vietqrWebhookUrl || settings.paymentMethods?.vietqr?.webhookUrl || '').trim(),
     webhookSecret: (req.body.vietqrWebhookSecret || settings.paymentMethods?.vietqr?.webhookSecret || '').trim(),
     autoConfirmTimeout: Math.max(parseInt(req.body.vietqrAutoConfirmTimeout, 10) || settings.paymentMethods?.vietqr?.autoConfirmTimeout || 300000, 10000)
@@ -7348,7 +7354,9 @@ app.post('/checkout/vietqr', checkAuthenticated, csrfProtection, async (req, res
       accountName: paymentConfig.vietqr.accountName,
       amount: totalPrice,
       description: `${globalSettings.storeName} - Payment ${cartSnapshot._id.toString().substring(0, 8)}`,
-      transactionId: cartSnapshot._id.toString()
+      transactionId: cartSnapshot._id.toString(),
+      clientId: paymentConfig.vietqr.clientId || '',
+      apiKey: paymentConfig.vietqr.apiKey || ''
     };
 
     const qrResult = await vietqr.generateVietQRCode(transferData);
