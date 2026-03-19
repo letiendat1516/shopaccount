@@ -830,6 +830,71 @@
                   </div>
                 </div>
 
+                <div class="bg-dark-card rounded-lg p-4 border border-white/10">
+                  <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-qrcode text-2xl" style="color: #2563eb;"></i>
+                    <div class="flex-1">
+                      <h3 class="text-sm font-semibold text-white">VietQR</h3>
+                      <p class="text-xs text-text-muted">Vietnam bank transfer (QR)</p>
+                    </div>
+                    <label class="custom-checkbox">
+                      <input type="checkbox" name="vietqrEnabled" value="true" id="vietqrEnabled" <%= settings.paymentMethods?.vietqr?.enabled ? 'checked' : '' %>>
+                      <span class="checkmark"></span>
+                      <span class="text-sm">Enable</span>
+                    </label>
+                  </div>
+
+                  <div id="vietqrConfig" class="<%= settings.paymentMethods?.vietqr?.enabled ? '' : 'hidden' %> space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Bank Code</label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="text" name="vietqrBankCode" value="<%= settings.paymentMethods?.vietqr?.bankCode || '970405' %>" placeholder="970405">
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Account Type</label>
+                        <select name="vietqrAccountType" class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm">
+                          <option value="0" <%= (settings.paymentMethods?.vietqr?.accountType ?? 0) === 0 ? 'selected' : '' %>>Personal</option>
+                          <option value="1" <%= settings.paymentMethods?.vietqr?.accountType === 1 ? 'selected' : '' %>>Business</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Account Number</label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="text" name="vietqrAccountNumber" value="<%= settings.paymentMethods?.vietqr?.accountNumber || '' %>" placeholder="104872088721">
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Account Name</label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm" type="text" name="vietqrAccountName" value="<%= settings.paymentMethods?.vietqr?.accountName || '' %>" placeholder="LE TIEN DAT">
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Auto Confirm Timeout (ms)</label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="number" min="10000" step="1000" name="vietqrAutoConfirmTimeout" value="<%= settings.paymentMethods?.vietqr?.autoConfirmTimeout || 300000 %>" placeholder="300000">
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-white mb-2">Webhook Secret (Optional)</label>
+                        <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="text" name="vietqrWebhookSecret" value="<%= settings.paymentMethods?.vietqr?.webhookSecret || '' %>" placeholder="Optional secret">
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium text-white mb-2">Webhook URL (Optional)</label>
+                      <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="text" name="vietqrWebhookUrl" value="<%= settings.paymentMethods?.vietqr?.webhookUrl || '' %>" placeholder="https://your-bank-provider/webhook">
+                    </div>
+
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                      <p class="text-xs text-blue-300">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Use bank code <span class="font-semibold">970405</span> for VietinBank. Auto-confirm works via polling; webhook is optional.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
                   <p class="text-sm text-green-300">
                     <i class="fas fa-lock mr-2"></i>
@@ -1104,6 +1169,10 @@
       {
         checkbox: 'coinbaseEnabled',
         config: 'coinbaseConfig'
+      },
+      {
+        checkbox: 'vietqrEnabled',
+        config: 'vietqrConfig'
       }
     ];
 

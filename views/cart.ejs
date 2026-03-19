@@ -728,7 +728,17 @@
               </form>
               <% } %>
 
-              <% if (!paymentConfig.paypal.enabled && !paymentConfig.stripe.enabled && !paymentConfig.coinbase.enabled) { %>
+              <% if (paymentConfig.vietqr && paymentConfig.vietqr.enabled) { %>
+              <form action="/checkout/vietqr" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" id="vietqrButton" disabled class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg transition-all duration-300 hover-lift flex items-center justify-center gap-3">
+                  <i class="fas fa-qrcode text-xl"></i>
+                  <span class="text-sm sm:text-base">Checkout with VietQR</span>
+                </button>
+              </form>
+              <% } %>
+
+              <% if (!paymentConfig.paypal.enabled && !paymentConfig.stripe.enabled && !paymentConfig.coinbase.enabled && !(paymentConfig.vietqr && paymentConfig.vietqr.enabled)) { %>
               <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                 <p class="text-yellow-400 text-sm text-center">
                   <i class="fas fa-exclamation-triangle mr-2"></i>

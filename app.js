@@ -499,6 +499,18 @@ function getDecryptedPaymentConfig(settings) {
       webhookSecret: settings.paymentMethods?.coinbase?.webhookSecret 
         ? decrypt(settings.paymentMethods.coinbase.webhookSecret) 
         : ''
+    },
+    vietqr: {
+      enabled: settings.paymentMethods?.vietqr?.enabled || false,
+      bankCode: settings.paymentMethods?.vietqr?.bankCode || '970405',
+      accountNumber: settings.paymentMethods?.vietqr?.accountNumber || '',
+      accountName: settings.paymentMethods?.vietqr?.accountName || '',
+      accountType: Number.isFinite(settings.paymentMethods?.vietqr?.accountType)
+        ? settings.paymentMethods.vietqr.accountType
+        : 0,
+      webhookUrl: settings.paymentMethods?.vietqr?.webhookUrl || '',
+      webhookSecret: settings.paymentMethods?.vietqr?.webhookSecret || '',
+      autoConfirmTimeout: settings.paymentMethods?.vietqr?.autoConfirmTimeout || 300000
     }
   };
 }
@@ -3804,6 +3816,16 @@ settings.paymentMethods = {
     enabled: req.body.coinbaseEnabled === 'true',
     apiKey: req.body.coinbaseApiKey ? encrypt(req.body.coinbaseApiKey) : settings.paymentMethods?.coinbase?.apiKey || '',
     webhookSecret: req.body.coinbaseWebhookSecret ? encrypt(req.body.coinbaseWebhookSecret) : settings.paymentMethods?.coinbase?.webhookSecret || ''
+  },
+  vietqr: {
+    enabled: req.body.vietqrEnabled === 'true',
+    bankCode: (req.body.vietqrBankCode || settings.paymentMethods?.vietqr?.bankCode || '970405').trim(),
+    accountNumber: (req.body.vietqrAccountNumber || settings.paymentMethods?.vietqr?.accountNumber || '').trim(),
+    accountName: (req.body.vietqrAccountName || settings.paymentMethods?.vietqr?.accountName || '').trim(),
+    accountType: req.body.vietqrAccountType === '1' ? 1 : 0,
+    webhookUrl: (req.body.vietqrWebhookUrl || settings.paymentMethods?.vietqr?.webhookUrl || '').trim(),
+    webhookSecret: (req.body.vietqrWebhookSecret || settings.paymentMethods?.vietqr?.webhookSecret || '').trim(),
+    autoConfirmTimeout: Math.max(parseInt(req.body.vietqrAutoConfirmTimeout, 10) || settings.paymentMethods?.vietqr?.autoConfirmTimeout || 300000, 10000)
   }
 };
 
