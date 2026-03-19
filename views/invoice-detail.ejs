@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice #<%= payment.ID %> - <%= settings.storeName %></title>
+  <title>Hóa Đơn #<%= payment.ID %> - <%= settings.storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
@@ -135,15 +135,15 @@
     <div class="container mx-auto px-6 max-w-5xl">
       <a href="/profile/<%= user.id %>#invoices" class="inline-flex items-center gap-2 px-4 py-2 bg-dark-card hover:bg-dark-border text-text-secondary hover:text-white border border-white/20 hover:border-accent/50 rounded-lg transition-all duration-300 hover-lift mb-8" data-aos="fade-right">
         <i class="fas fa-arrow-left"></i>
-        <span class="font-medium">Back to Profile</span>
+        <span class="font-medium">Quay Lại Hồ Sơ</span>
       </a>
 
       <div class="text-center mb-12" data-aos="fade-up">
         <div class="inline-flex items-center justify-center w-20 h-20 bg-green-500/20 rounded-full mb-6 success-glow animate-bounce-gentle">
           <i class="fas fa-check-circle text-green-400 text-4xl"></i>
         </div>
-        <h1 class="text-4xl lg:text-5xl font-black text-white mb-4">Payment Successful!</h1>
-        <p class="text-xl text-text-secondary">Thank you for your purchase. Your order has been completed.</p>
+        <h1 class="text-4xl lg:text-5xl font-black text-white mb-4">Thanh Toán Thành Công!</h1>
+        <p class="text-xl text-text-secondary">Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đã hoàn tất.</p>
       </div>
 
       <div class="glass-effect rounded-3xl overflow-hidden mb-8" data-aos="fade-up" data-aos-delay="100">
@@ -155,13 +155,13 @@
                 <i class="fas fa-receipt text-white text-xl"></i>
               </div>
               <div>
-                <div class="text-white/80 text-sm font-medium">Invoice Number</div>
+                <div class="text-white/80 text-sm font-medium">Số Hóa Đơn</div>
                 <div class="text-white text-2xl font-bold">#<%= payment.ID %></div>
               </div>
             </div>
             <div class="flex items-center gap-3 bg-white/20 px-4 py-2 rounded-xl">
               <i class="fas fa-check-circle text-white"></i>
-              <span class="text-white font-bold">PAID</span>
+              <span class="text-white font-bold">ĐÃ THANH TOÁN</span>
             </div>
           </div>
         </div>
@@ -172,7 +172,7 @@
               <h2 class="text-2xl font-bold text-white mb-2"><%= settings.storeName %></h2>
               <div class="flex items-center gap-2 text-green-400 font-semibold">
                 <i class="fas fa-check-circle"></i>
-                <span>Payment Completed</span>
+                <span>Đã Thanh Toán</span>
               </div>
             </div>
             <div class="flex items-center justify-start md:justify-end">
@@ -186,7 +186,7 @@
                   <i class="fab fa-bitcoin text-accent text-2xl"></i>
                   <% } %>
                   <div>
-                    <div class="text-xs text-text-muted uppercase">Paid with</div>
+                    <div class="text-xs text-text-muted uppercase">Thanh toán bằng</div>
                     <div class="text-white font-bold"><%= payment.paymentMethod.charAt(0).toUpperCase() + payment.paymentMethod.slice(1) %></div>
                   </div>
                 </div>
@@ -198,14 +198,14 @@
         <div class="p-8 border-b border-white/10">
           <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <i class="fas fa-info-circle text-accent"></i>
-            Transaction Information
+            Thông Tin Giao Dịch
           </h3>
           <div class="grid md:grid-cols-3 gap-6">
             <div class="bg-dark-card rounded-xl p-4">
-              <div class="text-xs text-text-muted uppercase mb-1">Date & Time</div>
+              <div class="text-xs text-text-muted uppercase mb-1">Ngày & Giờ</div>
               <div class="text-white font-semibold">
-                <%= new Date(payment.createdAt).toLocaleString('en-US', { 
-                  year: 'numeric', 
+                <%= new Date(payment.createdAt).toLocaleString('vi-VN', {
+                  year: 'numeric',
                   month: 'long', 
                   day: 'numeric',
                   hour: '2-digit',
@@ -214,11 +214,11 @@
               </div>
             </div>
             <div class="bg-dark-card rounded-xl p-4">
-              <div class="text-xs text-text-muted uppercase mb-1">Transaction ID</div>
+              <div class="text-xs text-text-muted uppercase mb-1">Mã Giao Dịch</div>
               <div class="text-white font-semibold break-all"><%= payment.transactionID %></div>
             </div>
             <div class="bg-dark-card rounded-xl p-4">
-              <div class="text-xs text-text-muted uppercase mb-1">Payment Method</div>
+              <div class="text-xs text-text-muted uppercase mb-1">Phương Thức</div>
               <div class="text-white font-semibold"><%= payment.paymentMethod.charAt(0).toUpperCase() + payment.paymentMethod.slice(1) %></div>
             </div>
           </div>
@@ -227,11 +227,11 @@
         <div class="p-8 border-b border-white/10">
           <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <i class="fas fa-user text-accent"></i>
-            Customer Details
+            Thông Tin Khách Hàng
           </h3>
           <div class="grid md:grid-cols-2 gap-6">
             <div class="bg-dark-card rounded-xl p-4">
-              <div class="text-xs text-text-muted uppercase mb-1">Customer Name</div>
+              <div class="text-xs text-text-muted uppercase mb-1">Tên Khách Hàng</div>
               <div class="text-white font-semibold"><%= payment.username %></div>
             </div>
             <div class="bg-dark-card rounded-xl p-4">
@@ -244,7 +244,7 @@
             </div>
             <% if (payment.discountCode) { %>
             <div class="bg-dark-card rounded-xl p-4 border border-green-500/30">
-              <div class="text-xs text-text-muted uppercase mb-1">Discount Applied</div>
+              <div class="text-xs text-text-muted uppercase mb-1">Giảm Giá Áp Dụng</div>
               <div class="text-green-400 font-bold">
                 <%= payment.discountCode %> (<%= payment.discountPercentage %>% off)
               </div>
@@ -256,7 +256,7 @@
         <div class="p-8">
           <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <i class="fas fa-shopping-bag text-accent"></i>
-            Purchased Products
+            Sản Phẩm Đã Mua
           </h3>
 
           <%
@@ -281,7 +281,7 @@
             <div>
               <div class="flex items-center gap-2 mb-3">
                 <i class="fas fa-box text-accent text-sm"></i>
-                <h4 class="text-sm font-bold text-white uppercase tracking-wide">Individual Products</h4>
+                <h4 class="text-sm font-bold text-white uppercase tracking-wide">Sản Phẩm Riêng Lẻ</h4>
               </div>
               <div class="space-y-3">
                 <% individualProducts.forEach((product) => { %>
@@ -293,7 +293,7 @@
                     <div class="flex items-center gap-6">
                       <div class="text-right">
                         <% if (product.salePrice) { %>
-                        <div class="text-xs text-text-muted uppercase mb-1">Original</div>
+                        <div class="text-xs text-text-muted uppercase mb-1">Giá Gốc</div>
                         <div class="text-text-muted line-through text-sm">
                           <%= settings.currencySymbol %><%= product.originalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                         </div>
@@ -301,14 +301,14 @@
                           <%= settings.currencySymbol %><%= product.salePrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                         </div>
                         <% } else { %>
-                        <div class="text-xs text-text-muted uppercase mb-1">Original</div>
+                        <div class="text-xs text-text-muted uppercase mb-1">Giá Gốc</div>
                         <div class="text-white font-bold">
                           <%= settings.currencySymbol %><%= product.originalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                         </div>
                         <% } %>
                       </div>
                       <div class="text-right">
-                        <div class="text-xs text-text-muted uppercase mb-1">Paid</div>
+                        <div class="text-xs text-text-muted uppercase mb-1">Đã Trả</div>
                         <div class="text-accent font-bold text-xl">
                           <%= settings.currencySymbol %><%= product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                         </div>
@@ -325,7 +325,7 @@
             <div>
               <div class="flex items-center gap-2 mb-3">
                 <i class="fas fa-box-open text-green-400 text-sm"></i>
-                <h4 class="text-sm font-bold text-white uppercase tracking-wide">Bundle Purchases</h4>
+                <h4 class="text-sm font-bold text-white uppercase tracking-wide">Gói Sản Phẩm</h4>
               </div>
               <div class="space-y-4">
 <% Object.keys(bundleGroups).forEach((bundleName) => { 
@@ -343,7 +343,7 @@
                       <h5 class="text-white font-bold text-lg"><%= bundleName %></h5>
                     </div>
 <div class="text-right">
-  <div class="text-xs text-text-muted uppercase mb-1">Bundle Total</div>
+  <div class="text-xs text-text-muted uppercase mb-1">Tổng Gói</div>
   <% if (bundleOriginalTotal > bundleDiscountedTotal) { %>
   <div class="text-text-muted line-through text-sm">
     <%= settings.currencySymbol %><%= bundleOriginalTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
@@ -368,7 +368,7 @@
                         <div class="flex items-center gap-4">
                           <div class="text-right">
                             <% if (product.salePrice) { %>
-                            <div class="text-xs text-text-muted uppercase mb-0.5">Original</div>
+                            <div class="text-xs text-text-muted uppercase mb-0.5">Giá Gốc</div>
                             <div class="text-text-muted line-through text-xs">
                               <%= settings.currencySymbol %><%= product.originalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                             </div>
@@ -376,14 +376,14 @@
                               <%= settings.currencySymbol %><%= product.salePrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                             </div>
                             <% } else { %>
-                            <div class="text-xs text-text-muted uppercase mb-0.5">Original</div>
+                            <div class="text-xs text-text-muted uppercase mb-0.5">Giá Gốc</div>
                             <div class="text-white text-sm font-bold">
                               <%= settings.currencySymbol %><%= product.originalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                             </div>
                             <% } %>
                           </div>
                           <div class="text-right">
-                            <div class="text-xs text-text-muted uppercase mb-0.5">Paid</div>
+                            <div class="text-xs text-text-muted uppercase mb-0.5">Đã Trả</div>
                             <div class="text-accent font-bold">
                               <%= settings.currencySymbol %><%= product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                             </div>
@@ -403,7 +403,7 @@
           <div class="bg-gradient-to-br from-accent/20 via-accent/10 to-transparent rounded-2xl p-6 border border-accent/40">
             <div class="space-y-3 mb-4">
               <div class="flex justify-between items-center">
-                <span class="text-text-secondary">Subtotal</span>
+                <span class="text-text-secondary">Tạm Tính</span>
                 <span class="text-white font-semibold">
                   <%= settings.currencySymbol %><%= payment.originalSubtotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                 </span>
@@ -411,7 +411,7 @@
 
               <% if (payment.discountAmount > 0) { %>
               <div class="flex justify-between items-center">
-                <span class="text-text-secondary">Discount (<%= payment.discountPercentage %>%)</span>
+                <span class="text-text-secondary">Giảm Giá (<%= payment.discountPercentage %>%)</span>
                 <span class="text-green-400 font-semibold">
                   -<%= settings.currencySymbol %><%= payment.discountAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                 </span>
@@ -420,7 +420,7 @@
 
               <% if (payment.salesTaxAmount > 0) { %>
               <div class="flex justify-between items-center">
-                <span class="text-text-secondary">Tax</span>
+                <span class="text-text-secondary">Thuế</span>
                 <span class="text-white font-semibold">
                   <%= settings.currencySymbol %><%= payment.salesTaxAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                 </span>
@@ -430,7 +430,7 @@
 
             <div class="pt-4 border-t border-accent/40">
               <div class="flex justify-between items-center">
-                <span class="text-white text-xl font-bold">Total Paid</span>
+                <span class="text-white text-xl font-bold">Tổng Đã Trả</span>
                 <span class="text-accent text-3xl font-black">
                   <%= settings.currencySymbol %><%= payment.totalPaid.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
                 </span>
@@ -443,16 +443,16 @@
         <div class="p-8 bg-red-500/5 border-t border-red-500/30">
           <h3 class="text-lg font-bold text-red-400 mb-4 flex items-center gap-2">
             <i class="fas fa-lock"></i>
-            Staff Only Information
+            Chỉ Dành Cho Nhân Viên
           </h3>
           <div class="grid md:grid-cols-2 gap-4">
             <div class="bg-dark-card rounded-xl p-4 border border-red-500/20">
-              <div class="text-xs text-text-muted uppercase mb-1">IP Address</div>
-              <div class="text-white font-semibold font-mono text-sm"><%= payment.ipAddress || 'Not recorded' %></div>
+              <div class="text-xs text-text-muted uppercase mb-1">Địa Chỉ IP</div>
+              <div class="text-white font-semibold font-mono text-sm"><%= payment.ipAddress || 'Chưa ghi nhận' %></div>
             </div>
             <div class="bg-dark-card rounded-xl p-4 border border-red-500/20">
-              <div class="text-xs text-text-muted uppercase mb-1">User Agent</div>
-              <div class="text-white font-semibold text-sm break-all"><%= payment.userAgent || 'Not recorded' %></div>
+              <div class="text-xs text-text-muted uppercase mb-1">Trình Duyệt</div>
+              <div class="text-white font-semibold text-sm break-all"><%= payment.userAgent || 'Chưa ghi nhận' %></div>
             </div>
           </div>
         </div>
@@ -462,20 +462,20 @@
       <div class="grid md:grid-cols-2 gap-6" data-aos="fade-up" data-aos-delay="200">
         <a href="/invoice/<%= payment.transactionID %>/download" class="bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-3 hover-lift shadow-lg">
           <i class="fas fa-file-download text-xl"></i>
-          <span>Download PDF Invoice</span>
+          <span>Tải Hóa Đơn PDF</span>
         </a>
         <a href="/profile" class="bg-dark-card hover:bg-dark-border text-white border border-white/20 px-8 py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
           <i class="fas fa-box-open text-xl"></i>
-          <span>View My Products</span>
+          <span>Xem Sản Phẩm</span>
         </a>
       </div>
 
       <div class="text-center mt-12 glass-effect rounded-2xl p-8" data-aos="fade-up" data-aos-delay="300">
         <i class="fas fa-heart text-red-400 text-3xl mb-4 animate-bounce-gentle"></i>
-        <h3 class="text-2xl font-bold text-white mb-2">Thank You for Your Purchase!</h3>
+        <h3 class="text-2xl font-bold text-white mb-2">Cảm Ơn Bạn Đã Mua Hàng!</h3>
         <p class="text-text-secondary max-w-2xl mx-auto">
-          Your purchase helps us continue providing quality products and services.
-          If you have any questions or need support, please don't hesitate to contact us.
+          Giao dịch của bạn giúp chúng tôi tiếp tục cung cấp các sản phẩm và dịch vụ chất lượng.
+          Nếu bạn có câu hỏi hoặc cần hỗ trợ, đừng ngần ngại liên hệ với chúng tôi.
         </p>
       </div>
     </div>

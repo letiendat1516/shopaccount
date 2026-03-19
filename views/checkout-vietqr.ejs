@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VietQR Payment - <%= storeName %></title>
+  <title>Thanh Toán VietQR - <%= storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -100,15 +100,15 @@
       <div class="glass-effect rounded-2xl p-6 sm:p-12">
         <!-- Header -->
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold mb-2">Scan to Pay with VietQR</h1>
-          <p class="text-text-secondary">Complete your payment using the QR code below</p>
+          <h1 class="text-3xl font-bold mb-2">Quét Mã Để Thanh Toán VietQR</h1>
+          <p class="text-text-secondary">Hoàn tất thanh toán bằng mã QR bên dưới</p>
         </div>
 
         <!-- Status Badge -->
         <div class="text-center mb-8">
           <span class="status-badge status-waiting">
             <i class="fas fa-hourglass-half mr-2"></i>
-            Waiting for Payment
+            Đang Chờ Thanh Toán
           </span>
         </div>
 
@@ -125,7 +125,7 @@
           <div class="payment-info">
             <p class="text-sm font-semibold mb-2 flex items-center gap-2">
               <i class="fas fa-bank"></i>
-              Bank Account
+              Tài Khoản Ngân Hàng
             </p>
             <div class="flex items-center justify-between bg-dark-card p-3 rounded-lg">
               <code class="text-sm"><%= transferData.accountNumber %></code>
@@ -139,7 +139,7 @@
           <div class="payment-info">
             <p class="text-sm font-semibold mb-2 flex items-center gap-2">
               <i class="fas fa-user-circle"></i>
-              Account Name
+              Tên Tài Khoản
             </p>
             <p class="text-lg font-bold text-white"><%= transferData.accountName %></p>
           </div>
@@ -148,23 +148,27 @@
           <div class="payment-info">
             <p class="text-sm font-semibold mb-2 flex items-center gap-2">
               <i class="fas fa-money-bill-wave"></i>
-              Payment Amount
+              Số Tiền Thanh Toán
             </p>
             <p class="text-2xl font-bold text-accent"><%= transferData.amount %> VND</p>
           </div>
 
           <!-- Description -->
-          <div class="payment-info">
+          <div class="payment-info" style="border-left-color: #f59e0b;">
             <p class="text-sm font-semibold mb-2 flex items-center gap-2">
-              <i class="fas fa-info-circle"></i>
-              Payment Description
+              <i class="fas fa-comment-dots text-yellow-400"></i>
+              Nội dung chuyển khoản <span class="text-red-400 text-xs">(BẮT BUỘC ghi đúng)</span>
             </p>
-            <div class="flex items-center justify-between bg-dark-card p-3 rounded-lg">
-              <code class="text-sm"><%= cartSnapshot._id.toString().substring(0, 8) %></code>
-              <button class="copy-button" onclick="copyToClipboard('<%= cartSnapshot._id.toString().substring(0, 8) %>', this)">
+            <div class="flex items-center justify-between bg-dark-card p-3 rounded-lg border border-yellow-500/30">
+              <code class="text-base font-bold text-yellow-300">SEVQR <%= cartSnapshot._id.toString().substring(0, 8) %></code>
+              <button class="copy-button" onclick="copyToClipboard('SEVQR <%= cartSnapshot._id.toString().substring(0, 8) %>', this)">
                 <i class="fas fa-copy mr-1"></i>Copy
               </button>
             </div>
+            <p class="text-xs text-yellow-400 mt-2">
+              <i class="fas fa-exclamation-triangle mr-1"></i>
+              Nếu dùng QR, nội dung đã được điền sẵn. Nếu chuyển thủ công, hãy copy và dán vào phần nội dung.
+            </p>
           </div>
         </div>
 
@@ -172,24 +176,32 @@
         <div class="bg-dark-card p-6 rounded-lg mb-8 border border-white/10">
           <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
             <i class="fas fa-directions text-accent"></i>
-            How to Pay
+            Hướng dẫn thanh toán
           </h3>
-          <ol class="space-y-2 text-sm">
+          <ol class="space-y-3 text-sm">
             <li class="flex items-start gap-3">
-              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">1</span>
-              <span>Open your mobile banking app or QR scanner</span>
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0 mt-0.5">1</span>
+              <span>Mở app ngân hàng hoặc ví điện tử hỗ trợ VietQR</span>
             </li>
             <li class="flex items-start gap-3">
-              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">2</span>
-              <span>Scan the QR code displayed above</span>
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0 mt-0.5">2</span>
+              <span>Quét mã QR bên trên <span class="text-green-400">(nội dung sẽ được điền tự động)</span></span>
             </li>
             <li class="flex items-start gap-3">
-              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">3</span>
-              <span>Verify the payment amount and account details</span>
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0 mt-0.5">3</span>
+              <div>
+                <span>Kiểm tra nội dung chuyển khoản phải là: </span>
+                <code class="text-yellow-300 font-bold">SEVQR <%= cartSnapshot._id.toString().substring(0, 8) %></code>
+                <p class="text-red-400 text-xs mt-1"><i class="fas fa-exclamation-triangle mr-1"></i>Nếu thiếu nội dung này, hệ thống sẽ không nhận được thông báo tự động.</p>
+              </div>
             </li>
             <li class="flex items-start gap-3">
-              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0">4</span>
-              <span>Confirm and complete the payment</span>
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-accent rounded-full text-white text-xs flex-shrink-0 mt-0.5">4</span>
+              <span>Xác nhận đúng số tiền và hoàn tất chuyển khoản</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 bg-green-500 rounded-full text-white text-xs flex-shrink-0 mt-0.5">✓</span>
+              <span>Hệ thống tự động xác nhận và cấp sản phẩm trong vài giây</span>
             </li>
           </ol>
         </div>
@@ -197,16 +209,16 @@
         <!-- Status Checking Section -->
         <div class="text-center">
           <div class="spinner" id="statusSpinner"></div>
-          <p class="text-text-secondary mb-4">Checking payment status...</p>
+          <p class="text-text-secondary mb-4">⏳ Đang chờ xác nhận thanh toán...</p>
 
           <div id="paymentStatus" class="hidden">
             <p class="text-green-400 text-lg font-bold mb-4">
               <i class="fas fa-check-circle mr-2"></i>
-              Payment Received!
+              Thanh toán thành công!
             </p>
             <a href="/" class="inline-block bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300">
               <i class="fas fa-home mr-2"></i>
-              Return to Home
+              Về Trang Chủ
             </a>
           </div>
         </div>
@@ -215,7 +227,7 @@
         <div class="mt-8 text-center border-t border-white/10 pt-6">
           <a href="/cart" class="text-text-secondary hover:text-white transition-colors">
             <i class="fas fa-arrow-left mr-2"></i>
-            Return to Cart
+            Quay Lại Giỏ Hàng
           </a>
         </div>
       </div>
@@ -225,68 +237,76 @@
   <script>
     const snapshotId = '<%= cartSnapshot._id %>';
     let checkAttempts = 0;
-    const maxChecks = 300; // Check for 5 minutes (300 * 1 second)
+    const maxChecks = 900; // 15 phút (900 * 1 giây)
+    let polling = true;
 
     function copyToClipboard(text, button) {
       navigator.clipboard.writeText(text).then(() => {
         const originalText = button.innerHTML;
         button.classList.add('copied');
         button.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
-
-        setTimeout(() => {
-          button.classList.remove('copied');
-          button.innerHTML = originalText;
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy:', err);
-      });
+        setTimeout(() => { button.classList.remove('copied'); button.innerHTML = originalText; }, 2000);
+      }).catch(err => console.error('Failed to copy:', err));
     }
 
     function checkPaymentStatus() {
+      if (!polling) return;
       checkAttempts++;
 
       fetch(`/checkout/vietqr/verify/${snapshotId}`)
         .then(response => response.json())
         .then(data => {
           if (data.success && data.transactionId) {
-            // Payment completed
+            polling = false;
             document.getElementById('statusSpinner').style.display = 'none';
             document.getElementById('paymentStatus').classList.remove('hidden');
-
-            setTimeout(() => {
-              window.location.href = `/invoice/${data.transactionId}`;
-            }, 3000);
-          } else if (checkAttempts < maxChecks) {
-            // Keep checking
+            setTimeout(() => { window.location.href = `/invoice/${data.transactionId}`; }, 2000);
+          } else if (checkAttempts < maxChecks && polling) {
             setTimeout(checkPaymentStatus, 1000);
-          } else {
-            // Timeout - redirect to cart
+          } else if (polling) {
+            polling = false;
             document.getElementById('statusSpinner').style.display = 'none';
             const statusDiv = document.getElementById('paymentStatus');
             statusDiv.innerHTML = `
               <p class="text-orange-400 text-lg font-bold mb-4">
-                <i class="fas fa-clock mr-2"></i>
-                Payment verification timeout
+                <i class="fas fa-clock mr-2"></i>Hết thời gian chờ tự động
               </p>
-              <p class="text-text-secondary mb-4">
-                Your payment may still be processing. Please check your bank account or contact support if you have any questions.
+              <p class="text-text-secondary mb-4 text-sm">
+                Nếu bạn đã chuyển khoản, hãy nhấn nút bên dưới để kiểm tra lại.
               </p>
-              <a href="/cart" class="inline-block bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300">
-                Return to Cart
-              </a>
+              <button onclick="manualCheck()" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 mb-3">
+                <i class="fas fa-sync mr-2"></i>Kiểm tra lại
+              </button>
+              <br>
+              <a href="/cart" class="inline-block text-text-secondary hover:text-white mt-2 text-sm">← Quay lại giỏ hàng</a>
             `;
             statusDiv.classList.remove('hidden');
           }
         })
         .catch(error => {
-          console.error('Error checking payment status:', error);
-          if (checkAttempts < maxChecks) {
-            setTimeout(checkPaymentStatus, 1000);
-          }
+          if (checkAttempts < maxChecks) setTimeout(checkPaymentStatus, 2000);
         });
     }
 
-    // Start checking payment status
+    async function manualCheck() {
+      const btn = event.target.closest('button');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang kiểm tra...'; }
+      try {
+        const res = await fetch(`/checkout/vietqr/verify/${snapshotId}`);
+        const data = await res.json();
+        if (data.success && data.transactionId) {
+          document.getElementById('paymentStatus').innerHTML = `
+            <p class="text-green-400 text-lg font-bold mb-4"><i class="fas fa-check-circle mr-2"></i>Thanh toán thành công!</p>`;
+          setTimeout(() => { window.location.href = `/invoice/${data.transactionId}`; }, 2000);
+        } else {
+          if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync mr-2"></i>Kiểm tra lại'; }
+          alert('Chưa tìm thấy giao dịch khớp. Vui lòng đợi thêm hoặc liên hệ hỗ trợ.\n\nStatus: ' + (data.message || 'unknown'));
+        }
+      } catch(e) {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync mr-2"></i>Kiểm tra lại'; }
+      }
+    }
+
     checkPaymentStatus();
   </script>
 </body>

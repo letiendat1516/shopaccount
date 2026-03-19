@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification - <%= settings.storeName %></title>
+    <title>Xác Minh Email - <%= settings.storeName %></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 
-    <meta property="og:title" content="Email Verification | <%= settings.storeName %>" />
+    <meta property="og:title" content="Xác Minh Email | <%= settings.storeName %>" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<%= config.baseURL %>/verify-email" />
     <meta property="og:image" content="<%= settings.logoPath %>" />
@@ -118,8 +118,8 @@
                         <div class="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-green-500/30">
                             <i class="fas fa-check text-green-400 text-4xl"></i>
                         </div>
-                        <h1 class="text-4xl font-black text-white mb-3">Email Verified!</h1>
-                        <p class="text-text-secondary text-lg">Your account has been successfully verified</p>
+                        <h1 class="text-4xl font-black text-white mb-3">Email Đã Xác Minh!</h1>
+                        <p class="text-text-secondary text-lg">Tài khoản của bạn đã được xác minh thành công</p>
                     </div>
 
                     <div class="glass-effect rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
@@ -127,15 +127,15 @@
                             <div class="flex items-start gap-3">
                                 <i class="fas fa-check-circle text-green-400 mt-1"></i>
                                 <div class="flex-1">
-                                    <p class="text-green-400 text-sm font-semibold mb-1">Verification Complete</p>
-                                    <p class="text-green-300 text-sm">You can now access all features of your account.</p>
+                                    <p class="text-green-400 text-sm font-semibold mb-1">Xác Minh Hoàn Tất</p>
+                                    <p class="text-green-300 text-sm">Bạn đã có thể truy cập tất cả tính năng của tài khoản.</p>
                                 </div>
                             </div>
                         </div>
 
                         <a href="/login" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
                             <i class="fas fa-sign-in-alt"></i>
-                            <span>Continue to Login</span>
+                            <span>Tiếp Tục Đăng Nhập</span>
                         </a>
                     </div>
                 <% } else if (error) { %>
@@ -143,8 +143,8 @@
                         <div class="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-red-500/30">
                             <i class="fas fa-times text-red-400 text-4xl"></i>
                         </div>
-                        <h1 class="text-4xl font-black text-white mb-3">Verification Failed</h1>
-                        <p class="text-text-secondary text-lg">We couldn't verify your email address</p>
+                        <h1 class="text-4xl font-black text-white mb-3">Xác Minh Thất Bại</h1>
+                        <p class="text-text-secondary text-lg">Chúng tôi không thể xác minh địa chỉ email của bạn</p>
                     </div>
 
                     <div class="glass-effect rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
@@ -161,7 +161,7 @@
                             
                             <a href="/login" class="w-full bg-dark-card hover:bg-dark-border text-white border border-white/10 px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
                                 <i class="fas fa-arrow-left"></i>
-                                <span>Back to Login</span>
+                                <span>Quay Lại Đăng Nhập</span>
                             </a>
                         </div>
                     </div>
@@ -170,8 +170,8 @@
                         <div class="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-accent/30">
                             <i class="fas fa-spinner text-accent text-4xl animate-spin-slow"></i>
                         </div>
-                        <h1 class="text-4xl font-black text-white mb-3">Verifying Email...</h1>
-                        <p class="text-text-secondary text-lg">Please wait while we verify your email address</p>
+                        <h1 class="text-4xl font-black text-white mb-3">Đang Xác Minh Email...</h1>
+                        <p class="text-text-secondary text-lg">Vui lòng chờ trong khi chúng tôi xác minh email của bạn</p>
                     </div>
 
                     <div class="glass-effect rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
@@ -179,7 +179,7 @@
                             <div class="flex items-start gap-3">
                                 <i class="fas fa-info-circle text-accent mt-1"></i>
                                 <div class="flex-1">
-                                    <p class="text-accent text-sm">This should only take a moment...</p>
+                                    <p class="text-accent text-sm">Chỉ mất một lát...</p>
                                 </div>
                             </div>
                         </div>
@@ -188,9 +188,9 @@
 
                 <div class="text-center mt-6" data-aos="fade-up" data-aos-delay="200">
                     <p class="text-text-muted text-sm">
-                        Need help? 
+                        Cần hỗ trợ?
                         <a href="<%= settings.discordInviteLink %>" class="text-accent hover:text-accent/80 font-semibold transition-colors">
-                            Contact Support
+                            Liên Hệ Hỗ Trợ
                         </a>
                     </p>
                 </div>

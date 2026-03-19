@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staff Panel | Create Product</title>
+  <title>Quản Trị | Tạo Sản Phẩm</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
@@ -215,8 +215,8 @@
 
     <div class="container mx-auto px-6 py-8">
       <div class="mb-8" data-aos="fade-up">
-        <h1 class="text-4xl font-bold text-white mb-2">Create a New Product</h1>
-        <p class="text-text-secondary text-lg">Configure the details for the new product.</p>
+        <h1 class="text-4xl font-bold text-white mb-2">Tạo Sản Phẩm Mới</h1>
+        <p class="text-text-secondary text-lg">Cấu hình thông tin cho sản phẩm mới.</p>
       </div>
 
       <form id="productForm" action="/staff/products/create?_csrf=<%= encodeURIComponent(csrfToken) %>" method="POST" enctype="multipart/form-data">
@@ -228,25 +228,25 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
                   <i class="fas fa-info-circle text-accent"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-white">Product Information</h2>
+                <h2 class="text-2xl font-bold text-white">Thông Tin Sản Phẩm</h2>
               </div>
 
               <div class="space-y-6">
                 <div>
-                  <label class="block text-white font-semibold mb-2">Product Name</label>
-                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="name" placeholder="Enter product name" required>
+                  <label class="block text-white font-semibold mb-2">Tên Sản Phẩm</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="name" placeholder="Nhập tên sản phẩm" required>
                 </div>
 
                 <div>
                   <label class="block text-white font-semibold mb-2">URL ID</label>
-                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="urlId" id="urlId" placeholder="Enter URL ID" pattern="[a-zA-Z0-9-]+" title="Alphanumeric characters and hyphens only" required>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="text" name="urlId" id="urlId" placeholder="Nhập URL ID" pattern="[a-zA-Z0-9-]+" title="Chỉ chấp nhận ký tự chữ-số và dấu gạch ngang" required>
                   <div class="mt-2 p-3 bg-accent/10 border-l-4 border-accent rounded text-sm text-text-secondary">
-                    Link: <span id="urlExample" class="text-accent font-mono"></span>
+                    Liên kết: <span id="urlExample" class="text-accent font-mono"></span>
                   </div>
                 </div>
 
                 <div>
-                  <label class="block text-white font-semibold mb-3">Product Type</label>
+                  <label class="block text-white font-semibold mb-3">Loại Sản Phẩm</label>
                   <div id="productTypeOptions" class="space-y-3">
                     <div class="product-type-option cursor-pointer p-4 bg-dark-card border border-white/20 rounded-xl transition-all hover:border-accent/50 hover:bg-accent/5" data-value="digitalPaid">
                       <div class="flex items-start gap-3">
@@ -254,8 +254,8 @@
                           <i class="fas fa-dollar-sign text-accent"></i>
                         </div>
                         <div class="flex-1">
-                          <div class="text-white font-semibold mb-1">Digital Paid</div>
-                          <div class="text-text-secondary text-sm">A paid product that includes a downloadable file. Customers can download it after payment.</div>
+                          <div class="text-white font-semibold mb-1">Kỹ Thuật Số Trả Phí</div>
+                          <div class="text-text-secondary text-sm">Sản phẩm trả phí bao gồm file tải xuống. Khách hàng có thể tải sau khi thanh toán.</div>
                         </div>
                       </div>
                     </div>
@@ -266,8 +266,8 @@
                           <i class="fas fa-gift text-accent"></i>
                         </div>
                         <div class="flex-1">
-                          <div class="text-white font-semibold mb-1">Digital Free</div>
-                          <div class="text-text-secondary text-sm">A free product that includes a downloadable file. Customers can download it without payment.</div>
+                          <div class="text-white font-semibold mb-1">Kỹ Thuật Số Miễn Phí</div>
+                          <div class="text-text-secondary text-sm">Sản phẩm miễn phí bao gồm file tải xuống. Khách hàng có thể tải mà không cần thanh toán.</div>
                         </div>
                       </div>
                     </div>
@@ -278,8 +278,8 @@
                           <i class="fas fa-cogs text-accent"></i>
                         </div>
                         <div class="flex-1">
-                          <div class="text-white font-semibold mb-1">Service</div>
-                          <div class="text-text-secondary text-sm">A customizable service where you define instructions for customers after purchase.</div>
+                          <div class="text-white font-semibold mb-1">Dịch Vụ</div>
+                          <div class="text-text-secondary text-sm">Dịch vụ tùy chỉnh với hướng dẫn cho khách hàng sau khi mua.</div>
                         </div>
                       </div>
                     </div>
@@ -290,8 +290,20 @@
                           <i class="fas fa-key text-accent"></i>
                         </div>
                         <div class="flex-1">
-                          <div class="text-white font-semibold mb-1">Serial Keys</div>
-                          <div class="text-text-secondary text-sm">A product that provides customers with unique serial keys upon purchase.</div>
+                          <div class="text-white font-semibold mb-1">Mã Kích Hoạt</div>
+                          <div class="text-text-secondary text-sm">Sản phẩm cung cấp mã kích hoạt duy nhất cho khách hàng khi mua.</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="product-type-option cursor-pointer p-4 bg-dark-card border border-white/20 rounded-xl transition-all hover:border-accent/50 hover:bg-accent/5" data-value="accounts">
+                      <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i class="fas fa-user-circle text-accent"></i>
+                        </div>
+                        <div class="flex-1">
+                          <div class="text-white font-semibold mb-1">Tài Khoản</div>
+                          <div class="text-text-secondary text-sm">Sản phẩm cung cấp thông tin tài khoản cho khách hàng. Hỗ trợ mua nhiều tài khoản cùng lúc.</div>
                         </div>
                       </div>
                     </div>
@@ -302,18 +314,19 @@
                     <option value="digitalFree">Digital Free</option>
                     <option value="service">Service</option>
                     <option value="serials">Serials</option>
+                    <option value="accounts">Accounts</option>
                   </select>
                 </div>
 
                 <div id="price-field">
-                  <label class="block text-white font-semibold mb-2">Price</label>
-                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="price" placeholder="Enter product price" step="0.01">
+                  <label class="block text-white font-semibold mb-2">Giá</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="price" placeholder="Nhập giá sản phẩm" step="0.01">
                 </div>
 
                 <div>
-                  <label class="block text-white font-semibold mb-2">Product Category (Optional)</label>
+                  <label class="block text-white font-semibold mb-2">Danh Mục Sản Phẩm (Tùy Chọn)</label>
                   <select name="category" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
-                    <option value="" selected>Choose a category</option>
+                    <option value="" selected>Chọn danh mục</option>
                     <% settings.productCategories.forEach(category => { %>
                     <option value="<%= category.url %>"><%= category.name %></option>
                     <% }); %>
@@ -328,24 +341,24 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
                   <i class="fas fa-align-left text-accent"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-white">Product Description</h2>
+                <h2 class="text-2xl font-bold text-white">Mô Tả Sản Phẩm</h2>
               </div>
 
               <div class="space-y-6">
                 <div>
-                  <label class="block text-white font-semibold mb-2">Description</label>
+                  <label class="block text-white font-semibold mb-2">Mô Tả</label>
                   <p class="text-sm text-accent mb-2">
-                    Supports <a href="https://docs.plexdevelopment.net/plex-store/markdown-guide" target="_blank" class="underline hover:text-accent/80">Markdown</a>
+                    Hỗ trợ Markdown
                   </p>
-                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-y" name="description" placeholder="Describe your product..." rows="8" required></textarea>
+                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-y" name="description" placeholder="Mô tả sản phẩm của bạn..." rows="8" required></textarea>
                 </div>
 
                 <div>
-                  <label class="block text-white font-semibold mb-2">Dependencies (Optional)</label>
+                  <label class="block text-white font-semibold mb-2">Yêu Cầu Hệ Thống (Tùy Chọn)</label>
                   <p class="text-sm text-accent mb-2">
-                    Supports <a href="https://docs.plexdevelopment.net/plex-store/markdown-guide" target="_blank" class="underline hover:text-accent/80">Markdown</a>
+                    Hỗ trợ Markdown
                   </p>
-                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-y" name="dependencies" placeholder="List any dependencies or requirements..." rows="4"></textarea>
+                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-y" name="dependencies" placeholder="Liệt kê các yêu cầu hoặc phụ thuộc..." rows="4"></textarea>
                 </div>
               </div>
             </div>
@@ -356,14 +369,14 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
                   <i class="fas fa-comment-dots text-accent"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-white">Service Details</h2>
+                <h2 class="text-2xl font-bold text-white">Chi Tiết Dịch Vụ</h2>
               </div>
 
               <div>
-                <label class="block text-white font-semibold mb-2">Service Message</label>
-                <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-none" name="serviceMessage" placeholder="Enter instructions for customers after purchase..." rows="6"></textarea>
+                <label class="block text-white font-semibold mb-2">Tin Nhắn Dịch Vụ</label>
+                <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-none" name="serviceMessage" placeholder="Nhập hướng dẫn cho khách hàng sau khi mua..." rows="6"></textarea>
                 <p class="text-sm text-accent mt-2">
-                  Provide detailed instructions that customers will see after purchasing this service. This can include contact information, next steps, or any other important details.
+                  Cung cấp hướng dẫn chi tiết mà khách hàng sẽ thấy sau khi mua dịch vụ này. Có thể bao gồm thông tin liên hệ, bước tiếp theo, hoặc các chi tiết quan trọng khác.
                 </p>
               </div>
             </div>
@@ -374,25 +387,25 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
                   <i class="fas fa-cog text-accent"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-white">Advanced Settings</h2>
+                <h2 class="text-2xl font-bold text-white">Cài Đặt Nâng Cao</h2>
               </div>
 
               <div class="space-y-6">
                 <div>
-                  <label class="block text-white font-semibold mb-2">Numerical Position</label>
-                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="position" placeholder="Enter product position" required>
-                  <p class="text-sm text-text-secondary mt-2">Lower numbers appear first in the product list</p>
+                  <label class="block text-white font-semibold mb-2">Vị Trí Hiển Thị</label>
+                  <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors" type="number" name="position" placeholder="Nhập vị trí sản phẩm" required>
+                  <p class="text-sm text-text-secondary mt-2">Số nhỏ hơn sẽ hiển thị trước trong danh sách sản phẩm</p>
                 </div>
 
                 <div>
-                  <label class="block text-white font-semibold mb-2">Discord Roles to Assign (Optional)</label>
+                  <label class="block text-white font-semibold mb-2">Vai Trò Discord Gán (Tùy Chọn)</label>
                   <select id="discordRoleIds" name="discordRoleIds[]" multiple class="w-full bg-dark-card text-white border border-white/20 rounded-lg">
                     <% roles.forEach(role => { %>
                     <option value="<%= role.id %>"><%= role.name %> (<%= role.id %>)</option>
                     <% }); %>
                   </select>
                   <p class="text-sm text-accent mt-2">
-                    <strong>Tip:</strong> Select multiple roles from the list above
+                    <strong>Mẹo:</strong> Chọn nhiều vai trò từ danh sách trên
                   </p>
                 </div>
               </div>
@@ -406,20 +419,20 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
                   <i class="fas fa-upload text-accent"></i>
                 </div>
-                <h2 class="text-xl font-bold text-white">Upload Files</h2>
+                <h2 class="text-xl font-bold text-white">Tải Lên File</h2>
               </div>
 
               <div class="space-y-6">
                 <div>
-                  <label class="block text-white font-semibold mb-2">Upload Banner Image</label>
+                  <label class="block text-white font-semibold mb-2">Tải Lên Ảnh Bìa</label>
                   <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors file:mr-4 file:py-2 file:px-4" type="file" name="bannerImage" accept="image/*" required>
-                  <p class="text-sm text-text-secondary mt-2">Upload an image for your product banner</p>
+                  <p class="text-sm text-text-secondary mt-2">Tải lên hình ảnh cho bìa sản phẩm</p>
                 </div>
 
                 <div id="productFileField">
-                  <label class="block text-white font-semibold mb-2">Upload Product File</label>
+                  <label class="block text-white font-semibold mb-2">Tải Lên File Sản Phẩm</label>
                   <input class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors file:mr-4 file:py-2 file:px-4" type="file" name="productFile" required>
-                  <p class="text-sm text-text-secondary mt-2">Upload the main file customers will download</p>
+                  <p class="text-sm text-text-secondary mt-2">Tải lên file chính mà khách hàng sẽ tải về</p>
                 </div>
               </div>
             </div>
@@ -430,27 +443,27 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
                   <i class="fas fa-key text-accent"></i>
                 </div>
-                <h2 class="text-xl font-bold text-white">Serial Keys</h2>
+                <h2 class="text-xl font-bold text-white">Mã Kích Hoạt</h2>
               </div>
 
               <div class="space-y-6">
                 <div>
-                  <label class="block text-white font-semibold mb-2">Enter Serial Keys</label>
+                  <label class="block text-white font-semibold mb-2">Nhập Mã Kích Hoạt</label>
                   <p class="text-sm text-accent mb-2">
-                    Enter your serial keys below - <strong>one key per line</strong>. Each line represents a single serial key that will be given to a customer.
+                    Nhập mã kích hoạt bên dưới - <strong>mỗi mã một dòng</strong>. Mỗi dòng đại diện cho một mã kích hoạt duy nhất sẽ được cấp cho khách hàng.
                   </p>
-                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-none font-mono text-sm" name="serialKeys" id="serialKeys" placeholder="Put each serial key on a new line, like this:
+                  <textarea class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors resize-none font-mono text-sm" name="serialKeys" id="serialKeys" placeholder="Đặt mỗi mã kích hoạt trên một dòng mới, như sau:
 
 XXXX-YYYY-ZZZZ
 AAAA-BBBB-CCCC
 1234-5678-9012
 
-The keys above are just examples. 
-Enter your real serial keys in the same format, 
-with only ONE key per line." rows="8"></textarea>
+Các mã trên chỉ là ví dụ.
+Nhập mã kích hoạt thật của bạn theo cùng định dạng,
+mỗi dòng CHỈ MỘT mã." rows="8"></textarea>
                   <div class="flex items-center gap-2 mt-3 p-3 bg-accent/10 rounded-lg">
                     <i class="fas fa-tag text-accent"></i>
-                    <span class="text-white">Keys available:</span>
+                    <span class="text-white">Số mã có sẵn:</span>
                     <span class="text-accent font-bold" id="serialKeyCount">0</span>
                   </div>
                 </div>
@@ -459,8 +472,8 @@ with only ONE key per line." rows="8"></textarea>
                   <label class="flex items-start gap-3 cursor-pointer">
                     <input type="checkbox" id="enableFileUpload" name="enableFileUpload" class="w-5 h-5 mt-0.5 rounded border-white/20 text-accent focus:ring-accent focus:ring-offset-0">
                     <div>
-                      <span class="text-white font-semibold">Enable product file upload</span>
-                      <p class="text-sm text-text-secondary mt-1">Check this if your serial key requires any additional files such as software, tools, guides, resources, or assets.</p>
+                      <span class="text-white font-semibold">Cho phép tải lên file sản phẩm</span>
+                      <p class="text-sm text-text-secondary mt-1">Chọn nếu mã kích hoạt cần thêm file đi kèm như phần mềm, công cụ, hướng dẫn, tài nguyên hoặc tài liệu.</p>
                     </div>
                   </label>
                 </div>
@@ -471,11 +484,11 @@ with only ONE key per line." rows="8"></textarea>
               <div class="flex flex-col sm:flex-row gap-4">
                 <button type="submit" class="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
                   <i class="fas fa-save"></i>
-                  <span>Create Product</span>
+                  <span>Tạo Sản Phẩm</span>
                 </button>
                 <a href="/staff/products" class="flex-1 bg-dark-card hover:bg-dark-border text-white border border-white/20 px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
                   <i class="fas fa-times"></i>
-                  <span>Cancel</span>
+                  <span>Hủy</span>
                 </a>
               </div>
             </div>
@@ -524,7 +537,7 @@ with only ONE key per line." rows="8"></textarea>
           productFileField.querySelector('input').removeAttribute('required');
           priceField.classList.remove('hidden');
           priceField.querySelector('input').setAttribute('required', 'required');
-        } else if (selectedType === 'serials') {
+        } else if (selectedType === 'serials' || selectedType === 'accounts') {
           serviceMessageField.classList.add('hidden');
           serviceMessageField.querySelector('textarea').removeAttribute('required');
           serialsCard.classList.remove('hidden');
@@ -620,7 +633,7 @@ with only ONE key per line." rows="8"></textarea>
         bannerImageInput.addEventListener('change', function() {
           const file = this.files[0];
           if (file && !file.type.startsWith('image/')) {
-            alert('Please upload a valid image file.');
+            alert('Vui lòng tải lên file hình ảnh hợp lệ.');
             this.value = '';
           }
         });
@@ -632,7 +645,7 @@ with only ONE key per line." rows="8"></textarea>
             const file = bannerImageInput.files[0];
             if (file && !file.type.startsWith('image/')) {
               event.preventDefault();
-              alert('Please upload a valid image file.');
+              alert('Vui lòng tải lên file hình ảnh hợp lệ.');
             }
           }
         });
@@ -645,3 +658,4 @@ with only ONE key per line." rows="8"></textarea>
 </body>
 
 </html>
+

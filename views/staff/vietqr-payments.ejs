@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Panel | VietQR Payments</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark': '#0a0a0a', 'dark-lighter': '#111111',
+            'dark-card': '#1a1a1a', 'dark-border': '#2a2a2a',
+            'text-primary': '#ffffff', 'text-secondary': '#a1a1aa', 'text-muted': '#71717a'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root { --accent-color: <%=settings.accentColor %>; --accent-rgb: <%=accentColorRgb %>; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass-effect {
+      background: rgba(26,26,26,0.8); backdrop-filter: blur(25px);
+      border: 1px solid rgba(var(--accent-rgb),0.3);
+      box-shadow: 0 8px 32px rgba(var(--accent-rgb),0.1);
+    }
+    .btn-confirm { background: #22c55e; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all .2s; }
+    .btn-confirm:hover { background: #16a34a; transform: translateY(-1px); }
+    .btn-confirm:disabled { background: #166534; opacity:.5; cursor:not-allowed; }
+    .btn-reject { background: #ef4444; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all .2s; }
+    .btn-reject:hover { background: #dc2626; transform: translateY(-1px); }
+    .btn-reject:disabled { opacity:.5; cursor:not-allowed; }
+    .badge-pending { background: #fbbf24; color: #000; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+    .badge-confirmed { background: #22c55e; color: #fff; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+    .badge-rejected { background: #ef4444; color: #fff; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <%- include('../partials/staff-navbar', { currentPage: 'vietqr-payments', isOwner, staffPermissions }) %>
+
+  <div class="container mx-auto px-6 pb-12">
+    <!-- Header -->
+    <div class="glass-effect rounded-2xl p-6 mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(var(--accent-rgb),0.15);">
+            <i class="fas fa-qrcode text-2xl" style="color: var(--accent-color);"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-white">VietQR Payments</h1>
+            <p class="text-text-secondary text-sm">Xác nhận thủ công các đơn thanh toán VietQR đang chờ</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-3xl font-bold" style="color: var(--accent-color);">
+            <%= pendingPayments.filter(p => p.status === 'pending').length %>
+          </p>
+          <p class="text-text-muted text-sm">Đang chờ xác nhận</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-4">
+      <p class="text-blue-300 text-sm">
+        <i class="fas fa-info-circle mr-2"></i>
+        <strong>Tự động:</strong> Nếu đã cấu hình SePay API Token, hệ thống tự động xác nhận khi khách chuyển khoản đúng nội dung.
+        <strong>Thủ công:</strong> Kiểm tra tài khoản ngân hàng → nhấn <strong>Xác nhận</strong> nếu đã nhận đủ tiền.
+      </p>
+    </div>
+
+    <!-- SePay Debug Button -->
+    <div class="flex gap-3 mb-6">
+      <button onclick="testSePay()" class="bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-500/30 transition-colors">
+        <i class="fas fa-plug mr-2"></i>Test kết nối SePay
+      </button>
+      <button onclick="location.reload()" class="bg-white/5 border border-white/10 text-text-secondary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white/10 transition-colors">
+        <i class="fas fa-sync mr-2"></i>Làm mới
+      </button>
+    </div>
+
+    <!-- Payments Table -->
+    <% if (pendingPayments.length === 0) { %>
+    <div class="glass-effect rounded-2xl p-12 text-center">
+      <i class="fas fa-check-circle text-5xl text-green-400 mb-4"></i>
+      <h3 class="text-xl font-bold text-white mb-2">Không có đơn nào đang chờ</h3>
+      <p class="text-text-secondary">Tất cả đơn VietQR đã được xử lý.</p>
+    </div>
+    <% } else { %>
+    <div class="glass-effect rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="text-left px-6 py-4 text-text-muted text-sm font-semibold">Mã đơn</th>
+              <th class="text-left px-6 py-4 text-text-muted text-sm font-semibold">Khách hàng</th>
+              <th class="text-left px-6 py-4 text-text-muted text-sm font-semibold">Số tiền</th>
+              <th class="text-left px-6 py-4 text-text-muted text-sm font-semibold">Thông tin CK</th>
+              <th class="text-left px-6 py-4 text-text-muted text-sm font-semibold">Thời gian</th>
+              <th class="text-left px-6 py-4 text-text-muted text-sm font-semibold">Trạng thái</th>
+              <th class="text-left px-6 py-4 text-text-muted text-sm font-semibold">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% pendingPayments.forEach(function(payment) { %>
+            <tr class="border-b border-white/5 hover:bg-white/3 transition-colors" id="row-<%= payment._id %>">
+              <!-- ID -->
+              <td class="px-6 py-4">
+                <code class="text-xs text-accent font-mono"><%= payment._id.toString().substring(0, 12) %>...</code>
+              </td>
+
+              <!-- User -->
+              <td class="px-6 py-4">
+                <% if (payment.userId) { %>
+                <a href="/profile/<%= payment.userId %>" target="_blank" class="text-white hover:text-accent transition-colors text-sm font-medium">
+                  <i class="fas fa-user mr-1 text-text-muted"></i><%= payment.username %>
+                </a>
+                <% } else { %>
+                <span class="text-text-muted text-sm">Unknown</span>
+                <% } %>
+              </td>
+
+              <!-- Amount -->
+              <td class="px-6 py-4">
+                <span class="text-green-400 font-bold text-lg">
+                  <%= payment.total ? Math.round(payment.total).toLocaleString('vi-VN') : '?' %> VND
+                </span>
+              </td>
+
+              <!-- Bank Info -->
+              <td class="px-6 py-4">
+                <% if (payment.paymentDetails) { %>
+                <div class="text-xs space-y-1">
+                  <div class="text-text-secondary">
+                    <span class="text-text-muted">STK:</span>
+                    <span class="font-mono text-white"><%= payment.paymentDetails.accountNumber || '-' %></span>
+                  </div>
+                  <div class="text-text-secondary">
+                    <span class="text-text-muted">Tên:</span>
+                    <span class="text-white"><%= payment.paymentDetails.accountName || '-' %></span>
+                  </div>
+                  <div class="text-text-secondary">
+                    <span class="text-text-muted">Nội dung CK:</span>
+                    <span class="font-mono text-yellow-300 font-bold">SEVQR <%= payment._id.toString().substring(0, 8) %></span>
+                  </div>
+                </div>
+                <% } else { %>
+                <span class="text-text-muted text-xs">Không có thông tin</span>
+                <% } %>
+              </td>
+
+              <!-- Time -->
+              <td class="px-6 py-4">
+                <div class="text-sm text-text-secondary">
+                  <%= new Date(payment.createdAt).toLocaleString('vi-VN') %>
+                </div>
+                <div class="text-xs text-text-muted mt-1">
+                  (hết hạn sau 1 giờ)
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td class="px-6 py-4">
+                <span class="badge-pending" id="badge-<%= payment._id %>">⏳ Chờ xác nhận</span>
+              </td>
+
+              <!-- Actions -->
+              <td class="px-6 py-4">
+                <div class="flex gap-2">
+                  <button
+                    class="btn-confirm"
+                    id="btn-confirm-<%= payment._id %>"
+                    onclick="confirmPayment('<%= payment._id %>', '<%= csrfToken %>')">
+                    <i class="fas fa-check mr-1"></i>Xác nhận
+                  </button>
+                  <button
+                    class="btn-reject"
+                    id="btn-reject-<%= payment._id %>"
+                    onclick="rejectPayment('<%= payment._id %>', '<%= csrfToken %>')">
+                    <i class="fas fa-times mr-1"></i>Từ chối
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <% } %>
+  </div>
+
+  <script>
+    async function testSePay() {
+      const btn = event.target.closest('button');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang kiểm tra...';
+      try {
+        const res = await fetch('/staff/vietqr-debug');
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-plug mr-2"></i>Test kết nối SePay';
+        if (!data.success) { alert('❌ Lỗi SePay:\n' + (data.error || 'Unknown')); return; }
+        let msg = `✅ Kết nối SePay thành công!\nStatus: ${data.sePayStatus} | Giao dịch lấy được: ${data.totalTransactions}\n\n`;
+        if (data.latestTransactions?.length > 0) {
+          msg += `5 giao dịch gần nhất:\n`;
+          data.latestTransactions.forEach(t => {
+            msg += `[${t.id}] +${parseFloat(t.amount_in||0).toLocaleString('vi-VN')}đ | "${t.content}"\n`;
+          });
+        }
+        if (data.pendingSnapshots?.length > 0) {
+          msg += `\nĐơn đang chờ:\n`;
+          data.pendingSnapshots.forEach(s => { msg += `SEVQR ${s.shortId} | ${Math.round(s.total).toLocaleString('vi-VN')}đ\n`; });
+        }
+        alert(msg);
+      } catch(e) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-plug mr-2"></i>Test kết nối SePay';
+        alert('❌ Lỗi: ' + e.message);
+      }
+    }
+
+    async function confirmPayment(id, csrf) {
+      const btnConfirm = document.getElementById('btn-confirm-' + id);
+      const btnReject = document.getElementById('btn-reject-' + id);
+      const badge = document.getElementById('badge-' + id);
+
+      if (!confirm('Bạn có chắc đã nhận được tiền chuyển khoản? Hệ thống sẽ tự động cấp quyền sản phẩm cho khách.')) return;
+
+      btnConfirm.disabled = true;
+      btnReject.disabled = true;
+      btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Đang xử lý...';
+
+      try {
+        const res = await fetch(`/staff/vietqr-payments/${id}/confirm`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrf },
+          body: JSON.stringify({ _csrf: csrf })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          badge.className = 'badge-confirmed';
+          badge.textContent = '✅ Đã xác nhận';
+          btnConfirm.innerHTML = '<i class="fas fa-check mr-1"></i>Đã xác nhận';
+          btnReject.style.display = 'none';
+          alert('✅ Xác nhận thành công! Invoice đã được gửi cho khách.');
+        } else {
+          alert('❌ Lỗi: ' + (data.message || 'Unknown error'));
+          btnConfirm.disabled = false;
+          btnReject.disabled = false;
+          btnConfirm.innerHTML = '<i class="fas fa-check mr-1"></i>Xác nhận';
+        }
+      } catch (e) {
+        alert('❌ Lỗi kết nối: ' + e.message);
+        btnConfirm.disabled = false;
+        btnReject.disabled = false;
+        btnConfirm.innerHTML = '<i class="fas fa-check mr-1"></i>Xác nhận';
+      }
+    }
+
+    async function rejectPayment(id, csrf) {
+      const btnConfirm = document.getElementById('btn-confirm-' + id);
+      const btnReject = document.getElementById('btn-reject-' + id);
+      const badge = document.getElementById('badge-' + id);
+
+      if (!confirm('Từ chối đơn này? Giao dịch sẽ bị huỷ.')) return;
+
+      btnConfirm.disabled = true;
+      btnReject.disabled = true;
+      btnReject.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Đang xử lý...';
+
+      try {
+        const res = await fetch(`/staff/vietqr-payments/${id}/reject`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrf },
+          body: JSON.stringify({ _csrf: csrf })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          badge.className = 'badge-rejected';
+          badge.textContent = '❌ Đã từ chối';
+          btnConfirm.style.display = 'none';
+          btnReject.innerHTML = '<i class="fas fa-times mr-1"></i>Đã từ chối';
+        } else {
+          alert('❌ Lỗi: ' + (data.message || 'Unknown error'));
+          btnConfirm.disabled = false;
+          btnReject.disabled = false;
+          btnReject.innerHTML = '<i class="fas fa-times mr-1"></i>Từ chối';
+        }
+      } catch (e) {
+        alert('❌ Lỗi kết nối: ' + e.message);
+        btnConfirm.disabled = false;
+        btnReject.disabled = false;
+        btnReject.innerHTML = '<i class="fas fa-times mr-1"></i>Từ chối';
+      }
+    }
+
+    // Auto-refresh every 30s
+    setTimeout(() => location.reload(), 30000);
+  </script>
+</body>
+</html>
+

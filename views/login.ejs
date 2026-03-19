@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In - <%= settings.storeName %></title>
+  <title>Đăng Nhập - <%= settings.storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 
-  <meta property="og:title" content="Sign In | <%= settings.storeName %>" />
+  <meta property="og:title" content="Đăng Nhập | <%= settings.storeName %>" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= config.baseURL %>/login" />
   <meta property="og:image" content="<%= settings.logoPath %>" />
-  <meta property="og:description" content="Sign in to your <%= settings.storeName %> account" />
+  <meta property="og:description" content="Đăng nhập vào tài khoản <%= settings.storeName %> của bạn" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
 
@@ -179,8 +179,8 @@
       <div class="max-w-md mx-auto">
         <div class="text-center mb-8" data-aos="fade-up">
           <img src="<%= settings.logoPath %>" alt="Logo" class="w-20 h-20 rounded-xl mx-auto mb-6 shadow-2xl ring-2 ring-accent/50">
-          <h1 class="text-4xl font-black text-white mb-2">Welcome Back</h1>
-          <p class="text-text-secondary">Sign in to your account</p>
+          <h1 class="text-4xl font-black text-white mb-2">Chào Mừng Trở Lại</h1>
+          <p class="text-text-secondary">Đăng nhập vào tài khoản của bạn</p>
         </div>
 
         <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
@@ -198,7 +198,7 @@
             <div class="pt-3 border-t border-red-500/20">
               <button id="resendLoginButton" onclick="resendVerificationFromLogin()" class="w-full bg-accent/20 hover:bg-accent/30 text-accent border border-accent/50 px-4 py-2.5 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm">
                 <i class="fas fa-paper-plane"></i>
-                <span id="resendLoginButtonText">Resend Verification Email</span>
+                <span id="resendLoginButtonText">Gửi Lại Email Xác Minh</span>
               </button>
 
               <p class="text-xs text-center mt-2" id="resendLoginStatus"></p>
@@ -210,7 +210,7 @@
           <% if (authConfig.Discord && authConfig.Discord.enabled && (authConfig.mode === 'discord' || authConfig.mode === 'both')) { %>
           <a href="/auth/discord" class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift mb-6 group">
             <i class="fab fa-discord text-2xl group-hover:scale-110 transition-transform"></i>
-            <span>Continue with Discord</span>
+            <span>Tiếp Tục Với Discord</span>
           </a>
 
           <% if (authConfig.Local && authConfig.Local.enabled && authConfig.mode === 'both') { %>
@@ -219,7 +219,7 @@
               <div class="w-full border-t border-white/10"></div>
             </div>
             <div class="relative flex justify-center text-sm">
-              <span class="px-4 bg-dark-card text-text-muted">Or sign in with email</span>
+              <span class="px-4 bg-dark-card text-text-muted">Hoặc đăng nhập bằng email</span>
             </div>
           </div>
           <% } %>
@@ -240,12 +240,12 @@
             </div>
 
             <div>
-              <label class="block text-white font-medium mb-2 text-sm">Password</label>
+              <label class="block text-white font-medium mb-2 text-sm">Mật Khẩu</label>
               <div class="relative">
                 <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
                   <i class="fas fa-lock"></i>
                 </div>
-                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password" class="w-full bg-dark-card text-white pl-12 pr-12 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
+                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Nhập mật khẩu của bạn" class="w-full bg-dark-card text-white pl-12 pr-12 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
                 <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-white transition-colors">
                   <i class="fas fa-eye" id="password-toggle-icon"></i>
                 </button>
@@ -255,25 +255,25 @@
             <div class="flex items-center justify-between text-sm">
               <label class="flex items-center gap-2 text-text-secondary hover:text-white cursor-pointer transition-colors">
                 <input type="checkbox" name="remember" class="w-4 h-4 rounded border-white/20 bg-dark-card text-accent focus:ring-accent focus:ring-offset-0">
-                <span>Remember me</span>
+                <span>Ghi nhớ đăng nhập</span>
               </label>
               <button type="button" onclick="requestPasswordReset()" class="text-accent hover:text-accent/80 font-semibold transition-colors">
-                Forgot password?
+                Quên mật khẩu?
               </button>
             </div>
 
             <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 hover-lift flex items-center justify-center gap-2">
               <i class="fas fa-sign-in-alt"></i>
-              <span>Sign In</span>
+              <span>Đăng Nhập</span>
             </button>
           </form>
           <% } %>
 
           <div class="mt-6 text-center">
             <p class="text-text-secondary text-sm">
-              Don't have an account?
+              Chưa có tài khoản?
               <a href="/register" class="text-accent hover:text-accent/80 font-semibold transition-colors">
-                Create Account
+                Tạo Tài Khoản
               </a>
             </p>
           </div>
@@ -282,7 +282,7 @@
         <div class="text-center mt-6" data-aos="fade-up" data-aos-delay="200">
           <a href="/" class="text-text-muted hover:text-accent text-sm flex items-center justify-center gap-2 transition-colors">
             <i class="fas fa-arrow-left"></i>
-            <span>Back to Home</span>
+            <span>Quay Về Trang Chủ</span>
           </a>
         </div>
       </div>
@@ -325,7 +325,7 @@
 
       if (!email) {
         const statusText = document.getElementById('resendLoginStatus');
-        statusText.textContent = 'Please enter your email address first';
+        statusText.textContent = 'Vui lòng nhập email trước';
         statusText.className = 'text-xs text-red-400 text-center mt-2';
         return;
       }
@@ -335,7 +335,7 @@
       const statusText = document.getElementById('resendLoginStatus');
 
       button.disabled = true;
-      buttonText.textContent = 'Sending...';
+      buttonText.textContent = 'Đang gửi...';
       statusText.textContent = '';
 
       fetch('/api/resend-verification', {
@@ -351,25 +351,25 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            statusText.textContent = '✓ Verification email sent! Please check your inbox.';
+            statusText.textContent = '✓ Email xác minh đã được gửi! Vui lòng kiểm tra hộp thư.';
             statusText.className = 'text-xs text-green-400 text-center mt-2';
 
             // Start 60 second cooldown
             loginResendCooldown = 60;
             updateLoginCooldownButton();
           } else {
-            statusText.textContent = data.message || 'Failed to send email';
+            statusText.textContent = data.message || 'Gửi email thất bại';
             statusText.className = 'text-xs text-red-400 text-center mt-2';
             button.disabled = false;
-            buttonText.textContent = 'Resend Verification Email';
+            buttonText.textContent = 'Gửi Lại Email Xác Minh';
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          statusText.textContent = 'An error occurred. Please try again.';
+          statusText.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
           statusText.className = 'text-xs text-red-400 text-center mt-2';
           button.disabled = false;
-          buttonText.textContent = 'Resend Verification Email';
+          buttonText.textContent = 'Gửi Lại Email Xác Minh';
         });
     }
 
@@ -380,7 +380,7 @@
       if (loginResendCooldown > 0) {
         button.disabled = true;
         button.classList.add('opacity-50', 'cursor-not-allowed');
-        buttonText.textContent = `Wait ${loginResendCooldown}s before resending`;
+        buttonText.textContent = `Chờ ${loginResendCooldown}s trước khi gửi lại`;
 
         loginResendTimer = setTimeout(() => {
           loginResendCooldown--;
@@ -389,7 +389,7 @@
       } else {
         button.disabled = false;
         button.classList.remove('opacity-50', 'cursor-not-allowed');
-        buttonText.textContent = 'Resend Verification Email';
+        buttonText.textContent = 'Gửi Lại Email Xác Minh';
         if (loginResendTimer) {
           clearTimeout(loginResendTimer);
         }
@@ -401,12 +401,12 @@
       const email = emailInput ? emailInput.value : '';
 
       if (!email) {
-        alert('Please enter your email address first');
+        alert('Vui lòng nhập địa chỉ email trước');
         emailInput.focus();
         return;
       }
 
-      if (!confirm(`Send password reset link to ${email}?`)) {
+      if (!confirm(`Gửi liên kết đặt lại mật khẩu đến ${email}?`)) {
         return;
       }
 
@@ -423,14 +423,14 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert('✓ Password reset link sent! Please check your email.');
+            alert('✓ Liên kết đặt lại mật khẩu đã được gửi! Vui lòng kiểm tra email.');
           } else {
-            alert(data.message || 'Failed to send reset link');
+            alert(data.message || 'Gửi liên kết thất bại');
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('An error occurred. Please try again.');
+          alert('Đã xảy ra lỗi. Vui lòng thử lại.');
         });
     }
   </script>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
@@ -26,8 +26,8 @@
     productDescription += ` (${discount}% OFF)`;
   }
   
-  if (product.productType === 'serials') {
-    productDescription += ` • ${product.serials.length} in stock`;
+  if (product.productType === 'serials' || product.productType === 'accounts') {
+    productDescription += ` • ${product.serials.length} có sẵn`;
   }
 %>
 
@@ -38,7 +38,7 @@
   <meta property="og:description" content="<%= productDescription %>" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content="vi_VN" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<%= product.name %>">
@@ -47,9 +47,9 @@
 
   <meta property="product:price:amount" content="<%= product.productType === 'digitalFree' ? '0' : (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) ? product.salePrice.toFixed(2) : product.price.toFixed(2) %>">
   <meta property="product:price:currency" content="USD">
-  <% if (product.productType === 'serials' && product.serials.length > 0) { %>
+  <% if ((product.productType === 'serials' || product.productType === 'accounts') && product.serials.length > 0) { %>
   <meta property="product:availability" content="in stock">
-  <% } else if (product.productType === 'serials' && product.serials.length === 0) { %>
+  <% } else if ((product.productType === 'serials' || product.productType === 'accounts') && product.serials.length === 0) { %>
   <meta property="product:availability" content="out of stock">
   <% } else { %>
   <meta property="product:availability" content="in stock">
@@ -326,7 +326,7 @@
     <div class="container mx-auto px-6 py-4">
 <a href="<%= typeof backCategory !== 'undefined' && backCategory ? '/products/category/' + backCategory : '/products' %>" class="inline-flex items-center gap-2 px-4 py-2 bg-dark-card hover:bg-dark-border text-text-secondary hover:text-white border border-white/20 hover:border-accent/50 rounded-lg transition-all duration-300 hover-lift">
   <i class="fas fa-arrow-left"></i>
-  <span>Back to Products</span>
+  <span>Quay Lại Sản Phẩm</span>
 </a>
     </div>
   </div>
@@ -342,16 +342,16 @@
           <div class="glass-effect rounded-2xl hover-lift" data-aos="fade-right" data-aos-delay="100">
             <div class="flex border-b border-white/10 overflow-x-auto">
               <button class="tab-button active px-6 py-4 font-semibold text-sm whitespace-nowrap" data-tab="description">
-                <i class="fas fa-info-circle mr-2"></i>Description
+                <i class="fas fa-info-circle mr-2"></i>Mô Tả
               </button>
               <% if (product.dependencies && product.dependencies.trim()) { %>
               <button class="tab-button px-6 py-4 font-semibold text-sm whitespace-nowrap text-text-secondary" data-tab="dependencies">
-                <i class="fas fa-puzzle-piece mr-2"></i>Dependencies
+                <i class="fas fa-puzzle-piece mr-2"></i>Yêu Cầu
               </button>
               <% } %>
               <% if (reviews.length > 0 && settings.displayProductReviews) { %>
               <button class="tab-button px-6 py-4 font-semibold text-sm whitespace-nowrap text-text-secondary" data-tab="reviews">
-                <i class="fas fa-star mr-2"></i>Reviews (<%= reviews.length %>)
+                <i class="fas fa-star mr-2"></i>Đánh Giá (<%= reviews.length %>)
               </button>
               <% } %>
             </div>
@@ -362,7 +362,7 @@
                   <% if (product.description && product.description.trim()) { %>
                   <%- md.render(product.description) %>
                   <% } else { %>
-                  <p class="text-text-secondary">No description available for this product.</p>
+                  <p class="text-text-secondary">Chưa có mô tả cho sản phẩm này.</p>
                   <% } %>
                 </div>
               </div>
@@ -421,10 +421,10 @@
               <% if (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate)) { %>
               <div class="inline-flex items-center gap-3 bg-gradient-to-r from-accent/20 to-transparent rounded-xl px-4 py-3 border border-accent/30">
                 <div class="flex flex-col">
-                  <span class="text-xs font-bold text-accent uppercase tracking-wide">Limited Offer</span>
+                  <span class="text-xs font-bold text-accent uppercase tracking-wide">Ưu Đãi Có Hạn</span>
                   <div class="flex items-baseline gap-2 mt-1">
                     <% if (product.productType === 'digitalFree') { %>
-                    <span class="text-2xl font-black text-accent">Free</span>
+                    <span class="text-2xl font-black text-accent">Miễn Phí</span>
                     <% } else { %>
                     <span class="text-2xl font-black text-accent"><%= settings.currencySymbol %><%= product.salePrice.toFixed(2) %></span>
                     <span class="text-sm text-text-muted line-through"><%= settings.currencySymbol %><%= product.price.toFixed(2) %></span>
@@ -441,7 +441,7 @@
               <div class="inline-flex items-center px-4 py-3 bg-dark-card rounded-xl border border-white/10">
                 <span class="text-2xl font-bold text-accent">
                   <% if (product.productType === 'digitalFree') { %>
-                  Free
+                  Miễn Phí
                   <% } else { %>
                   <%= settings.currencySymbol %><%= product.price.toFixed(2) %>
                   <% } %>
@@ -450,13 +450,13 @@
               <% } %>
             </div>
 
-            <% if (product.productType === 'serials') { %>
+            <% if (product.productType === 'serials' || product.productType === 'accounts') { %>
             <div class="flex items-center gap-3 p-4 bg-dark-card rounded-xl border <%= product.serials.length === 0 ? 'border-red-500/30' : 'border-accent/30' %> mb-6">
-              <i class="fas fa-key text-<%= product.serials.length === 0 ? 'red' : 'accent' %>-500"></i>
+              <i class="fas fa-<%= product.productType === 'accounts' ? 'user-circle' : 'key' %> text-<%= product.serials.length === 0 ? 'red' : 'accent' %>-500"></i>
               <div>
-                <span class="text-sm text-text-secondary">Stock: </span>
+                <span class="text-sm text-text-secondary">Kho: </span>
                 <span class="text-sm font-bold text-<%= product.serials.length === 0 ? 'red' : 'accent' %>-500">
-                  <%= product.serials.length %> available
+                  <%= product.serials.length %> có sẵn
                 </span>
               </div>
             </div>
@@ -466,21 +466,21 @@
               <% if (product.hideProduct) { %>
               <div class="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-sm">
                 <i class="fas fa-eye-slash text-yellow-500"></i>
-                <span class="text-yellow-500">Hidden from store</span>
+                <span class="text-yellow-500">Ẩn khỏi cửa hàng</span>
               </div>
               <% } %>
 
               <% if (product.pauseSelling) { %>
               <div class="flex items-center gap-2 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg text-sm">
                 <i class="fas fa-pause text-orange-500"></i>
-                <span class="text-orange-500">Sales paused</span>
+                <span class="text-orange-500">Tạm ngưng bán</span>
               </div>
               <% } %>
 
-              <% if (product.productType === 'serials' && product.serials.length === 0) { %>
+              <% if ((product.productType === 'serials' || product.productType === 'accounts') && product.serials.length === 0) { %>
               <div class="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm">
                 <i class="fas fa-exclamation-triangle text-red-500"></i>
-                <span class="text-red-500">Out of stock</span>
+                <span class="text-red-500">Hết hàng</span>
               </div>
               <% } %>
             </div>
@@ -492,24 +492,50 @@
                 <% if (isOwned && product.productType === 'service') { %>
                 <a href="/profile/<%= existingUser.discordID %>" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
                   <i class="fas fa-user-circle"></i>
-                  <span>Go to Profile</span>
+                  <span>Đi Đến Hồ Sơ</span>
                 </a>
                 <% } else if ((isOwned || product.productType === 'digitalFree') && 
-                                    (product.productType !== 'serials' || (product.productType === 'serials' && product.serialRequiresFile))) { %>
+                                    (product.productType !== 'serials' || (product.productType === 'serials' && product.serialRequiresFile)) &&
+                                    product.productType !== 'accounts') { %>
                 <a href="/downloads/<%= product.urlId %>" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
                   <i class="fas fa-download"></i>
-                  <span>Download</span>
+                  <span>Tải Xuống</span>
                 </a>
                 <% } %>
 
                 <% if (product.productType !== 'digitalFree') { %>
                 <% const isLoggedIn = user && existingUser; %>
-                <% const isOutOfStock = product.productType === 'serials' && product.serials.length === 0; %>
+                <% const isOutOfStock = (product.productType === 'serials' || product.productType === 'accounts') && product.serials.length === 0; %>
+                <% const hasStock = (product.productType === 'serials' || product.productType === 'accounts'); %>
+                <% const maxQty = hasStock ? product.serials.length : 99; %>
                 <form action="/cart/add/<%= product._id %>" method="POST" class="w-full">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <% if (!isOutOfStock) { %>
+                  <div class="flex items-center gap-3 mb-3 p-3 bg-dark-card rounded-xl border border-white/10">
+                    <label class="text-sm text-text-secondary whitespace-nowrap">Số lượng:</label>
+                    <div class="flex items-center gap-2 flex-1">
+                      <button type="button" onclick="changeQty(-1)" class="w-9 h-9 bg-dark-lighter hover:bg-accent/20 text-white rounded-lg transition-colors flex items-center justify-center border border-white/20">
+                        <i class="fas fa-minus text-xs"></i>
+                      </button>
+                      <input type="number" name="quantity" id="qtyInput" value="1" min="1" max="<%= maxQty %>" class="w-16 text-center bg-dark-lighter text-white border border-white/20 rounded-lg px-2 py-1.5 focus:border-accent focus:outline-none text-sm">
+                      <button type="button" onclick="changeQty(1)" class="w-9 h-9 bg-dark-lighter hover:bg-accent/20 text-white rounded-lg transition-colors flex items-center justify-center border border-white/20">
+                        <i class="fas fa-plus text-xs"></i>
+                      </button>
+                    </div>
+                    <% if (hasStock) { %>
+                    <span class="text-xs text-text-muted whitespace-nowrap">/ <%= product.serials.length %></span>
+                    <% } %>
+                  </div>
+                  <div class="text-right mb-3">
+                    <span class="text-sm text-text-secondary">Tổng: </span>
+                    <span id="totalPrice" class="text-lg font-bold text-accent">
+                      <%= settings.currencySymbol %><%= (product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate) ? product.salePrice : product.price).toFixed(2) %>
+                    </span>
+                  </div>
+                  <% } %>
                   <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none" <% if (!isLoggedIn || product.pauseSelling || isOutOfStock) { %>disabled<% } %>>
                     <i class="fas fa-cart-plus"></i>
-                    <span>Add to Cart</span>
+                    <span>Thêm Vào Giỏ</span>
                   </button>
                 </form>
                 <% } %>
@@ -517,22 +543,22 @@
 
               <% if (!user || !existingUser) { %>
               <p class="text-text-secondary text-sm text-center">
-                You must be logged in to add products to your cart.
+                Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.
               </p>
               <% } %>
 
               <% if (isOwner) { %>
               <div class="border-t border-white/10 pt-4 mt-6">
                 <div class="flex flex-col gap-3">
-                  <% if (product.productType !== 'serials' && product.productType !== 'service') { %>
+                  <% if (product.productType !== 'serials' && product.productType !== 'accounts' && product.productType !== 'service') { %>
                   <a href="/staff/products/update/<%= product._id %>" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 hover-lift">
                     <i class="fas fa-pencil-alt"></i>
-                    <span>Update Product</span>
+                    <span>Cập Nhật Sản Phẩm</span>
                   </a>
                   <% } %>
                   <a href="/staff/products/edit/<%= product._id %>" class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 hover-lift">
                     <i class="fas fa-cog"></i>
-                    <span>Edit Product</span>
+                    <span>Chỉnh Sửa Sản Phẩm</span>
                   </a>
                 </div>
               </div>
@@ -547,8 +573,8 @@
                 <i class="fas fa-tags text-green-400 text-lg"></i>
               </div>
               <div>
-                <h3 class="text-lg font-bold text-white">Bundle Deals</h3>
-                <p class="text-xs text-text-secondary">Save up to <%= Math.max(...relatedBundles.map(b => b.discountPercentage)) %>%</p>
+                <h3 class="text-lg font-bold text-white">Gói Ưu Đãi</h3>
+                <p class="text-xs text-text-secondary">Tiết kiệm đến <%= Math.max(...relatedBundles.map(b => b.discountPercentage)) %>%</p>
               </div>
             </div>
 
@@ -581,7 +607,7 @@
 
                   <div class="mb-3">
                     <p class="text-[10px] text-text-muted uppercase tracking-wide font-semibold mb-2">
-                      <%= bundle.products.length %> Products Included:
+                      <%= bundle.products.length %> Sản Phẩm Bao Gồm:
                     </p>
                     <div class="flex flex-wrap gap-1.5">
                       <% bundle.products.forEach((bundleProduct) => { %>
@@ -606,7 +632,7 @@
                       <p class="text-lg font-bold text-accent"><%= settings.currencySymbol %><%= bundle.bundlePrice.toFixed(2) %></p>
                     </div>
                     <div class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-center">
-                      <p class="text-[9px] font-semibold uppercase">Save</p>
+                      <p class="text-[9px] font-semibold uppercase">Tiết Kiệm</p>
                       <p class="text-xs font-bold"><%= settings.currencySymbol %><%= (bundle.originalPrice - bundle.bundlePrice).toFixed(2) %></p>
                     </div>
                   </div>
@@ -615,7 +641,7 @@
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105">
                       <i class="fas fa-cart-plus text-xs"></i>
-                      <span>Add to Cart</span>
+                      <span>Thêm Vào Giỏ</span>
                     </button>
                   </form>
                 </div>
@@ -629,7 +655,7 @@
           <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-left" data-aos-delay="<%= relatedBundles && relatedBundles.length > 0 ? 200 : 100 %>">
             <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
               <i class="fas fa-chart-line text-accent"></i>
-              Product Statistics
+              Thống Kê Sản Phẩm
             </h3>
 
             <div class="grid grid-cols-2 gap-4">
@@ -637,7 +663,7 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <i class="fas fa-calendar-plus text-accent"></i>
                 </div>
-                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Released</div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Phát Hành</div>
                 <div class="text-sm font-semibold text-white">
                   <%= new Date(product.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).replace(',', '') %>
                 </div>
@@ -647,7 +673,7 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <i class="fas fa-shopping-cart text-accent"></i>
                 </div>
-                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Purchases</div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Đã Mua</div>
                 <div class="text-sm font-semibold text-white">
                   <%= product.totalPurchases.toLocaleString() %>
                 </div>
@@ -657,7 +683,7 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <i class="fas fa-download text-accent"></i>
                 </div>
-                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Downloads</div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Lượt Tải</div>
                 <div class="text-sm font-semibold text-white">
                   <%= product.totalDownloads.toLocaleString() %>
                 </div>
@@ -667,10 +693,10 @@
                 <div class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <i class="fas fa-sync-alt text-accent"></i>
                 </div>
-                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Updated</div>
+                <div class="text-xs text-text-secondary uppercase tracking-wider mb-1">Cập Nhật</div>
                 <div class="text-sm font-semibold text-white">
                   <% if (product.versions && product.versions.length > 0) { %>
-                  <%= new Date(product.versions[product.versions.length - 1].releaseDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).replace(',', '') %>
+                  <%= new Date(product.versions[product.versions.length - 1].releaseDate).toLocaleDateString('vi-VN', { month: 'short', day: 'numeric', year: 'numeric' }).replace(',', '') %>
                   <% } else { %>
                   N/A
                   <% } %>
@@ -709,6 +735,34 @@
         document.getElementById(tabId).classList.add('active');
       });
     });
+
+    <% if (product.productType !== 'digitalFree') { %>
+    <% const hasStockLimit = (product.productType === 'serials' || product.productType === 'accounts'); %>
+    const unitPrice = <%= product.onSale && new Date(product.saleStartDate) <= new Date() && new Date() <= new Date(product.saleEndDate) ? product.salePrice : product.price %>;
+    const maxStock = <%= hasStockLimit ? product.serials.length : 99 %>;
+    const currencySymbol = '<%= settings.currencySymbol %>';
+
+    function changeQty(delta) {
+      const input = document.getElementById('qtyInput');
+      if (!input) return;
+      let val = parseInt(input.value) || 1;
+      val = Math.max(1, Math.min(maxStock, val + delta));
+      input.value = val;
+      updateTotal();
+    }
+
+    function updateTotal() {
+      const input = document.getElementById('qtyInput');
+      if (!input) return;
+      const qty = Math.max(1, Math.min(maxStock, parseInt(input.value) || 1));
+      input.value = qty;
+      const total = (unitPrice * qty).toFixed(2);
+      const totalEl = document.getElementById('totalPrice');
+      if (totalEl) totalEl.textContent = currencySymbol + total;
+    }
+
+    document.getElementById('qtyInput')?.addEventListener('input', updateTotal);
+    <% } %>
   </script>
 
   <%- include('partials/footer') %>

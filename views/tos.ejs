@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terms of Service - <%= settings.storeName %></title>
+  <title>Điều Khoản Dịch Vụ - <%= settings.storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
@@ -12,14 +12,14 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
 
-  <meta property="og:title" content="Terms of Service | <%= settings.storeName %>" />
+  <meta property="og:title" content="Điều Khoản Dịch Vụ | <%= settings.storeName %>" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= settings.baseURL %>" />
   <meta property="og:image" content="<%= settings.logoPath %>" />
-  <meta property="og:description" content="Read the detailed terms and conditions that govern the use of our products and services." />
+  <meta property="og:description" content="Đọc kỹ các điều khoản và điều kiện chi phối việc sử dụng sản phẩm và dịch vụ của chúng tôi." />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content="vi_VN" />
 
   <script>
     tailwind.config = {
@@ -447,14 +447,14 @@
         <div class="space-y-6" data-aos="fade-up" data-aos-duration="1000">
           <div class="inline-flex items-center gap-3 bg-dark-card/80 backdrop-blur-xl px-6 py-2 rounded-full mb-4 border border-accent/30">
             <i class="fas fa-file-contract text-accent"></i>
-            <span class="text-sm text-text-secondary font-medium">Legal Document</span>
+            <span class="text-sm text-text-secondary font-medium">Tài Liệu Pháp Lý</span>
           </div>
 
           <h1 class="text-4xl lg:text-6xl font-black leading-tight text-white mb-4">
-            <%= settings.tosPageTitle || 'Terms of Service' %>
+            <%= settings.tosPageTitle || 'Điều Khoản Dịch Vụ' %>
           </h1>
           <p class="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
-            <%= settings.tosPageSubtitle || 'Please read these terms carefully before using our services.' %>
+            <%= settings.tosPageSubtitle || 'Vui lòng đọc kỹ các điều khoản này trước khi sử dụng dịch vụ của chúng tôi.' %>
           </p>
         </div>
       </div>
@@ -471,16 +471,16 @@
                 <i class="fas fa-clock text-accent text-xl"></i>
               </div>
               <div>
-                <div class="text-sm text-text-secondary">Last Updated</div>
+                <div class="text-sm text-text-secondary">Cập Nhật Lần Cuối</div>
                 <div class="text-lg font-semibold text-white">
-                  <%= tosLastUpdated.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                  <%= tosLastUpdated.toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' }) %>
                 </div>
               </div>
             </div>
 
             <div class="flex items-center gap-2 text-sm text-text-secondary">
               <i class="fas fa-info-circle text-accent"></i>
-              <span>By using our services, you agree to these terms</span>
+              <span>Khi sử dụng dịch vụ của chúng tôi, bạn đồng ý với các điều khoản này</span>
             </div>
           </div>
         </div>

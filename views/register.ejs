@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account - <%= settings.storeName %></title>
+  <title>Tạo Tài Khoản - <%= settings.storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 
-  <meta property="og:title" content="Create Account | <%= settings.storeName %>" />
+  <meta property="og:title" content="Tạo Tài Khoản | <%= settings.storeName %>" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= config.baseURL %>/register" />
   <meta property="og:image" content="<%= settings.logoPath %>" />
-  <meta property="og:description" content="Create your account on <%= settings.storeName %>" />
+  <meta property="og:description" content="Tạo tài khoản trên <%= settings.storeName %>" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
 
@@ -209,8 +209,8 @@
       <div class="max-w-md mx-auto">
         <div class="text-center mb-8" data-aos="fade-up">
           <img src="<%= settings.logoPath %>" alt="Logo" class="w-20 h-20 rounded-xl mx-auto mb-6 shadow-2xl ring-2 ring-accent/50">
-          <h1 class="text-4xl font-black text-white mb-2">Create Account</h1>
-          <p class="text-text-secondary">Join <%= settings.storeName %> today</p>
+          <h1 class="text-4xl font-black text-white mb-2">Tạo Tài Khoản</h1>
+          <p class="text-text-secondary">Tham gia <%= settings.storeName %> ngay hôm nay</p>
         </div>
 
         <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
@@ -218,7 +218,7 @@
           <% if (authConfig.Discord && authConfig.Discord.enabled && (authConfig.mode === 'discord' || authConfig.mode === 'both')) { %>
           <a href="/auth/discord" class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift mb-6 group">
             <i class="fab fa-discord text-2xl group-hover:scale-110 transition-transform"></i>
-            <span>Continue with Discord</span>
+            <span>Tiếp Tục Với Discord</span>
           </a>
 
           <% if (authConfig.Local && authConfig.Local.enabled && authConfig.mode === 'both') { %>
@@ -227,7 +227,7 @@
               <div class="w-full border-t border-white/10"></div>
             </div>
             <div class="relative flex justify-center text-sm">
-              <span class="px-4 bg-dark-card text-text-muted">Or continue with email</span>
+              <span class="px-4 bg-dark-card text-text-muted">Hoặc tiếp tục với email</span>
             </div>
           </div>
           <% } %>
@@ -239,14 +239,14 @@
             <div class="flex items-start gap-3 mb-4">
               <i class="fas fa-check-circle text-green-400 mt-1"></i>
               <div class="flex-1">
-                <p class="text-green-400 text-sm font-semibold mb-1">Registration Successful!</p>
+                <p class="text-green-400 text-sm font-semibold mb-1">Đăng Ký Thành Công!</p>
                 <p class="text-green-300 text-sm"><%= success %></p>
               </div>
             </div>
 
             <button id="resendButton" onclick="resendVerification()" class="w-full bg-accent/20 hover:bg-accent/30 text-accent border border-accent/50 px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm">
               <i class="fas fa-paper-plane"></i>
-              <span id="resendButtonText">Resend Verification Email</span>
+              <span id="resendButtonText">Gửi Lại Email Xác Minh</span>
             </button>
 
             <p class="text-xs text-green-300 mt-2 text-center" id="resendStatus"></p>
@@ -268,12 +268,12 @@
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
             <div>
-              <label class="block text-white font-medium mb-2 text-sm">Username</label>
+              <label class="block text-white font-medium mb-2 text-sm">Tên Người Dùng</label>
               <div class="relative">
                 <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
                   <i class="fas fa-user"></i>
                 </div>
-                <input type="text" name="username" required placeholder="Choose a username" class="w-full bg-dark-card text-white pl-12 pr-4 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300" value="<%= typeof username !== 'undefined' ? username : '' %>">
+                <input type="text" name="username" required placeholder="Chọn tên người dùng" class="w-full bg-dark-card text-white pl-12 pr-4 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300" value="<%= typeof username !== 'undefined' ? username : '' %>">
               </div>
             </div>
 
@@ -288,12 +288,12 @@
             </div>
 
             <div>
-              <label class="block text-white font-medium mb-2 text-sm">Password</label>
+              <label class="block text-white font-medium mb-2 text-sm">Mật Khẩu</label>
               <div class="relative">
                 <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
                   <i class="fas fa-lock"></i>
                 </div>
-                <input type="password" id="password" name="password" required placeholder="Min. <%= authConfig.Local.minPasswordLength || 8 %> characters" class="w-full bg-dark-card text-white pl-12 pr-12 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
+                <input type="password" id="password" name="password" required placeholder="Tối thiểu <%= authConfig.Local.minPasswordLength || 8 %> ký tự" class="w-full bg-dark-card text-white pl-12 pr-12 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
                 <button type="button" onclick="togglePassword('password')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-white transition-colors">
                   <i class="fas fa-eye" id="password-toggle-icon"></i>
                 </button>
@@ -301,16 +301,16 @@
               <div class="password-strength-bar">
                 <div class="password-strength-fill" id="strength-bar"></div>
               </div>
-              <p class="text-xs text-text-muted mt-2" id="strength-text">Use 8+ characters with a mix of letters, numbers & symbols</p>
+              <p class="text-xs text-text-muted mt-2" id="strength-text">Sử dụng 8+ ký tự với sự kết hợp chữ cái, số & ký hiệu</p>
             </div>
 
             <div>
-              <label class="block text-white font-medium mb-2 text-sm">Confirm Password</label>
+              <label class="block text-white font-medium mb-2 text-sm">Xác Nhận Mật Khẩu</label>
               <div class="relative">
                 <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
                   <i class="fas fa-lock"></i>
                 </div>
-                <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Re-enter your password" class="w-full bg-dark-card text-white pl-12 pr-12 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
+                <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Nhập lại mật khẩu" class="w-full bg-dark-card text-white pl-12 pr-12 py-3 rounded-xl border border-white/10 focus:border-accent focus:outline-none transition-all duration-300">
                 <button type="button" onclick="togglePassword('confirmPassword')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-white transition-colors">
                   <i class="fas fa-eye" id="confirmPassword-toggle-icon"></i>
                 </button>
@@ -319,16 +319,16 @@
 
             <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 hover-lift flex items-center justify-center gap-2 mt-6">
               <i class="fas fa-user-plus"></i>
-              <span>Create Account</span>
+              <span>Tạo Tài Khoản</span>
             </button>
           </form>
           <% } %>
 
           <div class="mt-6 text-center">
             <p class="text-text-secondary text-sm">
-              Already have an account?
+              Đã có tài khoản?
               <a href="/login" class="text-accent hover:text-accent/80 font-semibold transition-colors">
-                Sign In
+                Đăng Nhập
               </a>
             </p>
           </div>
@@ -338,7 +338,7 @@
         <div class="text-center mt-6" data-aos="fade-up" data-aos-delay="200">
           <p class="text-text-muted text-sm flex items-center justify-center gap-2">
             <i class="fas fa-info-circle text-accent"></i>
-            Email verification required after registration
+            Cần xác minh email sau khi đăng ký
           </p>
         </div>
         <% } %>
@@ -388,15 +388,15 @@
 
         if (strength <= 2) {
           strengthBar.classList.add('strength-weak');
-          strengthText.textContent = 'Weak password - add more characters';
+          strengthText.textContent = 'Mật khẩu yếu - thêm nhiều ký tự hơn';
           strengthText.className = 'text-xs text-red-400 mt-2';
         } else if (strength <= 4) {
           strengthBar.classList.add('strength-medium');
-          strengthText.textContent = 'Medium strength - almost there!';
+          strengthText.textContent = 'Độ mạnh trung bình - gần xong rồi!';
           strengthText.className = 'text-xs text-yellow-400 mt-2';
         } else {
           strengthBar.classList.add('strength-strong');
-          strengthText.textContent = 'Strong password!';
+          strengthText.textContent = 'Mật khẩu mạnh!';
           strengthText.className = 'text-xs text-green-400 mt-2';
         }
       });
@@ -406,7 +406,7 @@
     if (confirmPasswordField && passwordField) {
       confirmPasswordField.addEventListener('input', function() {
         if (this.value && this.value !== passwordField.value) {
-          this.setCustomValidity('Passwords do not match');
+          this.setCustomValidity('Mật khẩu không khớp');
           this.classList.add('border-red-500');
         } else {
           this.setCustomValidity('');
@@ -435,7 +435,7 @@
       const statusText = document.getElementById('resendStatus');
 
       button.disabled = true;
-      buttonText.textContent = 'Sending...';
+      buttonText.textContent = 'Đang gửi...';
       statusText.textContent = '';
 
       fetch('/api/resend-verification', {
@@ -451,24 +451,24 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            statusText.textContent = '✓ Email sent successfully!';
+            statusText.textContent = '✓ Email đã được gửi thành công!';
             statusText.className = 'text-xs text-green-400 mt-2 text-center';
 
             resendCooldown = 60;
             updateCooldownButton();
           } else {
-            statusText.textContent = data.message || 'Failed to send email';
+            statusText.textContent = data.message || 'Gửi email thất bại';
             statusText.className = 'text-xs text-red-400 mt-2 text-center';
             button.disabled = false;
-            buttonText.textContent = 'Resend Verification Email';
+            buttonText.textContent = 'Gửi Lại Email Xác Minh';
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          statusText.textContent = 'An error occurred. Please try again.';
+          statusText.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
           statusText.className = 'text-xs text-red-400 mt-2 text-center';
           button.disabled = false;
-          buttonText.textContent = 'Resend Verification Email';
+          buttonText.textContent = 'Gửi Lại Email Xác Minh';
         });
     }
 
@@ -479,7 +479,7 @@
       if (resendCooldown > 0) {
         button.disabled = true;
         button.classList.add('opacity-50', 'cursor-not-allowed');
-        buttonText.textContent = `Wait ${resendCooldown}s before resending`;
+        buttonText.textContent = `Chờ ${resendCooldown}s trước khi gửi lại`;
 
         resendTimer = setTimeout(() => {
           resendCooldown--;
@@ -488,7 +488,7 @@
       } else {
         button.disabled = false;
         button.classList.remove('opacity-50', 'cursor-not-allowed');
-        buttonText.textContent = 'Resend Verification Email';
+        buttonText.textContent = 'Gửi Lại Email Xác Minh';
         if (resendTimer) {
           clearTimeout(resendTimer);
         }

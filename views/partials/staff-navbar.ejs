@@ -39,6 +39,13 @@
         </a>
         <% } %>
 
+        <% if (staffPermissions && staffPermissions.canViewInvoices) { %>
+        <a href="/staff/vietqr-payments" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'vietqr-payments' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
+          <i class="fas fa-qrcode text-lg transition-transform group-hover:scale-110"></i>
+          <span>VietQR</span>
+        </a>
+        <% } %>
+
         <% if (staffPermissions && staffPermissions.canManageAntiPiracy) { %>
         <a href="/staff/anti-piracy" class="group flex items-center gap-3 px-5 py-3 rounded-xl font-semibold transition-all duration-300 <%= currentPage === 'anti-piracy' ? 'bg-accent text-white shadow-lg' : 'bg-white/5 text-text-secondary hover:bg-accent/15 hover:border-accent border border-transparent' %>">
           <i class="fas fa-shield-alt text-lg transition-transform group-hover:scale-110"></i>

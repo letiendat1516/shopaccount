@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
@@ -22,14 +22,14 @@
     }
   %>
 
-  <meta property="og:title" content="<%= displayName %>'s Profile | <%= settings.storeName %>" />
+  <meta property="og:title" content="Hồ Sơ <%= displayName %> | <%= settings.storeName %>" />
   <meta property="og:type" content="profile" />
   <meta property="og:url" content="<%= config.baseURL %>/profile/<%= userId %>" />
   <meta property="og:image" content="<%= avatarUrl %>" />
-  <meta property="og:description" content="User profile for <%= displayName %> on <%= settings.storeName %>" />
+  <meta property="og:description" content="Hồ sơ người dùng <%= displayName %> trên <%= settings.storeName %>" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content="vi_VN" />
   <meta property="profile:username" content="<%= displayName %>" />
 
   <script>
@@ -215,7 +215,7 @@
                 </p>
                 <button onclick="copyUserId('<%= userId %>')" id="copyUserIdBtn" style="position: relative; z-index: 100;" class="px-2 py-1 bg-dark-card hover:bg-accent text-text-muted hover:text-white rounded text-xs transition-all duration-300 flex items-center gap-1 cursor-pointer">
                   <i class="fas fa-copy text-[10px]"></i>
-                  <span class="text-[10px]">Copy</span>
+                  <span class="text-[10px]">Sao Chép</span>
                 </button>
               </div>
 
@@ -225,14 +225,14 @@
                 <% if (isBanned) { %>
                 <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-500/20 border border-red-500/30 rounded-lg text-sm font-semibold text-red-400 animate-pulse">
                   <i class="fas fa-ban"></i>
-                  <span>BANNED</span>
+                  <span>BỊ CẤM</span>
                 </span>
                 <% } %>
 
                 <% if (userInfo.staffPermissions && userInfo.staffPermissions.isStaff) { %>
                 <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-accent/20 border border-accent/30 rounded-lg text-sm font-semibold text-accent shadow-lg">
                   <i class="fas fa-shield-alt"></i>
-                  <span>STAFF</span>
+                  <span>NHÂN VIÊN</span>
                 </span>
                 <% } %>
               </div>
@@ -241,16 +241,16 @@
               <div class="flex flex-wrap gap-3 mb-4">
                 <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
                   <i class="fas fa-calendar-alt text-accent"></i>
-                  Joined <%= userInfo.joinedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) %>
+                  Tham gia <%= userInfo.joinedAt.toLocaleDateString('vi-VN', { year: 'numeric', month: 'short' }) %>
                 </span>
                 <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
                   <i class="fas fa-wallet text-accent"></i>
-                  <%= settings.currencySymbol %><%= userInfo.totalSpent.toFixed(2) %> spent
+                  <%= settings.currencySymbol %><%= userInfo.totalSpent.toFixed(2) %> đã chi
                 </span>
                 <% if (userInfo.authMethod) { %>
                 <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
                   <i class="fas fa-shield-alt text-accent"></i>
-                  <%= userInfo.authMethod === 'discord' ? 'Discord' : userInfo.authMethod === 'local' ? 'Email' : 'Linked' %> Account
+                  Tài khoản <%= userInfo.authMethod === 'discord' ? 'Discord' : userInfo.authMethod === 'local' ? 'Email' : 'Liên kết' %>
                 </span>
                 <% } %>
               </div>
@@ -258,7 +258,7 @@
               <div class="flex flex-wrap gap-3 mb-4">
                 <span class="inline-flex items-center gap-2 px-3 py-1 bg-dark-card rounded-lg text-sm text-text-secondary">
                   <i class="fas fa-calendar-alt text-accent"></i>
-                  Joined <%= userInfo.joinedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) %>
+                  Tham gia <%= userInfo.joinedAt.toLocaleDateString('vi-VN', { year: 'numeric', month: 'short' }) %>
                 </span>
               </div>
               <% } %>
@@ -276,12 +276,12 @@
                 <% } else if (isBanned) { %>
                 <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-300 text-sm hover-lift" title="Unban User">
                   <i class="fas fa-check-circle"></i>
-                  <span class="ml-1">Unban</span>
+                  <span class="ml-1">Bỏ Cấm</span>
                 </button>
                 <% } else { %>
                 <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-300 text-sm hover-lift" title="Ban User">
                   <i class="fas fa-ban"></i>
-                  <span class="ml-1">Ban</span>
+                  <span class="ml-1">Cấm</span>
                 </button>
                 <% } %>
               </form>
@@ -311,7 +311,7 @@
                 </div>
                 <div>
                   <div class="text-2xl font-bold text-white"><%= ownedProducts.length %></div>
-                  <div class="text-xs text-text-secondary">Products</div>
+                  <div class="text-xs text-text-secondary">Sản Phẩm</div>
                 </div>
               </div>
             </div>
@@ -323,7 +323,7 @@
                 </div>
                 <div>
                   <div class="text-2xl font-bold text-white"><%= (userInfo.ownedSerials && userInfo.ownedSerials.length) || 0 %></div>
-                  <div class="text-xs text-text-secondary">Serials</div>
+                  <div class="text-xs text-text-secondary">Mã Kích Hoạt</div>
                 </div>
               </div>
             </div>
@@ -335,7 +335,7 @@
                 </div>
                 <div>
                   <div class="text-2xl font-bold text-white"><%= invoices.length %></div>
-                  <div class="text-xs text-text-secondary">Invoices</div>
+                  <div class="text-xs text-text-secondary">Hóa Đơn</div>
                 </div>
               </div>
             </div>
@@ -347,15 +347,15 @@
                   <i class="fas fa-envelope text-accent"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <div class="text-sm text-white break-all select-all" title="<%= userInfo.email || 'No email' %>">
-                    <%= userInfo.email || 'No email set' %>
+                  <div class="text-sm text-white break-all select-all" title="<%= userInfo.email || 'Chưa có email' %>">
+                    <%= userInfo.email || 'Chưa đặt email' %>
                   </div>
                   <div class="flex items-center justify-between gap-2">
-                    <div class="text-xs text-text-secondary">Email Address</div>
+                    <div class="text-xs text-text-secondary">Địa Chỉ Email</div>
                     <% if (user && (user.id === userId || user.id === userInfo.discordID)) { %>
                     <button onclick="openEmailEditModal()" class="text-xs text-accent hover:text-accent/80 transition-colors flex items-center gap-1 cursor-pointer">
                       <i class="fas fa-edit"></i>
-                      <span>Edit</span>
+                      <span>Sửa</span>
                     </button>
                     <% } %>
                   </div>
@@ -373,7 +373,7 @@
                     ••••••@•••••.•••
                   </div>
                   <div class="flex items-center justify-between gap-2">
-                    <div class="text-xs text-text-secondary">Email Address</div>
+                    <div class="text-xs text-text-secondary">Địa Chỉ Email</div>
                   </div>
                 </div>
               </div>
@@ -389,9 +389,9 @@
         <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
           <i class="fas fa-lock text-accent text-3xl"></i>
         </div>
-        <h3 class="text-2xl font-bold text-white mb-2">Private Profile</h3>
-        <p class="text-text-secondary mb-4">This user's detailed profile information is private.</p>
-        <p class="text-text-muted text-sm">Only the profile owner and staff members can view products, invoices, and other details.</p>
+        <h3 class="text-2xl font-bold text-white mb-2">Hồ Sơ Riêng Tư</h3>
+        <p class="text-text-secondary mb-4">Thông tin hồ sơ chi tiết của người dùng này là riêng tư.</p>
+        <p class="text-text-muted text-sm">Chỉ chủ hồ sơ và nhân viên mới có thể xem sản phẩm, hóa đơn và các thông tin khác.</p>
       </div>
       <% } else { %>
 
@@ -399,19 +399,19 @@
         <div class="flex gap-2 min-w-max">
           <button class="tab-btn active px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap" data-tab="products">
             <i class="fas fa-box"></i>
-            <span>Products</span>
+            <span>Sản Phẩm</span>
             <span class="px-2 py-0.5 bg-dark rounded-md text-xs"><%= ownedProducts.length %></span>
           </button>
           <button class="tab-btn px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap" data-tab="serials">
             <i class="fas fa-key"></i>
-            <span>Serials</span>
+            <span>Mã Kích Hoạt</span>
             <span class="px-2 py-0.5 bg-dark rounded-md text-xs"><%= (userInfo.ownedSerials && userInfo.ownedSerials.length) || 0 %></span>
           </button>
           </button>
           <% if (staffPermissions && staffPermissions.canViewInvoices) { %>
           <button class="tab-btn px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap" data-tab="invoices">
             <i class="fas fa-file-invoice-dollar"></i>
-            <span>Invoices</span>
+            <span>Hóa Đơn</span>
             <span class="px-2 py-0.5 bg-dark rounded-md text-xs"><%= invoices.length %></span>
           </button>
           <% } %>
@@ -424,13 +424,13 @@
           <div class="glass-effect rounded-2xl p-6 mb-6 hover-lift" data-aos="fade-up">
             <h4 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <i class="fas fa-plus-circle text-accent"></i>
-              Add Product to User
+              Thêm Sản Phẩm Cho Người Dùng
             </h4>
             <form action="/profile/<%= userId %>/add-product" method="POST" class="flex flex-wrap gap-3 items-end">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <div class="flex-1 min-w-64">
                 <select name="productId" id="product-select" required class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none">
-                  <option value="">Select Product</option>
+                  <option value="">Chọn Sản Phẩm</option>
                   <% products.forEach(product => { %>
                   <option value="<%= product._id %>"><%= product.name %></option>
                   <% }) %>
@@ -438,7 +438,7 @@
               </div>
               <button type="submit" id="add-product-btn" disabled class="px-6 py-3 bg-accent hover:bg-accent/90 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
                 <i class="fas fa-plus"></i>
-                <span>Add</span>
+                <span>Thêm</span>
               </button>
             </form>
           </div>
@@ -463,12 +463,12 @@
                   <% if (product.productType === 'service') { %>
                   <button onclick="openServiceModal('<%= product.name.replace(/'/g, "\\'") %>', `<%= product.serviceMessage.replace(/`/g, '\\`').replace(/'/g, "\\'") %>`)" class="flex-1 px-4 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm font-semibold">
                     <i class="fas fa-info-circle"></i>
-                    <span>View</span>
+                    <span>Xem</span>
                   </button>
                   <% } else { %>
                   <a href="/downloads/<%= product.urlId %>" class="flex-1 px-4 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm font-semibold">
                     <i class="fas fa-download"></i>
-                    <span>Download</span>
+                    <span>Tải Xuống</span>
                   </a>
                   <% } %>
 
@@ -491,8 +491,8 @@
             <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
               <i class="fas fa-box-open text-accent text-3xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">No Products Yet</h3>
-            <p class="text-text-secondary">This user doesn't own any products.</p>
+            <h3 class="text-2xl font-bold text-white mb-2">Chưa Có Sản Phẩm</h3>
+            <p class="text-text-secondary">Người dùng này chưa sở hữu sản phẩm nào.</p>
           </div>
           <% } %>
         </div>
@@ -502,47 +502,90 @@
           <div class="glass-effect rounded-2xl p-6 mb-6 hover-lift" data-aos="fade-up">
             <h4 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <i class="fas fa-plus-circle text-accent"></i>
-              Add Serial to User
+              Thêm Mã Kích Hoạt Cho Người Dùng
             </h4>
             <form action="/profile/<%= userId %>/add-serial" method="POST" class="flex flex-wrap gap-3 items-end">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <div class="flex-1 min-w-64">
                 <select name="productId" id="serial-select" required class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none">
-                  <option value="">Select Serial Product</option>
+                  <option value="">Chọn Sản Phẩm Serial</option>
                   <% serialProducts.forEach(product => { %>
                   <option value="<%= product._id %>" <%= product.stockCount === 0 ? 'disabled class="text-gray-500"' : '' %>>
-                    <%= product.name %> (<%= product.stockCount %> available)<%= product.stockCount === 0 ? ' - Out of Stock' : '' %>
+                    <%= product.name %> (<%= product.stockCount %> có sẵn)<%= product.stockCount === 0 ? ' - Hết hàng' : '' %>
                   </option>
                   <% }) %>
                 </select>
               </div>
               <button type="submit" id="add-serial-btn" disabled class="px-6 py-3 bg-accent hover:bg-accent/90 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
                 <i class="fas fa-plus"></i>
-                <span>Add</span>
+                <span>Thêm</span>
               </button>
             </form>
           </div>
           <% } %>
 
           <% if (userInfo.ownedSerials && userInfo.ownedSerials.length > 0) { %>
+          <%
+            // Group serials by productId + purchaseDate within 60s (same purchase batch)
+            const groupedSerials = [];
+            const processed = new Set();
+            const serialsList = userInfo.ownedSerials;
+
+            for (let i = serialsList.length - 1; i >= 0; i--) {
+              if (processed.has(i)) continue;
+              processed.add(i);
+              const serial = serialsList[i];
+              const group = {
+                productName: serial.productName,
+                productId: serial.productId,
+                purchaseDate: serial.purchaseDate,
+                keys: [serial.key.key || serial.key]
+              };
+              for (let j = i - 1; j >= 0; j--) {
+                if (processed.has(j)) continue;
+                const other = serialsList[j];
+                if (other.productId.toString() === serial.productId.toString() &&
+                    Math.abs(new Date(other.purchaseDate) - new Date(serial.purchaseDate)) < 60000) {
+                  group.keys.push(other.key.key || other.key);
+                  processed.add(j);
+                }
+              }
+              groupedSerials.push(group);
+            }
+          %>
           <div class="grid gap-4">
-            <% userInfo.ownedSerials.forEach((serial, index) => { %>
+            <% groupedSerials.forEach((group, index) => { %>
             <div class="glass-effect rounded-2xl p-6 hover-lift" data-aos="fade-up" data-aos-delay="<%= index * 30 %>">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div>
-                  <h3 class="text-lg font-bold text-white mb-1"><%= serial.productName %></h3>
+                  <h3 class="text-lg font-bold text-white mb-1">
+                    <%= group.productName %>
+                    <% if (group.keys.length > 1) { %>
+                    <span class="text-sm font-normal text-accent ml-2">× <%= group.keys.length %></span>
+                    <% } %>
+                  </h3>
                   <div class="text-sm text-text-secondary flex items-center gap-2">
                     <i class="fas fa-calendar-alt text-accent"></i>
-                    <%= new Date(serial.purchaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                    <%= new Date(group.purchaseDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
                   </div>
                 </div>
+                <% if (group.keys.length > 1) { %>
+                <button onclick="copyAllKeys(this, <%= JSON.stringify(group.keys) %>)" class="px-4 py-2 bg-accent/20 hover:bg-accent text-accent hover:text-white rounded-lg transition-all duration-300 flex items-center gap-2 text-sm font-semibold cursor-pointer">
+                  <i class="fas fa-copy"></i>
+                  <span>Sao chép tất cả</span>
+                </button>
+                <% } %>
               </div>
 
-              <div class="flex items-center gap-3 bg-dark-card rounded-xl p-4 border border-white/10">
-                <code class="flex-1 text-accent font-mono text-sm break-all select-all"><%= serial.key.key || serial.key %></code>
-                <button onclick="copySerial(this, '<%= serial.key.key || serial.key %>')" class="px-4 py-2 bg-dark hover:bg-accent text-text-secondary hover:text-white rounded-lg transition-all duration-300 flex-shrink-0 cursor-pointer">
-                  <i class="fas fa-copy"></i>
-                </button>
+              <div class="space-y-2">
+                <% group.keys.forEach((key) => { %>
+                <div class="flex items-center gap-3 bg-dark-card rounded-xl p-4 border border-white/10">
+                  <code class="flex-1 text-accent font-mono text-sm break-all select-all"><%= key %></code>
+                  <button onclick="copySerial(this, '<%= key.replace(/'/g, "\\'") %>')" class="px-4 py-2 bg-dark hover:bg-accent text-text-secondary hover:text-white rounded-lg transition-all duration-300 flex-shrink-0 cursor-pointer">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
+                <% }); %>
               </div>
             </div>
             <% }); %>
@@ -552,8 +595,8 @@
             <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
               <i class="fas fa-key text-accent text-3xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">No Serial Keys</h3>
-            <p class="text-text-secondary">This user doesn't have any serial keys.</p>
+            <h3 class="text-2xl font-bold text-white mb-2">Chưa Có Mã Kích Hoạt</h3>
+            <p class="text-text-secondary">Người dùng này chưa có mã kích hoạt nào.</p>
           </div>
           <% } %>
         </div>
@@ -572,13 +615,13 @@
                     <div class="flex items-center gap-2">
                       <span class="font-bold text-white text-lg">#<%= invoice.ID %></span>
                       <span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs font-semibold">
-                        Completed
+                        Hoàn Tất
                       </span>
                     </div>
                     <div class="flex items-center gap-3 text-sm text-text-secondary mt-1">
                       <span class="flex items-center gap-1">
                         <i class="fas fa-calendar-alt text-accent"></i>
-                        <%= new Date(invoice.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                        <%= new Date(invoice.createdAt).toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' }) %>
                       </span>
                       <span class="flex items-center gap-1">
                         <i class="fa<%= invoice.paymentMethod === 'paypal' ? 'b fa-paypal' : invoice.paymentMethod === 'stripe' ? 's fa-credit-card' : 'b fa-bitcoin' %> text-accent"></i>
@@ -606,7 +649,7 @@
               <div class="flex flex-wrap gap-2">
                 <a href="/invoice/<%= invoice.transactionID %>" class="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center gap-2 text-sm font-semibold">
                   <i class="fas fa-eye"></i>
-                  <span>View Details</span>
+                  <span>Xem Chi Tiết</span>
                 </a>
                 <% if (invoice.transactionID && invoice.invoicePath) { %>
                 <a href="/invoice/<%= invoice.transactionID %>/view" target="_blank" class="px-4 py-2 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 flex items-center gap-2 text-sm font-semibold">
@@ -623,8 +666,8 @@
             <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
               <i class="fas fa-receipt text-accent text-3xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">No Purchase History</h3>
-            <p class="text-text-secondary">This user hasn't made any purchases yet.</p>
+            <h3 class="text-2xl font-bold text-white mb-2">Chưa Có Lịch Sử Mua Hàng</h3>
+            <p class="text-text-secondary">Người dùng này chưa thực hiện giao dịch nào.</p>
           </div>
           <% } %>
         </div>
@@ -651,7 +694,7 @@
       </div>
       <div class="flex justify-end p-6 border-t border-white/10">
         <button onclick="closeServiceModal()" class="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 font-semibold">
-          Close
+          Đóng
         </button>
       </div>
     </div>
@@ -660,7 +703,7 @@
   <div id="transferModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 opacity-0 invisible transition-all duration-300">
     <div class="glass-effect rounded-2xl max-w-md w-full transform scale-95 transition-transform duration-300">
       <div class="flex items-center justify-between p-6 border-b border-white/10">
-        <h3 class="text-xl font-bold text-white">Transfer Products</h3>
+        <h3 class="text-xl font-bold text-white">Chuyển Sản Phẩm</h3>
         <button onclick="closeTransferModal()" class="text-text-secondary hover:text-white text-xl transition-colors">
           <i class="fas fa-times"></i>
         </button>
@@ -671,11 +714,11 @@
           <div class="flex items-start gap-3">
             <i class="fas fa-exclamation-triangle text-yellow-500 mt-1"></i>
             <div class="text-sm">
-              <p class="font-semibold text-yellow-500 mb-2">This will transfer:</p>
+              <p class="font-semibold text-yellow-500 mb-2">Thao tác này sẽ chuyển:</p>
               <ul class="text-yellow-400 space-y-1 text-xs">
-                <li>• <strong><%= ownedProducts.length %></strong> products</li>
-                <li>• <strong><%= (userInfo.ownedSerials && userInfo.ownedSerials.length) || 0 %></strong> serial keys</li>
-                <li>• Cannot be undone</li>
+                <li>• <strong><%= ownedProducts.length %></strong> sản phẩm</li>
+                <li>• <strong><%= (userInfo.ownedSerials && userInfo.ownedSerials.length) || 0 %></strong> mã kích hoạt</li>
+                <li>• Không thể hoàn tác</li>
               </ul>
             </div>
           </div>
@@ -685,9 +728,9 @@
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
           <div>
-            <label class="block text-white font-medium mb-2">Target User ID</label>
-            <input type="text" name="targetUserId" required placeholder="Enter User ID" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none">
-            <p class="text-text-secondary text-xs mt-2">Target user must have logged in before.</p>
+            <label class="block text-white font-medium mb-2">ID Người Nhận</label>
+            <input type="text" name="targetUserId" required placeholder="Nhập ID Người Dùng" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none">
+            <p class="text-text-secondary text-xs mt-2">Người nhận phải đã đăng nhập trước đó.</p>
           </div>
 
           <div id="transferError" class="hidden bg-red-500/10 border border-red-500/30 rounded-xl p-4">
@@ -702,10 +745,10 @@
       <div class="flex gap-3 p-6 border-t border-white/10">
         <button id="transferButton" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-semibold hover-lift">
           <i class="fas fa-exchange-alt"></i>
-          <span>Confirm Transfer</span>
+          <span>Xác Nhận Chuyển</span>
         </button>
         <button onclick="closeTransferModal()" class="px-6 py-3 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 font-semibold">
-          Cancel
+          Hủy
         </button>
       </div>
     </div>
@@ -714,7 +757,7 @@
   <div id="emailEditModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 opacity-0 invisible transition-all duration-300">
     <div class="glass-effect rounded-2xl max-w-md w-full transform scale-95 transition-transform duration-300">
       <div class="flex items-center justify-between p-6 border-b border-white/10">
-        <h3 class="text-xl font-bold text-white">Change Email Address</h3>
+        <h3 class="text-xl font-bold text-white">Thay Đổi Email</h3>
         <button onclick="closeEmailEditModal()" class="text-text-secondary hover:text-white text-xl transition-colors">
           <i class="fas fa-times"></i>
         </button>
@@ -727,19 +770,19 @@
           <div class="flex items-start gap-3">
             <i class="fas fa-info-circle text-accent mt-1"></i>
             <div class="text-sm text-accent">
-              <p class="font-semibold mb-1">Verification Required</p>
-              <p class="text-xs">You'll receive a verification email at your new address. Your email won't change until you verify it.</p>
+              <p class="font-semibold mb-1">Cần Xác Minh</p>
+              <p class="text-xs">Bạn sẽ nhận được email xác minh tại địa chỉ mới. Email sẽ không thay đổi cho đến khi bạn xác minh.</p>
             </div>
           </div>
         </div>
 
         <div>
-          <label class="block text-white font-medium mb-2 text-sm">Current Email</label>
+          <label class="block text-white font-medium mb-2 text-sm">Email Hiện Tại</label>
           <input type="email" value="<%= userInfo.email || '' %>" disabled class="w-full bg-dark-card text-text-muted border border-white/10 rounded-lg px-4 py-3 cursor-not-allowed">
         </div>
 
         <div>
-          <label class="block text-white font-medium mb-2 text-sm">New Email Address</label>
+          <label class="block text-white font-medium mb-2 text-sm">Địa Chỉ Email Mới</label>
           <div class="relative">
             <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
               <i class="fas fa-envelope"></i>
@@ -749,7 +792,7 @@
         </div>
 
         <div>
-          <label class="block text-white font-medium mb-2 text-sm">Confirm New Email</label>
+          <label class="block text-white font-medium mb-2 text-sm">Xác Nhận Email Mới</label>
           <div class="relative">
             <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent">
               <i class="fas fa-envelope"></i>
@@ -776,10 +819,10 @@
       <div class="flex gap-3 p-6 border-t border-white/10">
         <button id="emailEditButton" onclick="submitEmailChange()" class="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-semibold hover-lift">
           <i class="fas fa-paper-plane"></i>
-          <span>Send Verification Email</span>
+          <span>Gửi Email Xác Minh</span>
         </button>
         <button onclick="closeEmailEditModal()" class="px-6 py-3 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 font-semibold">
-          Cancel
+          Hủy
         </button>
       </div>
     </div>
@@ -956,6 +999,39 @@
         setTimeout(() => {
           button.innerHTML = originalHTML;
           button.classList.remove('bg-green-600', 'text-white');
+         }, 2000);
+      });
+    }
+
+    function copyAllKeys(button, keys) {
+      const text = keys.join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Đã sao chép!';
+        button.classList.remove('bg-accent/20', 'text-accent');
+        button.classList.add('bg-green-600', 'text-white');
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('bg-green-600', 'text-white');
+          button.classList.add('bg-accent/20', 'text-accent');
+        }, 2000);
+      }).catch(() => {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Đã sao chép!';
+        button.classList.remove('bg-accent/20', 'text-accent');
+        button.classList.add('bg-green-600', 'text-white');
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('bg-green-600', 'text-white');
+          button.classList.add('bg-accent/20', 'text-accent');
         }, 2000);
       });
     }
@@ -993,7 +1069,7 @@
             })
             .catch(error => {
               console.error('Error:', error);
-              errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+              errorMessage.textContent = 'Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.';
               transferError.classList.remove('hidden');
             });
         });
@@ -1044,26 +1120,26 @@
       emailEditSuccess.classList.add('hidden');
 
       if (!newEmail || !confirmEmail) {
-        emailErrorMessage.textContent = 'Please fill in all fields';
+        emailErrorMessage.textContent = 'Vui lòng điền đầy đủ thông tin';
         emailEditError.classList.remove('hidden');
         return;
       }
 
       if (newEmail !== confirmEmail) {
-        emailErrorMessage.textContent = 'Email addresses do not match';
+        emailErrorMessage.textContent = 'Địa chỉ email không khớp';
         emailEditError.classList.remove('hidden');
         return;
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(newEmail)) {
-        emailErrorMessage.textContent = 'Please enter a valid email address';
+        emailErrorMessage.textContent = 'Vui lòng nhập địa chỉ email hợp lệ';
         emailEditError.classList.remove('hidden');
         return;
       }
 
       emailEditButton.disabled = true;
-      emailEditButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Sending...</span>';
+      emailEditButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Đang gửi...</span>';
 
       fetch('/api/change-email', {
           method: 'POST',
@@ -1078,7 +1154,7 @@
         .then(response => response.json())
         .then(data => {
           emailEditButton.disabled = false;
-          emailEditButton.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Send Verification Email</span>';
+          emailEditButton.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Gửi Email Xác Minh</span>';
 
           if (data.success) {
             emailSuccessMessage.textContent = data.message;
@@ -1092,8 +1168,8 @@
         .catch(error => {
           console.error('Error:', error);
           emailEditButton.disabled = false;
-          emailEditButton.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Send Verification Email</span>';
-          emailErrorMessage.textContent = 'An error occurred. Please try again.';
+          emailEditButton.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Gửi Email Xác Minh</span>';
+          emailErrorMessage.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
           emailEditError.classList.remove('hidden');
         });
     }
@@ -1107,3 +1183,4 @@
 </body>
 
 </html>
+

@@ -373,7 +373,7 @@
               <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mb-4">
                 <p class="text-sm text-blue-300">
                   <i class="fas fa-info-circle mr-2"></i>
-                  Supports <a href="https://docs.plexdevelopment.net/plex-store/markdown-guide" target="_blank" class="text-blue-400 underline hover:no-underline">Markdown formatting</a>
+                  Supports Markdown formatting
                 </p>
               </div>
 
@@ -552,7 +552,7 @@
                 <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
                   <p class="text-sm text-blue-300">
                     <i class="fas fa-book mr-2"></i>
-                    <a href="https://docs.plexdevelopment.net/plex-store/api" target="_blank" class="text-blue-400 underline hover:no-underline">View API Documentation</a>
+                    API Documentation
                   </p>
                 </div>
               </div>
@@ -893,6 +893,21 @@
                     </div>
 
                     <div>
+                      <label class="block text-sm font-medium text-white mb-2">
+                        <i class="fas fa-bolt text-yellow-400 mr-1"></i>
+                        SePay API Token <span class="text-green-400 text-xs font-bold">(Tự động xác nhận)</span>
+                        <% if (settings.paymentMethods?.vietqr?.sepayApiToken) { %>
+                        <span class="ml-2 text-green-400 text-xs"><i class="fas fa-check-circle mr-1"></i>Đã cấu hình</span>
+                        <% } %>
+                      </label>
+                      <input class="w-full bg-dark-lighter text-white border border-yellow-500/40 rounded-lg px-3 py-2 compact-input focus:border-yellow-400 focus:outline-none transition-colors text-sm font-mono" type="password" name="sepayApiToken" placeholder="<%= settings.paymentMethods?.vietqr?.sepayApiToken ? '••••••••••• (đã lưu, nhập mới để thay đổi)' : 'Nhập API Token từ my.sepay.vn' %>">
+                      <p class="text-xs text-yellow-300 mt-1">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Khi cấu hình, hệ thống tự động kiểm tra giao dịch trên SePay mỗi giây và xác nhận ngay khi nhận tiền.
+                      </p>
+                    </div>
+
+                    <div>
                       <label class="block text-sm font-medium text-white mb-2">Webhook URL (Optional)</label>
                       <input class="w-full bg-dark-lighter text-white border border-white/20 rounded-lg px-3 py-2 compact-input focus:border-accent focus:outline-none transition-colors text-sm font-mono" type="text" name="vietqrWebhookUrl" value="<%= settings.paymentMethods?.vietqr?.webhookUrl || '' %>" placeholder="https://your-bank-provider/webhook">
                     </div>
@@ -900,7 +915,7 @@
                     <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
                       <p class="text-xs text-blue-300">
                         <i class="fas fa-info-circle mr-1"></i>
-                        QR sẽ được tạo tự động qua <span class="font-semibold">img.vietqr.io</span> (không cần API key). Nếu muốn dùng VietQR API chính thức, lấy Client ID & API Key tại <span class="font-semibold">developers.vietqr.io</span>.
+                        QR được tạo qua <span class="font-semibold">img.vietqr.io</span> (không cần API key). Lấy SePay Token tại <span class="font-semibold">my.sepay.vn → API</span> để bật tự động xác nhận.
                       </p>
                     </div>
                   </div>
@@ -959,6 +974,19 @@
   <%- include('../partials/footer') %>
 
   <script>
+    // Show saved toast
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('saved') === 'true') {
+        const toast = document.createElement('div');
+        toast.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Settings saved successfully!';
+        toast.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;background:#22c55e;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(34,197,94,0.4);animation:slideIn .3s ease;';
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    })();
+
     AOS.init({
       duration: 400,
       easing: 'ease-out',

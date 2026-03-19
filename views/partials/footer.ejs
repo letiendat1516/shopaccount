@@ -756,32 +756,32 @@
 
       <div>
         <h4 class="text-lg font-semibold text-white mb-6 relative">
-          Navigation
+          Điều Hướng
           <div class="absolute bottom-0 left-0 w-8 h-0.5 bg-accent mt-2" style="background-color: var(--accent-color);"></div>
         </h4>
         <ul class="space-y-3">
           <li>
             <a href="/" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
               <i class="fas fa-home w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
-              <span class="group-hover:translate-x-1 transition-transform duration-300">Home</span>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Trang Chủ</span>
             </a>
           </li>
           <li>
             <a href="/products" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
               <i class="fas fa-shopping-bag w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
-              <span class="group-hover:translate-x-1 transition-transform duration-300">Products</span>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Sản Phẩm</span>
             </a>
           </li>
           <li>
             <a href="/reviews" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
               <i class="fas fa-star w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
-              <span class="group-hover:translate-x-1 transition-transform duration-300">Reviews</span>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Đánh Giá</span>
             </a>
           </li>
           <li>
             <a href="/profile" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
               <i class="fas fa-user w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
-              <span class="group-hover:translate-x-1 transition-transform duration-300">Profile</span>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Hồ Sơ</span>
             </a>
           </li>
           <% if (settings.customFooterTabs && settings.customFooterTabs.length > 0) { %>
@@ -799,20 +799,20 @@
 
       <div>
         <h4 class="text-lg font-semibold text-white mb-6 relative">
-          Legal
+          Pháp Lý
           <div class="absolute bottom-0 left-0 w-8 h-0.5 bg-accent mt-2" style="background-color: var(--accent-color);"></div>
         </h4>
         <ul class="space-y-3">
           <li>
             <a href="/privacy-policy" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
               <i class="fas fa-shield-alt w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
-              <span class="group-hover:translate-x-1 transition-transform duration-300">Privacy Policy</span>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Chính Sách Bảo Mật</span>
             </a>
           </li>
           <li>
             <a href="/tos" class="text-gray-400 hover:text-white transition-colors duration-300 flex items-center group">
               <i class="fas fa-file-contract w-4 mr-3 text-accent" style="color: var(--accent-color);"></i>
-              <span class="group-hover:translate-x-1 transition-transform duration-300">Terms of Service</span>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Điều Khoản Dịch Vụ</span>
             </a>
           </li>
         </ul>
@@ -824,7 +824,7 @@
   <div class="border-t border-gray-800 relative z-10">
     <div class="container mx-auto px-6 py-8">
       <div class="text-center">
-        <h5 class="text-white font-semibold mb-6">Secure Payment Methods</h5>
+        <h5 class="text-white font-semibold mb-6">Phương Thức Thanh Toán An Toàn</h5>
         <div class="flex flex-wrap items-center justify-center gap-6">
           <% if (paymentConfig.paypal.enabled) { %>
           <div class="group cursor-default">
@@ -854,21 +854,21 @@
     <div class="container mx-auto px-6 py-6">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="text-gray-400 text-sm">
-          &copy; <span id="currentYear"></span> <%= settings.storeName %>. All rights reserved.
+          &copy; <span id="currentYear"></span> <%= settings.storeName %>. Bảo lưu mọi quyền.
         </div>
 
         <div class="flex items-center gap-6 text-sm text-gray-500">
           <div class="flex items-center gap-2">
             <i class="fas fa-shield-alt text-green-500"></i>
-            <span>SSL Secured</span>
+            <span>Bảo Mật SSL</span>
           </div>
           <div class="flex items-center gap-2">
             <i class="fas fa-lock text-blue-500"></i>
-            <span>Secure Checkout</span>
+            <span>Thanh Toán An Toàn</span>
           </div>
           <div class="flex items-center gap-2">
             <i class="fas fa-headset text-accent" style="color: var(--accent-color);"></i>
-            <span>24/7 Support</span>
+            <span>Hỗ Trợ 24/7</span>
           </div>
         </div>
       </div>

@@ -51,7 +51,7 @@ const CartSnapshotSchema = new mongoose.Schema({
         default: 'pending' 
     },
     processedAt: { type: Date },
-    createdAt: { type: Date, default: Date.now, expires: '1h' },
+    createdAt: { type: Date, default: Date.now, expires: '24h' },
 });
 
 CartSnapshotSchema.index({ status: 1, createdAt: 1 });

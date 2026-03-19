@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= product.name %> - Downloads</title>
+  <title><%= product.name %> - Tải Xuống</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
@@ -12,14 +12,14 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
 
-  <meta property="og:title" content="<%= product.name %> Download | <%= settings.storeName %>" />
+  <meta property="og:title" content="<%= product.name %> Tải Xuống | <%= settings.storeName %>" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= settings.baseURL %>" />
   <meta property="og:image" content="<%= settings.logoPath %>" />
-  <meta property="og:description" content="Download and view products" />
+  <meta property="og:description" content="Tải xuống và xem các sản phẩm" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content="vi_VN" />
 
   <script>
     tailwind.config = {
@@ -330,15 +330,15 @@
       <div class="text-center max-w-4xl mx-auto">
         <div class="space-y-6" data-aos="fade-up" data-aos-duration="1000">
           <h1 class="text-4xl lg:text-6xl font-black leading-tight text-white mb-4">
-            <%= product.name %> Downloads
+            <%= product.name %> Tải Xuống
           </h1>
           <p class="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
-            Explore and download all available versions of <%= product.name %>
+            Khám phá và tải xuống tất cả các phiên bản có sẵn của <%= product.name %>
           </p>
           <% if (allVersionsCount > 0) { %>
           <div class="inline-flex items-center gap-2 bg-accent/20 px-4 py-2 rounded-lg">
             <i class="fas fa-code-branch text-accent"></i>
-            <span class="text-white font-medium"><%= allVersionsCount %> <%= allVersionsCount === 1 ? 'Version' : 'Versions' %> Available</span>
+            <span class="text-white font-medium"><%= allVersionsCount %> Phiên Bản Có Sẵn</span>
           </div>
           <% } %>
         </div>
@@ -354,9 +354,9 @@
           <div class="w-24 h-24 bg-dark-card rounded-3xl flex items-center justify-center mx-auto mb-8">
             <i class="fas fa-file-download text-accent text-4xl"></i>
           </div>
-          <h3 class="text-3xl font-bold text-white mb-4">No Versions Available</h3>
+          <h3 class="text-3xl font-bold text-white mb-4">Không Có Phiên Bản Nào</h3>
           <p class="text-text-secondary text-lg max-w-md mx-auto">
-            There are currently no versions available for download. Check back later for updates.
+            Hiện tại chưa có phiên bản nào để tải xuống. Hãy quay lại sau để kiểm tra cập nhật.
           </p>
         </div>
         <% } else { %>
@@ -370,7 +370,7 @@
                 <h3 class="text-2xl font-bold text-white"><%= version.version %></h3>
                 <% if (isLatest) { %>
                 <span class="px-3 py-1 bg-accent text-white text-sm font-semibold rounded-full uppercase tracking-wider">
-                  Latest
+                  Mới Nhất
                 </span>
                 <% } %>
               </div>
@@ -378,7 +378,7 @@
               <div class="flex flex-wrap items-center gap-6">
                 <div class="flex items-center gap-2 text-text-secondary">
                   <i class="far fa-calendar-alt text-accent"></i>
-                  <span><%= version.releaseDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></span>
+                  <span><%= version.releaseDate.toLocaleDateString('vi-VN', { year: 'numeric', month: 'short', day: 'numeric' }) %></span>
                 </div>
 
                 <div class="flex items-center gap-2 bg-accent/20 px-4 py-2 rounded-lg">
@@ -392,7 +392,7 @@
               <% if (version.changelog && version.changelog.trim() !== '') { %>
               <button class="toggle-changelog flex items-center gap-3 text-accent hover:text-accent/80 font-semibold mb-4 transition-colors duration-300" data-target="changelog-<%= version._id %>" aria-expanded="true">
                 <i class="fas fa-chevron-down transition-transform duration-300"></i>
-                <span>Changelog</span>
+                <span>Nhật Ký Thay Đổi</span>
               </button>
 
               <div class="changelog-container changelog-expanded bg-dark-card rounded-xl p-6 border border-white/10 max-h-96 overflow-y-auto" id="changelog-<%= version._id %>">
@@ -402,7 +402,7 @@
               </div>
               <% } else { %>
               <div class="bg-dark-card rounded-xl p-6 border border-white/10">
-                <p class="text-text-secondary">No changelog available for this version.</p>
+                <p class="text-text-secondary">Không có nhật ký thay đổi cho phiên bản này.</p>
               </div>
               <% } %>
             </div>
@@ -410,7 +410,7 @@
             <div class="flex flex-wrap gap-4">
               <a href="/downloads/<%= product.urlId %>/download/<%= version._id %>" class="bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-3 hover-lift">
                 <i class="fas fa-download"></i>
-                <span>Download</span>
+                <span>Tải Xuống</span>
               </a>
 
               <% if (isOwner) { %>
@@ -418,7 +418,7 @@
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-3 hover-lift">
                   <i class="fas fa-trash-alt"></i>
-                  <span>Delete Version</span>
+                  <span>Xóa Phiên Bản</span>
                 </button>
               </form>
               <% } %>
@@ -497,7 +497,7 @@
     });
 
     function confirmDelete(versionName) {
-      return confirm(`Are you sure you want to delete version "${versionName}"?\n\nThis action cannot be undone and will permanently remove this version.`);
+      return confirm(`Bạn có chắc muốn xóa phiên bản "${versionName}"?\n\nHành động này không thể hoàn tác và sẽ xóa vĩnh viễn phiên bản này.`);
     }
 
     document.addEventListener('DOMContentLoaded', function() {

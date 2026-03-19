@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy - <%= settings.storeName %></title>
+  <title>Chính Sách Bảo Mật - <%= settings.storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
@@ -12,14 +12,14 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
 
-  <meta property="og:title" content="Privacy Policy | <%= settings.storeName %>" />
+  <meta property="og:title" content="Chính Sách Bảo Mật | <%= settings.storeName %>" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= settings.baseURL %>" />
   <meta property="og:image" content="<%= settings.logoPath %>" />
-  <meta property="og:description" content="Learn how we collect, use, and protect your personal information with our comprehensive privacy policy." />
+  <meta property="og:description" content="Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn." />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content="vi_VN" />
 
   <script>
     tailwind.config = {
@@ -448,14 +448,14 @@
         <div class="space-y-6" data-aos="fade-up" data-aos-duration="1000">
           <div class="inline-flex items-center gap-3 bg-dark-card/80 backdrop-blur-xl px-6 py-2 rounded-full mb-4 border border-accent/30">
             <i class="fas fa-shield-alt text-accent"></i>
-            <span class="text-sm text-text-secondary font-medium">Your Privacy Matters</span>
+            <span class="text-sm text-text-secondary font-medium">Quyền Riêng Tư Của Bạn</span>
           </div>
 
           <h1 class="text-4xl lg:text-6xl font-black leading-tight text-white mb-4">
-            <%= settings.privacyPolicyPageTitle || 'Privacy Policy' %>
+            <%= settings.privacyPolicyPageTitle || 'Chính Sách Bảo Mật' %>
           </h1>
           <p class="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
-            <%= settings.privacyPolicyPageSubtitle || 'Learn how we collect, use, and protect your personal information.' %>
+            <%= settings.privacyPolicyPageSubtitle || 'Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.' %>
           </p>
         </div>
       </div>
@@ -472,16 +472,16 @@
                 <i class="fas fa-clock text-accent text-xl"></i>
               </div>
               <div>
-                <div class="text-sm text-text-secondary">Last Updated</div>
+                <div class="text-sm text-text-secondary">Cập Nhật Lần Cuối</div>
                 <div class="text-lg font-semibold text-white">
-                  <%= privacyPolicyLastUpdated.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                  <%= privacyPolicyLastUpdated.toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' }) %>
                 </div>
               </div>
             </div>
 
             <div class="flex items-center gap-2 text-sm text-text-secondary">
               <i class="fas fa-info-circle text-accent"></i>
-              <span>We're committed to protecting your privacy</span>
+              <span>Chúng tôi cam kết bảo vệ quyền riêng tư của bạn</span>
             </div>
           </div>
         </div>
@@ -497,9 +497,9 @@
             <div class="w-16 h-16 bg-accent/20 rounded-2xl flex items-center justify-center mb-4">
               <i class="fas fa-balance-scale text-accent text-2xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-3">Your Data Rights</h3>
+            <h3 class="text-2xl font-bold text-white mb-3">Quyền Dữ Liệu Của Bạn</h3>
             <p class="text-text-secondary mb-6">
-              You have the right to access, correct, or delete your personal information at any time.
+              Bạn có quyền truy cập, sửa đổi hoặc xóa thông tin cá nhân của mình bất cứ lúc nào.
             </p>
           </div>
 
@@ -508,8 +508,8 @@
               <div class="flex items-start gap-3">
                 <i class="fas fa-check-circle text-accent text-xl mt-1"></i>
                 <div>
-                  <h4 class="font-semibold text-white mb-1">Right to Access</h4>
-                  <p class="text-sm text-text-secondary">Request a copy of your personal data</p>
+                  <h4 class="font-semibold text-white mb-1">Quyền Truy Cập</h4>
+                  <p class="text-sm text-text-secondary">Yêu cầu bản sao dữ liệu cá nhân của bạn</p>
                 </div>
               </div>
             </div>
@@ -518,8 +518,8 @@
               <div class="flex items-start gap-3">
                 <i class="fas fa-check-circle text-accent text-xl mt-1"></i>
                 <div>
-                  <h4 class="font-semibold text-white mb-1">Right to Correction</h4>
-                  <p class="text-sm text-text-secondary">Update inaccurate information</p>
+                  <h4 class="font-semibold text-white mb-1">Quyền Sửa Đổi</h4>
+                  <p class="text-sm text-text-secondary">Cập nhật thông tin không chính xác</p>
                 </div>
               </div>
             </div>
@@ -528,8 +528,8 @@
               <div class="flex items-start gap-3">
                 <i class="fas fa-check-circle text-accent text-xl mt-1"></i>
                 <div>
-                  <h4 class="font-semibold text-white mb-1">Right to Deletion</h4>
-                  <p class="text-sm text-text-secondary">Request removal of your data</p>
+                  <h4 class="font-semibold text-white mb-1">Quyền Xóa</h4>
+                  <p class="text-sm text-text-secondary">Yêu cầu xóa dữ liệu của bạn</p>
                 </div>
               </div>
             </div>
@@ -538,8 +538,8 @@
               <div class="flex items-start gap-3">
                 <i class="fas fa-check-circle text-accent text-xl mt-1"></i>
                 <div>
-                  <h4 class="font-semibold text-white mb-1">Right to Portability</h4>
-                  <p class="text-sm text-text-secondary">Transfer your data to another service</p>
+                  <h4 class="font-semibold text-white mb-1">Quyền Di Chuyển</h4>
+                  <p class="text-sm text-text-secondary">Chuyển dữ liệu sang dịch vụ khác</p>
                 </div>
               </div>
             </div>

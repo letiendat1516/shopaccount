@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
@@ -22,7 +22,7 @@
   <meta property="og:description" content="<%= settings.seoDescription %>" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content="vi_VN" />
 
   <script>
     tailwind.config = {
@@ -504,14 +504,14 @@
             <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
             <span class="relative z-10 text-white flex items-center gap-2.5">
               <i class="fas fa-shopping-bag text-sm"></i>
-              <span>Browse Products</span>
+              <span>Xem Sản Phẩm</span>
               <i class="fas fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
             </span>
           </a>
 
           <a href="<%= settings.discordInviteLink %>" class="group glass-effect hover:bg-white/10 px-8 py-3.5 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2.5 justify-center hover-lift">
             <i class="fab fa-discord text-[#5865F2]"></i>
-            <span class="text-white">Join Discord</span>
+            <span class="text-white">Tham Gia Discord</span>
           </a>
         </div>
 
@@ -559,13 +559,13 @@
       <div class="text-center mb-16" data-aos="fade-up">
         <div class="inline-flex items-center gap-3 bg-dark-card px-6 py-2 rounded-full mb-4">
           <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-          <span class="text-sm text-text-secondary font-medium">Features</span>
+          <span class="text-sm text-text-secondary font-medium">Tính Năng</span>
         </div>
         <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
-          Why Choose <span class="text-accent"><%= settings.storeName %></span>?
+          Tại Sao Chọn <span class="text-accent"><%= settings.storeName %></span>?
         </h2>
         <p class="text-text-secondary text-lg max-w-2xl mx-auto">
-          Discover what makes us the trusted choice for thousands of customers worldwide
+          Khám phá những gì khiến chúng tôi trở thành lựa chọn đáng tin cậy của hàng nghìn khách hàng
         </p>
       </div>
 
@@ -602,9 +602,9 @@
 
       <% if (settings.features.length >= 4) { %>
       <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="400">
-        <p class="text-text-secondary mb-6">Ready to experience the difference?</p>
+        <p class="text-text-secondary mb-6">Sẵn sàng trải nghiệm sự khác biệt?</p>
         <a href="/products" class="inline-flex items-center gap-3 bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover-lift group">
-          <span>View All Products</span>
+          <span>Xem Tất Cả Sản Phẩm</span>
           <i class="fas fa-arrow-right transition-transform group-hover:translate-x-1"></i>
         </a>
       </div>
@@ -618,10 +618,10 @@
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up">
         <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
-          Our <span class="text-accent">Impact</span>
+          Thành Tựu <span class="text-accent">Của Chúng Tôi</span>
         </h2>
         <p class="text-text-secondary max-w-2xl mx-auto">
-          Numbers that showcase our commitment to excellence and customer satisfaction.
+          Những con số thể hiện cam kết của chúng tôi về chất lượng và sự hài lòng của khách hàng.
         </p>
       </div>
 
@@ -634,7 +634,7 @@
             <div class="text-3xl font-bold text-white mb-2">
               <%= stats.totalPurchases.toLocaleString('en-US') %>+
             </div>
-            <div class="text-text-secondary">Total Purchases</div>
+            <div class="text-text-secondary">Tổng Đơn Hàng</div>
           </div>
         </div>
 
@@ -646,7 +646,7 @@
             <div class="text-3xl font-bold text-white mb-2">
               <%= totalProducts.toLocaleString('en-US') %>+
             </div>
-            <div class="text-text-secondary">Products Available</div>
+            <div class="text-text-secondary">Sản Phẩm Có Sẵn</div>
           </div>
         </div>
 
@@ -658,7 +658,7 @@
             <div class="text-3xl font-bold text-white mb-2">
               <%= (thisMonthStats.totalSiteVisits + lastMonthStats.totalSiteVisits).toLocaleString('en-US') %>+
             </div>
-            <div class="text-text-secondary">Recent Visits</div>
+            <div class="text-text-secondary">Lượt Truy Cập</div>
           </div>
         </div>
       </div>
@@ -672,13 +672,13 @@
       <div class="text-center mb-16" data-aos="fade-up">
         <div class="inline-flex items-center gap-3 bg-dark-card px-6 py-2 rounded-full mb-4">
           <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-          <span class="text-sm text-text-secondary font-medium">Customer Reviews</span>
+          <span class="text-sm text-text-secondary font-medium">Đánh Giá Khách Hàng</span>
         </div>
         <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
-          What Our <span class="text-accent">Customers</span> Say
+          Khách Hàng <span class="text-accent">Nói Gì</span>
         </h2>
         <p class="text-text-secondary max-w-2xl mx-auto">
-          Over <span class="text-accent font-semibold"><%= totalUsers.toLocaleString('en-US') %>+</span> satisfied customers trust us worldwide.
+          Hơn <span class="text-accent font-semibold"><%= totalUsers.toLocaleString('en-US') %>+</span> khách hàng hài lòng tin tưởng chúng tôi.
         </p>
       </div>
 
@@ -687,7 +687,7 @@
         <div class="w-20 h-20 bg-dark-card rounded-2xl flex items-center justify-center mx-auto mb-6">
           <i class="fas fa-comments text-accent text-3xl"></i>
         </div>
-        <p class="text-text-secondary text-lg">No reviews yet. Be the first to share your experience!</p>
+        <p class="text-text-secondary text-lg">Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ trải nghiệm của bạn!</p>
       </div>
       <% } else { %>
       <div class="reviews-slider-wrapper relative">
@@ -714,7 +714,7 @@
                 <img src="<%= review.discordAvatar %>" alt="<%= review.discordUsername %>'s Avatar" class="w-10 h-10 rounded-full border border-dark-border flex-shrink-0 object-cover">
                 <div class="min-w-0 flex-grow">
                   <div class="font-medium text-white truncate"><%= review.discordUsername %></div>
-                  <div class="text-sm text-text-muted">Verified Customer</div>
+                  <div class="text-sm text-text-muted">Khách Hàng Xác Thực</div>
                 </div>
               </div>
             </div>
@@ -774,10 +774,10 @@
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up">
         <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
-          About <span class="text-accent">Us</span>
+          Về <span class="text-accent">Chúng Tôi</span>
         </h2>
         <p class="text-text-secondary max-w-2xl mx-auto">
-          Learn more about our story, mission, and commitment to excellence.
+          Tìm hiểu thêm về câu chuyện, sứ mệnh và cam kết của chúng tôi.
         </p>
       </div>
 
@@ -798,13 +798,13 @@
       <div class="text-center mb-16" data-aos="fade-up">
         <div class="inline-flex items-center gap-3 bg-dark-card px-6 py-2 rounded-full mb-4">
           <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-          <span class="text-sm text-text-secondary font-medium">Have Questions?</span>
+          <span class="text-sm text-text-secondary font-medium">Câu Hỏi Thường Gặp</span>
         </div>
         <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
-          Frequently Asked <span class="text-accent">Questions</span>
+          Câu Hỏi <span class="text-accent">Thường Gặp</span>
         </h2>
         <p class="text-text-secondary max-w-2xl mx-auto">
-          Find answers to common questions about our products and services
+          Tìm câu trả lời cho các câu hỏi phổ biến về sản phẩm và dịch vụ của chúng tôi
         </p>
       </div>
 
@@ -861,20 +861,20 @@
     <div class="container mx-auto px-6 relative z-10">
       <div class="text-center max-w-4xl mx-auto" data-aos="zoom-in">
         <h2 class="text-4xl lg:text-5xl font-bold mb-6 text-white">
-          Ready to Get <span class="text-accent">Started?</span>
+          Sẵn Sàng <span class="text-accent">Bắt Đầu?</span>
         </h2>
         <p class="text-xl text-text-secondary mb-10 leading-relaxed">
-          Join thousands of satisfied customers and discover why we're the trusted choice for quality products.
+          Tham gia cùng hàng nghìn khách hàng hài lòng và khám phá tại sao chúng tôi là lựa chọn đáng tin cậy cho sản phẩm chất lượng.
         </p>
 
         <div class="flex flex-col sm:flex-row gap-6 justify-center">
           <a href="/products" class="bg-accent hover:bg-accent/90 text-white px-10 py-4 rounded-lg text-lg font-semibold transition-all duration-300 hover-lift flex items-center gap-3 justify-center">
             <i class="fas fa-shopping-bag"></i>
-            <span>Explore Products</span>
+            <span>Khám Phá Sản Phẩm</span>
           </a>
           <a href="<%= settings.discordInviteLink %>" class="glass-effect hover:bg-white/10 text-white px-10 py-4 rounded-lg text-lg font-semibold transition-all duration-300 hover-lift flex items-center gap-3 justify-center">
             <i class="fab fa-discord text-[#5865F2]"></i>
-            <span>Join Our Discord</span>
+            <span>Tham Gia Discord</span>
           </a>
         </div>
       </div>

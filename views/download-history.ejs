@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= displayName %>'s Download History - <%= settings.storeName %></title>
+  <title>Lịch Sử Tải Xuống - <%= displayName %> - <%= settings.storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
@@ -20,14 +20,14 @@
   }
 %>
 
-  <meta property="og:title" content="<%= displayName %>'s Download History | <%= settings.storeName %>" />
+  <meta property="og:title" content="Lịch Sử Tải Xuống - <%= displayName %> | <%= settings.storeName %>" />
   <meta property="og:type" content="profile" />
   <meta property="og:url" content="<%= config.baseURL %>/download-history/<%= userId %>" />
   <meta property="og:image" content="<%= avatarUrl %>" />
-  <meta property="og:description" content="Download history for <%= displayName %> on <%= settings.storeName %>" />
+  <meta property="og:description" content="Lịch sử tải xuống của <%= displayName %> trên <%= settings.storeName %>" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
   <meta property="og:site_name" content="<%= settings.storeName %>" />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content="vi_VN" />
 
   <script>
     tailwind.config = {
@@ -198,17 +198,17 @@
 
         <div class="space-y-6" data-aos="fade-up" data-aos-duration="1200">
           <h1 class="text-4xl lg:text-6xl font-black leading-tight text-white mb-4">
-            Download History
+            Lịch Sử Tải Xuống
           </h1>
           <p class="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
-            Tracking all download activities and usage statistics
+            Theo dõi tất cả hoạt động tải xuống và thống kê sử dụng
           </p>
         </div>
 
         <div class="mt-12" data-aos="fade-up" data-aos-duration="1400">
           <a href="/profile/<%= userId %>" class="bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center gap-3 hover-lift mx-auto w-fit">
             <i class="fas fa-arrow-left"></i>
-            <span>Back to Profile</span>
+            <span>Quay Lại Hồ Sơ</span>
           </a>
         </div>
       </div>
@@ -221,7 +221,7 @@
       <div class="glass-effect rounded-2xl p-8 mb-12 hover-lift" data-aos="fade-up">
         <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
           <i class="fas fa-filter text-accent"></i>
-          Filter Downloads
+          Lọc Tải Xuống
         </h3>
 
         <form action="/download-history/<%= userId %>" method="GET" class="space-y-6">
@@ -229,10 +229,10 @@
             <div>
               <label class="block text-white font-medium mb-2 flex items-center gap-2">
                 <i class="fas fa-box text-accent"></i>
-                Product
+                Sản Phẩm
               </label>
               <select name="product" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
-                <option value="">All Products</option>
+                <option value="">Tất Cả Sản Phẩm</option>
                 <% productList.forEach(product => { %>
                 <option value="<%= product._id %>" <%= selectedProduct === product._id.toString() ? 'selected' : '' %>><%= product.name %></option>
                 <% }); %>
@@ -242,19 +242,19 @@
             <div>
               <label class="block text-white font-medium mb-2 flex items-center gap-2">
                 <i class="fas fa-check-circle text-accent"></i>
-                Status
+                Trạng Thái
               </label>
               <select name="status" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
-                <option value="">All Statuses</option>
-                <option value="completed" <%= selectedStatus === 'completed' ? 'selected' : '' %>>Completed</option>
-                <option value="failed" <%= selectedStatus === 'failed' ? 'selected' : '' %>>Failed</option>
+                <option value="">Tất Cả Trạng Thái</option>
+                <option value="completed" <%= selectedStatus === 'completed' ? 'selected' : '' %>>Hoàn Tất</option>
+                <option value="failed" <%= selectedStatus === 'failed' ? 'selected' : '' %>>Thất Bại</option>
               </select>
             </div>
 
             <div>
               <label class="block text-white font-medium mb-2 flex items-center gap-2">
                 <i class="fas fa-calendar-alt text-accent"></i>
-                Date From
+                Từ Ngày
               </label>
               <input type="date" name="dateFrom" value="<%= dateFrom %>" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
             </div>
@@ -262,7 +262,7 @@
             <div>
               <label class="block text-white font-medium mb-2 flex items-center gap-2">
                 <i class="fas fa-calendar-alt text-accent"></i>
-                Date To
+                Đến Ngày
               </label>
               <input type="date" name="dateTo" value="<%= dateTo %>" class="w-full bg-dark-card text-white border border-white/20 rounded-lg px-4 py-3 focus:border-accent focus:outline-none transition-colors">
             </div>
@@ -271,11 +271,11 @@
           <div class="flex flex-wrap gap-3">
             <button type="submit" class="px-6 py-3 bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
               <i class="fas fa-filter"></i>
-              <span>Filter Results</span>
+              <span>Lọc Kết Quả</span>
             </button>
             <a href="/download-history/<%= userId %>" class="px-6 py-3 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-lg transition-all duration-300 flex items-center gap-2 hover-lift">
               <i class="fas fa-undo"></i>
-              <span>Reset Filters</span>
+              <span>Đặt Lại Bộ Lọc</span>
             </a>
           </div>
         </form>
@@ -284,7 +284,7 @@
       <div class="glass-effect rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="200">
         <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
           <i class="fas fa-download text-accent"></i>
-          Download Records (<%= totalItems %>)
+          Bản Ghi Tải Xuống (<%= totalItems %>)
         </h3>
 
         <% if (downloads.length > 0) { %>
@@ -313,12 +313,12 @@
                 <% if (download.downloadCompleted) { %>
                 <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30 flex items-center gap-2 text-sm font-medium">
                   <i class="fas fa-check-circle"></i>
-                  <span>Completed</span>
+                  <span>Hoàn Tất</span>
                 </span>
                 <% } else { %>
                 <span class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg border border-red-500/30 flex items-center gap-2 text-sm font-medium">
                   <i class="fas fa-times-circle"></i>
-                  <span>Failed</span>
+                  <span>Thất Bại</span>
                 </span>
                 <% } %>
               </div>
@@ -328,7 +328,7 @@
               <div class="bg-dark rounded-lg p-4 border border-white/10">
                 <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
                   <i class="fas fa-tag text-accent"></i>
-                  <span>Version</span>
+                  <span>Phiên Bản</span>
                 </div>
                 <div class="text-white font-medium"><%= download.versionNumber || 'N/A' %></div>
               </div>
@@ -336,7 +336,7 @@
               <div class="bg-dark rounded-lg p-4 border border-white/10">
                 <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
                   <i class="fas fa-globe text-accent"></i>
-                  <span>IP Address</span>
+                  <span>Địa Chỉ IP</span>
                 </div>
                 <div class="text-white font-medium break-all"><%= download.ipAddress || 'N/A' %></div>
               </div>
@@ -344,7 +344,7 @@
               <div class="bg-dark rounded-lg p-4 border border-white/10">
                 <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
                   <i class="fas fa-user text-accent"></i>
-                  <span>Discord User ID</span>
+                  <span>ID Người Dùng Discord</span>
                 </div>
                 <div class="text-white font-medium break-all"><%= download.discordUserId || 'N/A' %></div>
               </div>
@@ -352,7 +352,7 @@
               <div class="bg-dark rounded-lg p-4 border border-white/10">
                 <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
                   <i class="fas fa-file text-accent"></i>
-                  <span>File Size</span>
+                  <span>Kích Thước Tệp</span>
                 </div>
                 <div class="text-white font-medium"><%= download.fileSize ? formatFileSize(download.fileSize) : 'N/A' %></div>
               </div>
@@ -361,7 +361,7 @@
               <div class="bg-dark rounded-lg p-4 border border-white/10">
                 <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
                   <i class="fas fa-stopwatch text-accent"></i>
-                  <span>Download Time</span>
+                  <span>Thời Gian Tải</span>
                 </div>
                 <div class="text-accent font-bold"><%= formatTime(download.timeToDownload) %></div>
               </div>
@@ -371,7 +371,7 @@
               <div class="bg-dark rounded-lg p-4 border border-red-500/30 sm:col-span-2">
                 <div class="flex items-center gap-2 text-text-secondary text-sm mb-2">
                   <i class="fas fa-exclamation-triangle text-red-400"></i>
-                  <span>Error</span>
+                  <span>Lỗi</span>
                 </div>
                 <div class="text-red-400 font-medium break-words"><%= download.error %></div>
               </div>
@@ -465,8 +465,8 @@
           <div class="w-24 h-24 bg-dark-card rounded-3xl flex items-center justify-center mx-auto mb-8">
             <i class="fas fa-download text-accent text-4xl"></i>
           </div>
-          <h3 class="text-3xl font-bold text-white mb-4">No Download History</h3>
-          <p class="text-text-secondary text-lg">This user hasn't downloaded any products yet.</p>
+          <h3 class="text-3xl font-bold text-white mb-4">Chưa Có Lịch Sử Tải Xuống</h3>
+          <p class="text-text-secondary text-lg">Người dùng này chưa tải xuống sản phẩm nào.</p>
         </div>
         <% } %>
       </div>

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Change - <%= settings.storeName %></title>
+  <title>Thay Đổi Email - <%= settings.storeName %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 
-  <meta property="og:title" content="Email Change | <%= settings.storeName %>" />
+  <meta property="og:title" content="Thay Đổi Email | <%= settings.storeName %>" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="<%= settings.accentColor %>">
 
@@ -164,8 +164,8 @@
           <div class="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-green-500/30">
             <i class="fas fa-check text-green-400 text-4xl"></i>
           </div>
-          <h1 class="text-4xl font-black text-white mb-3">Email Changed!</h1>
-          <p class="text-text-secondary text-lg">Your email address has been successfully updated</p>
+          <h1 class="text-4xl font-black text-white mb-3">Email Đã Thay Đổi!</h1>
+          <p class="text-text-secondary text-lg">Địa chỉ email của bạn đã được cập nhật thành công</p>
         </div>
 
         <div class="glass-effect rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
@@ -173,15 +173,15 @@
             <div class="flex items-start gap-3">
               <i class="fas fa-check-circle text-green-400 mt-1"></i>
               <div class="flex-1">
-                <p class="text-green-400 text-sm font-semibold mb-1">Email Change Complete</p>
-                <p class="text-green-300 text-sm">You can now use your new email address to log in.</p>
+                <p class="text-green-400 text-sm font-semibold mb-1">Thay Đổi Email Hoàn Tất</p>
+                <p class="text-green-300 text-sm">Bạn có thể sử dụng email mới để đăng nhập.</p>
               </div>
             </div>
           </div>
 
           <a href="/" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
             <i class="fas fa-home"></i>
-            <span>Return to Home</span>
+            <span>Về Trang Chủ</span>
           </a>
         </div>
         <% } else { %>
@@ -189,8 +189,8 @@
           <div class="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-red-500/30">
             <i class="fas fa-times text-red-400 text-4xl"></i>
           </div>
-          <h1 class="text-4xl font-black text-white mb-3">Email Change Failed</h1>
-          <p class="text-text-secondary text-lg">We couldn't update your email address</p>
+          <h1 class="text-4xl font-black text-white mb-3">Thay Đổi Email Thất Bại</h1>
+          <p class="text-text-secondary text-lg">Chúng tôi không thể cập nhật địa chỉ email của bạn</p>
         </div>
 
         <div class="glass-effect rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
@@ -205,7 +205,7 @@
 
           <a href="/" class="w-full bg-accent hover:bg-accent/90 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
             <i class="fas fa-home"></i>
-            <span>Return to Home</span>
+            <span>Về Trang Chủ</span>
           </a>
         </div>
         <% } %>

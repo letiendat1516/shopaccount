@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   discordID: { type: String, sparse: true },
-  discordUsername: { type: String },
+  discordUsername: { type: String, default: null },
 
   username: { type: String, sparse: true, unique: true },
   email: { type: String, required: true, unique: true },
@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
   totalSpent: { type: Number, default: 0.0, required: true },
   joinedAt: { type: Date, default: Date.now },
   cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  cartQuantities: { type: Map, of: Number, default: new Map() },
   ownedProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   ownedSerials: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
@@ -54,6 +55,27 @@ const userSchema = new mongoose.Schema({
     addedAt: { type: Date, default: Date.now }
   }]
 });
+
+// Fix: xoá unique index cũ trên discordUsername và discordID (cho phép nhiều user local có null)
+async function fixIndexes() {
+  try {
+    const collection = mongoose.connection.collection('users');
+    const indexes = await collection.indexes();
+    for (const idx of indexes) {
+      if (
+        (idx.key?.discordUsername && idx.unique) ||
+        (idx.key?.discordID && idx.unique)
+      ) {
+        console.log(`[DB] Dropping problematic unique index: ${idx.name}`);
+        await collection.dropIndex(idx.name);
+      }
+    }
+  } catch (e) {
+    // Ignore if indexes don't exist
+  }
+}
+
+mongoose.connection.once('open', fixIndexes);
 
 userSchema.methods.getIdentifier = function () {
   return this.discordID || this._id.toString();

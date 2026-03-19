@@ -144,6 +144,32 @@ if (!settings) {
   settings = new settingsModel();
   await settings.save();
 }
+
+// One-time rebrand migration: Plex Development -> NETFLIX COLDBREW
+if (settings.storeName === 'Plex Development' || settings.seoTitle?.includes('Plex Development')) {
+  console.log('[Migration] Rebranding from Plex Development to NETFLIX COLDBREW...');
+  settings.storeName = 'NETFLIX COLDBREW';
+  settings.homePageTitle = 'NETFLIX PREMIUM';
+  settings.homePageSubtitle = 'Trải nghiệm xem phim bản quyền với chất lượng 4K Ultra HD và âm thanh vòm Dolby Atmos. Cung cấp tài khoản Netflix Premium chất lượng cao với giá ưu đãi nhất thị trường.';
+  settings.productsPageTitle = 'Dịch Vụ Của Chúng Tôi';
+  settings.productsPageSubtitle = 'Lựa chọn gói dịch vụ phù hợp với nhu cầu của bạn.';
+  settings.tosPageTitle = 'Điều Khoản Dịch Vụ';
+  settings.tosPageSubtitle = 'Vui lòng đọc kỹ điều khoản dịch vụ trước khi sử dụng sản phẩm và dịch vụ của chúng tôi.';
+  settings.privacyPolicyPageTitle = 'Chính Sách Bảo Mật';
+  settings.privacyPolicyPageSubtitle = 'Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.';
+  settings.footerDescription = 'Cung cấp tài khoản Netflix Premium chất lượng cao với giá ưu đãi nhất thị trường. Trải nghiệm giải trí không giới hạn.';
+  settings.seoTitle = 'NETFLIX COLDBREW - Tài Khoản Netflix Premium Giá Rẻ, Chất Lượng Cao';
+  settings.seoDescription = 'NETFLIX COLDBREW cung cấp tài khoản Netflix Premium chất lượng 4K Ultra HD, âm thanh Dolby Atmos với giá ưu đãi nhất. Bảo hành, hỗ trợ 24/7.';
+  settings.seoTags = 'Netflix Premium, Netflix giá rẻ, tài khoản Netflix, Netflix 4K, Netflix Coldbrew, mua Netflix, Netflix Việt Nam';
+  settings.accentColor = '#E50914';
+  settings.paymentCurrency = 'VND';
+  settings.currencySymbol = '₫';
+  if (settings.discordInviteLink === 'https://discord.gg/plexdev') {
+    settings.discordInviteLink = '';
+  }
+  await settings.save();
+  console.log('[Migration] Rebrand complete!');
+}
 }
 createSettings()
 
@@ -512,6 +538,9 @@ function getDecryptedPaymentConfig(settings) {
       apiKey: settings.paymentMethods?.vietqr?.apiKey
         ? decrypt(settings.paymentMethods.vietqr.apiKey)
         : '',
+      sepayApiToken: settings.paymentMethods?.vietqr?.sepayApiToken
+        ? decrypt(settings.paymentMethods.vietqr.sepayApiToken)
+        : '',
       webhookUrl: settings.paymentMethods?.vietqr?.webhookUrl || '',
       webhookSecret: settings.paymentMethods?.vietqr?.webhookSecret || '',
       autoConfirmTimeout: settings.paymentMethods?.vietqr?.autoConfirmTimeout || 300000
@@ -529,9 +558,8 @@ app.use((req, res, next) => {
               (function() {
                   const message = \`
 %c
-Plex Store is made by Plex Development.
+NETFLIX COLDBREW Store
 Version: ${packageFile.version}
-Buy - https://plexdevelopment.net/products/plexstore
 \`,
                   style = \`
 font-family: monospace;
@@ -2458,7 +2486,7 @@ app.post('/staff/products/create', checkAuthenticated, checkStaffAccess('canCrea
       await optimizeImage(bannerImageTempPath, bannerImageOptimizedPath);
 
       let serialsArray = [];
-      if (productType === 'serials' && serialKeys) {
+      if ((productType === 'serials' || productType === 'accounts') && serialKeys) {
           serialsArray = serialKeys.split('\n')
               .map(key => key.trim())
               .filter(key => key !== '')
@@ -2466,8 +2494,8 @@ app.post('/staff/products/create', checkAuthenticated, checkStaffAccess('canCrea
       }
 
       let initialVersion = null;
-      if ((productType !== 'serials' && productType !== 'service') || 
-          (productType === 'serials' && enableFileUpload && req.files.productFile)) {
+      if ((productType !== 'serials' && productType !== 'accounts' && productType !== 'service' && req.files.productFile) || 
+          ((productType === 'serials' || productType === 'accounts') && enableFileUpload && req.files.productFile)) {
           
           const productFilePath = req.files.productFile[0].path;
           
@@ -2501,7 +2529,7 @@ app.post('/staff/products/create', checkAuthenticated, checkStaffAccess('canCrea
           versions: initialVersion ? [initialVersion] : [],
           category: category || '',
           serials: serialsArray,
-          serialRequiresFile: productType === 'serials' ? !!enableFileUpload : undefined
+          serialRequiresFile: (productType === 'serials' || productType === 'accounts') ? !!enableFileUpload : undefined
       });
 
       await newProduct.save();
@@ -3137,7 +3165,7 @@ app.post('/staff/products/edit/:id', checkAuthenticated, checkStaffAccess('canUp
       }
 
       let serialsArray = [];
-      if (productType === 'serials' && serialKeys) {
+      if ((productType === 'serials' || productType === 'accounts') && serialKeys) {
           serialsArray = serialKeys.split('\n')
               .map(key => key.trim())
               .filter(key => key !== '')
@@ -3160,8 +3188,8 @@ app.post('/staff/products/edit/:id', checkAuthenticated, checkStaffAccess('canUp
           category: category || '',
           hideProduct: !!hideProduct,
           pauseSelling: !!pauseSelling,
-          serials: productType === 'serials' ? serialsArray : [],
-          serialRequiresFile: productType === 'serials' ? !!enableFileUpload : undefined
+          serials: (productType === 'serials' || productType === 'accounts') ? serialsArray : [],
+          serialRequiresFile: (productType === 'serials' || productType === 'accounts') ? !!enableFileUpload : undefined
       };
 
       if (priceChanged && existingProduct.onSale) {
@@ -3184,7 +3212,7 @@ app.post('/staff/products/edit/:id', checkAuthenticated, checkStaffAccess('canUp
           }
       }
 
-      if (req.files['productFile'] && productType !== 'serials' && productType !== 'service') {
+      if (req.files['productFile'] && productType !== 'serials' && productType !== 'accounts' && productType !== 'service') {
           updateData.productFile = req.files['productFile'][0].path;
       }
 
@@ -3192,7 +3220,7 @@ app.post('/staff/products/edit/:id', checkAuthenticated, checkStaffAccess('canUp
 
       utils.sendDiscordLog('Product Edited', 
           `[${getUserDisplayName(req.user)}](${config.baseURL}/profile/${getUserIdentifier(req.user)}) has edited the product \`${name}\`` +
-          (productType === 'serials' ? ` (${serialsArray.length} serial keys)` : '') +
+          ((productType === 'serials' || productType === 'accounts') ? ` (${serialsArray.length} keys)` : '') +
           (priceChanged && existingProduct.onSale ? ' - **Sale disabled due to price change**' : '')
       );
 
@@ -3829,6 +3857,7 @@ settings.paymentMethods = {
     accountType: req.body.vietqrAccountType === '1' ? 1 : 0,
     clientId: (req.body.vietqrClientId || settings.paymentMethods?.vietqr?.clientId || '').trim(),
     apiKey: req.body.vietqrApiKey ? encrypt(req.body.vietqrApiKey) : settings.paymentMethods?.vietqr?.apiKey || '',
+    sepayApiToken: req.body.sepayApiToken ? encrypt(req.body.sepayApiToken) : settings.paymentMethods?.vietqr?.sepayApiToken || '',
     webhookUrl: (req.body.vietqrWebhookUrl || settings.paymentMethods?.vietqr?.webhookUrl || '').trim(),
     webhookSecret: (req.body.vietqrWebhookSecret || settings.paymentMethods?.vietqr?.webhookSecret || '').trim(),
     autoConfirmTimeout: Math.max(parseInt(req.body.vietqrAutoConfirmTimeout, 10) || settings.paymentMethods?.vietqr?.autoConfirmTimeout || 300000, 10000)
@@ -3890,7 +3919,7 @@ settings.paymentMethods = {
     
     utils.sendDiscordLog('Settings Edited', `[${getUserDisplayName(req.user)}](${config.baseURL}/profile/${getUserIdentifier(req.user)}) has edited the store settings`);
 
-    res.redirect('/staff/settings');
+    res.redirect('/staff/settings?saved=true');
   } catch (error) {
     console.error('Error saving settings:', error);
     next(error);
@@ -4475,15 +4504,26 @@ app.post('/cart/add/:productId', checkAuthenticated, csrfProtection, async (req,
       return res.status(404).render('error', { errorMessage: 'The requested product could not be found. Please check the URL or browse available products.' });
     }
 
-    if (product.productType === 'serials' && product.serials.length === 0) {
+    if ((product.productType === 'serials' || product.productType === 'accounts') && product.serials.length === 0) {
       return res.redirect('/cart?message=out_of_stock');
     }
 
-    if (user.cart.includes(product._id)) {
-      return res.redirect('/cart?message=already_in_cart');
+    const requestedQty = Math.max(1, parseInt(req.body.quantity) || 1);
+
+    if ((product.productType === 'serials' || product.productType === 'accounts') && requestedQty > product.serials.length) {
+      return res.redirect('/cart?message=not_enough_stock');
+    }
+
+    if (user.cart.some(id => id.toString() === product._id.toString())) {
+      if (!user.cartQuantities) user.cartQuantities = new Map();
+      user.cartQuantities.set(product._id.toString(), requestedQty);
+      await user.save();
+      return res.redirect('/cart?message=quantity_updated');
     }
 
     user.cart.push(product._id);
+    if (!user.cartQuantities) user.cartQuantities = new Map();
+    user.cartQuantities.set(product._id.toString(), requestedQty);
     await user.save();
 
     return res.redirect('/cart?message=product_added');
@@ -4513,6 +4553,32 @@ app.post('/cart/remove/:productId', checkAuthenticated, csrfProtection, async (r
   } catch (error) {
     console.error(error);
     next(error);
+  }
+});
+
+app.post('/cart/update-quantity/:productId', checkAuthenticated, csrfProtection, async (req, res, next) => {
+  try {
+    let user = await findUserById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const product = await productModel.findById(req.params.productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    const newQty = Math.max(1, parseInt(req.body.quantity) || 1);
+    if ((product.productType === 'serials' || product.productType === 'accounts') && newQty > product.serials.length) {
+      return res.status(400).json({ error: 'Not enough stock' });
+    }
+
+    if (!user.cartQuantities) user.cartQuantities = new Map();
+    user.cartQuantities.set(product._id.toString(), newQty);
+    await user.save();
+
+    return res.status(200).json({ success: true, quantity: newQty });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -4554,7 +4620,7 @@ app.post('/cart/add-bundle/:bundleId', checkAuthenticated, async (req, res) => {
         }
 
         const hasOutOfStockProduct = bundle.products.some(product => 
-            product.productType === 'serials' && (!product.serials || product.serials.length === 0)
+            (product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)
         );
 
         if (hasOutOfStockProduct) {
@@ -4661,9 +4727,17 @@ app.get('/cart', checkAuthenticated, async (req, res, next) => {
         let cartModified = false;
         
         for (const product of user.cart || []) {
-            if (product.productType === 'serials' && (!product.serials || product.serials.length === 0)) {
+            if ((product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)) {
                 cartModified = true;
                 continue; 
+            }
+            // For serials/accounts, clamp quantity to available stock
+            if ((product.productType === 'serials' || product.productType === 'accounts') && user.cartQuantities) {
+                const qty = user.cartQuantities.get(product._id.toString()) || 1;
+                if (qty > product.serials.length) {
+                    user.cartQuantities.set(product._id.toString(), product.serials.length);
+                    cartModified = true;
+                }
             }
             updatedCart.push(product._id); 
         }
@@ -4675,7 +4749,7 @@ app.get('/cart', checkAuthenticated, async (req, res, next) => {
             }
             
             const hasOutOfStockProduct = bundleItem.bundleId.products.some(product => 
-                product.productType === 'serials' && (!product.serials || product.serials.length === 0)
+                (product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)
             );
             
             if (hasOutOfStockProduct) {
@@ -4701,10 +4775,14 @@ app.get('/cart', checkAuthenticated, async (req, res, next) => {
                             product.saleStartDate <= currentDate && 
                             currentDate <= product.saleEndDate;
             const price = isOnSale ? product.salePrice : product.price;
-            productSubtotal += price;
+            const quantity = user.cartQuantities 
+                ? (user.cartQuantities.get(product._id.toString()) || 1) 
+                : 1;
+            productSubtotal += price * quantity;
             return {
                 ...product.toObject(),
                 effectivePrice: price,
+                quantity: quantity,
             };
         });
 
@@ -4859,7 +4937,11 @@ app.post('/checkout/apply-discount', checkAuthenticated, csrfProtection, async (
         product.onSale &&
         product.saleStartDate <= currentDate &&
         currentDate <= product.saleEndDate;
-      return acc + (isOnSale ? product.salePrice : product.price);
+      const price = isOnSale ? product.salePrice : product.price;
+      const quantity = user.cartQuantities
+        ? (user.cartQuantities.get(product._id.toString()) || 1)
+        : 1;
+      return acc + (price * quantity);
     }, 0);
 
     const cartBundles = (user.cartBundles || []).map(bundleItem => {
@@ -5008,6 +5090,11 @@ app.post('/checkout/paypal', checkAuthenticated, csrfProtection, async (req, res
       if (!product) {
         continue; 
       }
+
+      // Check stock for accounts/serials
+      if ((product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)) {
+        continue;
+      }
     
       const isOnSale =
         product.onSale &&
@@ -5018,14 +5105,23 @@ app.post('/checkout/paypal', checkAuthenticated, csrfProtection, async (req, res
     
       const validName = product.name?.trim() || 'Unnamed Item'; 
       
+      const quantity = user.cartQuantities
+        ? (user.cartQuantities.get(product._id.toString()) || 1)
+        : 1;
+
+      // Clamp quantity to available stock for serials/accounts
+      const finalQty = (product.productType === 'serials' || product.productType === 'accounts')
+        ? Math.min(quantity, product.serials.length) 
+        : quantity;
+
       const formattedPrice = parseFloat(validPrice.toFixed(2));
-      subtotal += formattedPrice;
+      subtotal += formattedPrice * finalQty;
     
       items.push({
-        name: validName,
+        name: validName + (finalQty > 1 ? ` x${finalQty}` : ''),
         unit_amount: {
           currency_code: globalSettings.paymentCurrency,
-          value: formattedPrice.toFixed(2),
+          value: (formattedPrice * finalQty).toFixed(2),
         },
         quantity: '1',
       });
@@ -5034,7 +5130,8 @@ app.post('/checkout/paypal', checkAuthenticated, csrfProtection, async (req, res
         productId: product._id,
         price: product.price,
         salePrice: salePrice || null,
-        discountedPrice: validPrice,
+        discountedPrice: validPrice * finalQty,
+        quantity: finalQty,
       });
     }
 
@@ -5386,22 +5483,27 @@ if(config.DebugMode) {
           for (const product of allProducts) {
             const productDoc = await productModel.findById(product.id);
             if (productDoc) {
-                productDoc.totalPurchases += 1;
+                const snapshotItem = cartSnapshot.items.find(i => i.productId.toString() === product.id.toString());
+                const qty = snapshotItem?.quantity || 1;
+                productDoc.totalPurchases += qty;
                 productDoc.totalEarned += product.price * (1 - discountPercentage / 100);
         
-                if (productDoc.productType === 'serials') {
-                    if (productDoc.serials && productDoc.serials.length !== 0) {
-                    const randomIndex = Math.floor(Math.random() * productDoc.serials.length);
-                    const serialKey = productDoc.serials[randomIndex];
-                    productDoc.serials.splice(randomIndex, 1);
-                    user.ownedSerials = user.ownedSerials || [];
-                    user.ownedSerials.push({
-                        productId: productDoc._id,
-                        productName: productDoc.name,
-                        key: serialKey.key,
-                        purchaseDate: new Date()
-                    });
-                  }
+                if (productDoc.productType === 'serials' || productDoc.productType === 'accounts') {
+                    const giveCount = qty;
+                    for (let qi = 0; qi < giveCount; qi++) {
+                      if (productDoc.serials && productDoc.serials.length !== 0) {
+                        const randomIndex = Math.floor(Math.random() * productDoc.serials.length);
+                        const serialKey = productDoc.serials[randomIndex];
+                        productDoc.serials.splice(randomIndex, 1);
+                        user.ownedSerials = user.ownedSerials || [];
+                        user.ownedSerials.push({
+                            productId: productDoc._id,
+                            productName: productDoc.name,
+                            key: serialKey.key,
+                            purchaseDate: new Date()
+                        });
+                      }
+                    }
                 }
                 await productDoc.save();
             }
@@ -5557,17 +5659,27 @@ app.post('/checkout/paypal-standard', checkAuthenticated, csrfProtection, async 
     for (const cartItem of user.cart) {
       const product = await productModel.findById(cartItem._id);
       if (!product) continue;
+      if ((product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)) continue;
 
       const isOnSale = product.onSale && product.saleStartDate <= currentDate && currentDate <= product.saleEndDate;
       const validPrice = isOnSale ? product.salePrice : product.price;
 
-      subtotal += parseFloat(validPrice.toFixed(2));
+      const quantity = user.cartQuantities
+        ? (user.cartQuantities.get(product._id.toString()) || 1)
+        : 1;
+
+      const finalQty = (product.productType === 'serials' || product.productType === 'accounts')
+        ? Math.min(quantity, product.serials.length)
+        : quantity;
+
+      subtotal += parseFloat((validPrice * finalQty).toFixed(2));
 
       cartSnapshotItems.push({
         productId: product._id,
         price: product.price,
         salePrice: isOnSale ? product.salePrice : null,
-        discountedPrice: validPrice,
+        discountedPrice: validPrice * finalQty,
+        quantity: finalQty,
       });
     }
 
@@ -5956,21 +6068,26 @@ const payment = new paymentModel({
     for (const product of allProducts) {
       const productDoc = await productModel.findById(product.id);
       if (productDoc) {
-        productDoc.totalPurchases += 1;
+        const snapshotItem = cartSnapshot.items.find(i => i.productId.toString() === product.id.toString());
+        const qty = snapshotItem?.quantity || 1;
+        productDoc.totalPurchases += qty;
         productDoc.totalEarned += product.price * (1 - discountPercentage / 100);
 
-        if (productDoc.productType === 'serials') {
-          if (productDoc.serials && productDoc.serials.length !== 0) {
-            const randomIndex = Math.floor(Math.random() * productDoc.serials.length);
-            const serialKey = productDoc.serials[randomIndex];
-            productDoc.serials.splice(randomIndex, 1);
-            user.ownedSerials = user.ownedSerials || [];
-            user.ownedSerials.push({
-              productId: productDoc._id,
-              productName: productDoc.name,
-              key: serialKey.key,
-              purchaseDate: new Date()
-            });
+        if (productDoc.productType === 'serials' || productDoc.productType === 'accounts') {
+          const giveCount = qty;
+          for (let qi = 0; qi < giveCount; qi++) {
+            if (productDoc.serials && productDoc.serials.length !== 0) {
+              const randomIndex = Math.floor(Math.random() * productDoc.serials.length);
+              const serialKey = productDoc.serials[randomIndex];
+              productDoc.serials.splice(randomIndex, 1);
+              user.ownedSerials = user.ownedSerials || [];
+              user.ownedSerials.push({
+                productId: productDoc._id,
+                productName: productDoc.name,
+                key: serialKey.key,
+                purchaseDate: new Date()
+              });
+            }
           }
         }
         await productDoc.save();
@@ -6239,19 +6356,28 @@ app.post('/checkout/stripe', checkAuthenticated, csrfProtection, async (req, res
       const product = await productModel.findById(cartItem._id);
 
       if (!product) continue;
+      if ((product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)) continue;
 
       const isOnSale = product.onSale && product.saleStartDate <= currentDate && currentDate <= product.saleEndDate;
       const salePrice = isOnSale ? product.salePrice : null;
       const basePrice = isOnSale ? product.salePrice : product.price;
 
-      subtotal += basePrice;
+      const quantity = user.cartQuantities
+        ? (user.cartQuantities.get(product._id.toString()) || 1)
+        : 1;
 
-      const discountedPrice = basePrice * (1 - discountPercentage / 100);
+      const finalQty = (product.productType === 'serials' || product.productType === 'accounts')
+        ? Math.min(quantity, product.serials.length)
+        : quantity;
+
+      subtotal += basePrice * finalQty;
+
+      const discountedPrice = basePrice * finalQty * (1 - discountPercentage / 100);
 
       items.push({
         price_data: {
           currency: globalSettings.paymentCurrency,
-          product_data: { name: product.name },
+          product_data: { name: product.name + (finalQty > 1 ? ` x${finalQty}` : '') },
           unit_amount: Math.round(discountedPrice * 100), 
         },
         quantity: 1,
@@ -6261,7 +6387,8 @@ app.post('/checkout/stripe', checkAuthenticated, csrfProtection, async (req, res
         productId: product._id,
         price: product.price, 
         salePrice, 
-        discountedPrice: parseFloat(discountedPrice.toFixed(2)), 
+        discountedPrice: parseFloat(discountedPrice.toFixed(2)),
+        quantity: finalQty,
       });
     }
 
@@ -6493,22 +6620,27 @@ app.get('/checkout/stripe/capture', checkAuthenticated, async (req, res, next) =
       for (const product of allProducts) {
         const productDoc = await productModel.findById(product.id);
         if (productDoc) {
-            productDoc.totalPurchases += 1;
+            const snapshotItem = cartSnapshot.items.find(i => i.productId.toString() === product.id.toString());
+            const qty = snapshotItem?.quantity || 1;
+            productDoc.totalPurchases += qty;
             productDoc.totalEarned += product.price * (1 - discountPercentage / 100);
     
-            if (productDoc.productType === 'serials') {
-                if (productDoc.serials && productDoc.serials.length !== 0) {
-                const randomIndex = Math.floor(Math.random() * productDoc.serials.length);
-                const serialKey = productDoc.serials[randomIndex];
-                productDoc.serials.splice(randomIndex, 1);
-                user.ownedSerials = user.ownedSerials || [];
-                user.ownedSerials.push({
-                    productId: productDoc._id,
-                    productName: productDoc.name,
-                    key: serialKey.key,
-                    purchaseDate: new Date()
-                });
-              }
+            if (productDoc.productType === 'serials' || productDoc.productType === 'accounts') {
+                const giveCount = qty;
+                for (let qi = 0; qi < giveCount; qi++) {
+                  if (productDoc.serials && productDoc.serials.length !== 0) {
+                    const randomIndex = Math.floor(Math.random() * productDoc.serials.length);
+                    const serialKey = productDoc.serials[randomIndex];
+                    productDoc.serials.splice(randomIndex, 1);
+                    user.ownedSerials = user.ownedSerials || [];
+                    user.ownedSerials.push({
+                        productId: productDoc._id,
+                        productName: productDoc.name,
+                        key: serialKey.key,
+                        purchaseDate: new Date()
+                    });
+                  }
+                }
             }
             await productDoc.save();
         }
@@ -6740,6 +6872,9 @@ app.post('/checkout/coinbase', checkAuthenticated, csrfProtection, async (req, r
       if (!product) {
         user.cart.splice(i, 1);
         i--;
+      } else if ((product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)) {
+        user.cart.splice(i, 1);
+        i--;
       } else {
         const isOnSale =
           product.onSale &&
@@ -6749,14 +6884,23 @@ app.post('/checkout/coinbase', checkAuthenticated, csrfProtection, async (req, r
           currentDate <= product.saleEndDate;
 
         const productPrice = isOnSale ? product.salePrice : product.price || 0;
-        subtotal += productPrice;
+        
+        const quantity = user.cartQuantities
+          ? (user.cartQuantities.get(product._id.toString()) || 1)
+          : 1;
+
+        const finalQty = (product.productType === 'serials' || product.productType === 'accounts')
+          ? Math.min(quantity, product.serials.length)
+          : quantity;
+
+        subtotal += productPrice * finalQty;
 
         const discountedPrice = discountPercentage
-          ? productPrice * (1 - discountPercentage / 100)
-          : productPrice;
+          ? productPrice * finalQty * (1 - discountPercentage / 100)
+          : productPrice * finalQty;
 
         items.push({
-          name: product.name,
+          name: product.name + (finalQty > 1 ? ` x${finalQty}` : ''),
           amount: discountedPrice.toFixed(2),
           currency: globalSettings.paymentCurrency,
           quantity: 1,
@@ -6767,6 +6911,7 @@ app.post('/checkout/coinbase', checkAuthenticated, csrfProtection, async (req, r
           price: product.price,
           salePrice: isOnSale ? product.salePrice : null,
           discountedPrice: parseFloat(discountedPrice.toFixed(2)),
+          quantity: finalQty,
         });
       }
     }
@@ -7096,11 +7241,15 @@ const payment = new paymentModel({
           for (const product of allProducts) {
             const productDoc = await productModel.findById(product.id);
             if (productDoc) {
-                productDoc.totalPurchases += 1;
+                const snapshotItem = cartSnapshot.items.find(i => i.productId.toString() === product.id.toString());
+                const qty = snapshotItem?.quantity || 1;
+                productDoc.totalPurchases += qty;
                 productDoc.totalEarned += product.price * (1 - discountPercentage / 100);
         
-                if (productDoc.productType === 'serials') {
-                    if (productDoc.serials && productDoc.serials.length !== 0) {
+                if (productDoc.productType === 'serials' || productDoc.productType === 'accounts') {
+                    const giveCount = qty;
+                    for (let qi = 0; qi < giveCount; qi++) {
+                      if (productDoc.serials && productDoc.serials.length !== 0) {
                         const randomIndex = Math.floor(Math.random() * productDoc.serials.length);
                         const serialKey = productDoc.serials[randomIndex];
                         productDoc.serials.splice(randomIndex, 1);
@@ -7111,6 +7260,7 @@ const payment = new paymentModel({
                             key: serialKey.key,
                             purchaseDate: new Date()
                         });
+                      }
                     }
                 }
                 await productDoc.save();
@@ -7219,6 +7369,254 @@ const pdfBuffer = await utils.generateInvoicePdf(
 
 // =================== VIETQR PAYMENT INTEGRATION ===================
 
+/**
+ * Kiểm tra giao dịch trên SePay API khớp với CartSnapshot
+ */
+async function checkSePayTransaction(cartSnapshot, sepayApiToken) {
+  try {
+    const shortId = cartSnapshot._id.toString().substring(0, 8);
+    const shortIdUpper = shortId.toUpperCase();
+    const expectedAmount = Math.round(cartSnapshot.total);
+
+    console.log(`[SePay] Checking for snapshot ${shortId}, amount=${expectedAmount}`);
+
+    // Lấy 100 giao dịch gần nhất (không dùng date filter để tránh lỗi timezone UTC vs VN)
+    const response = await axios.get('https://my.sepay.vn/userapi/transactions/list', {
+      params: { limit: 100 },
+      headers: {
+        'Authorization': `Bearer ${sepayApiToken}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 15000
+    });
+
+    if (response.data?.status !== 200) {
+      console.error('[SePay] API error:', response.data?.status, response.data?.error);
+      return null;
+    }
+
+    const transactions = response.data.transactions || [];
+    console.log(`[SePay] Got ${transactions.length} transactions`);
+
+    if (transactions.length > 0) {
+      console.log(`[SePay] Latest tx: id=${transactions[0].id}, amount_in=${transactions[0].amount_in}, content="${transactions[0].transaction_content}"`);
+    }
+
+    // Tìm giao dịch khớp:
+    // 1. transaction_content chứa shortId (case-insensitive)
+    // 2. amount_in >= expectedAmount
+    const match = transactions.find(t => {
+      const amountIn = parseFloat(t.amount_in || 0);
+      const content = (t.transaction_content || '').toUpperCase();
+      const hasId = content.includes(shortIdUpper);
+      const hasAmount = amountIn >= expectedAmount;
+
+      if (hasId || amountIn >= expectedAmount * 0.9) {
+        console.log(`[SePay] Candidate tx id=${t.id}: amount_in=${t.amount_in}(${hasAmount}), content="${t.transaction_content}"(hasId=${hasId})`);
+      }
+
+      return hasId && hasAmount;
+    });
+
+    if (match) {
+      console.log(`[SePay] ✅ MATCHED: tx id=${match.id}, amount=${match.amount_in}, content="${match.transaction_content}"`);
+    } else {
+      console.log(`[SePay] ❌ No match found for SEVQR ${shortId} / amount ${expectedAmount}`);
+    }
+
+    return match || null;
+  } catch (error) {
+    console.error('[SePay] API call failed:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Xử lý thanh toán VietQR hoàn tất (dùng chung cho auto + manual confirm)
+ */
+async function processVietQRPayment(cartSnapshot, sePayTransactionId) {
+  // Kiểm tra đã xử lý chưa
+  if (cartSnapshot.status === 'processed') return null;
+
+  const user = await userModel.findById(cartSnapshot.userId);
+  if (!user) throw new Error('User not found');
+
+  const products = [];
+  const bundleProducts = [];
+  const processedBundleIds = [];
+
+  // Xử lý sản phẩm đơn lẻ
+  for (const item of cartSnapshot.items || []) {
+    const product = await productModel.findById(item.productId);
+    if (!product) continue;
+    products.push({
+      id: product._id, name: product.name,
+      price: item.discountedPrice,
+      discordRoleIds: product.discordRoleIds,
+      productType: product.productType,
+    });
+  }
+
+  // Xử lý bundle
+  for (const bundleSnap of cartSnapshot.bundles || []) {
+    const bundle = await bundleModel.findById(bundleSnap.bundleId).populate('products');
+    if (!bundle) continue;
+    for (const bp of bundleSnap.products) {
+      const product = await productModel.findById(bp.productId);
+      if (!product) continue;
+      bundleProducts.push({
+        id: product._id, name: product.name,
+        price: bp.discountedPrice,
+        discordRoleIds: product.discordRoleIds,
+        productType: product.productType,
+        bundleId: bundle._id, bundleName: bundle.name,
+      });
+    }
+    processedBundleIds.push(bundle._id);
+  }
+
+  const allProducts = [...products, ...bundleProducts];
+  const transactionId = sePayTransactionId
+    ? `SEPAY-${sePayTransactionId}`
+    : `VIETQR-${cartSnapshot._id.toString()}`;
+  const totalPaid = parseFloat(cartSnapshot.total.toFixed(2));
+
+  // Tạo payment record
+  const nextPaymentId = await getNextPaymentId();
+  const payment = new paymentModel({
+    ID: nextPaymentId,
+    transactionID: transactionId,
+    paymentMethod: 'vietqr',
+    userId: user._id,
+    userID: user.discordID || user._id.toString(),
+    discordID: user.discordID || null,
+    authMethod: user.authMethod,
+    username: user.discordUsername || user.username,
+    email: user.email,
+    products: allProducts.map(p => {
+      const si = cartSnapshot.items?.find(i => i.productId.toString() === p.id.toString());
+      const bi = cartSnapshot.bundles?.flatMap(b => b.products).find(bp => bp.productId.toString() === p.id.toString());
+      const d = si || bi;
+      return {
+        name: p.bundleName ? `${p.name} (from ${p.bundleName})` : p.name,
+        price: d?.discountedPrice || p.price,
+        salePrice: d?.salePrice || null,
+        originalPrice: d?.price || p.price,
+      };
+    }),
+    discountCode: cartSnapshot.discountCode || null,
+    discountPercentage: cartSnapshot.discountPercentage || 0,
+    salesTax: globalSettings.salesTax || 0,
+    originalSubtotal: totalPaid,
+    salesTaxAmount: 0,
+    discountAmount: cartSnapshot.discountAmount || 0,
+    ipAddress: cartSnapshot.ipAddress,
+    userAgent: cartSnapshot.userAgent,
+    totalPaid,
+  });
+  await payment.save();
+
+  // Giao sản phẩm + cập nhật stats sản phẩm
+  for (const product of allProducts) {
+    const productDoc = await productModel.findById(product.id);
+    if (!productDoc) continue;
+    const snapshotItem = cartSnapshot.items?.find(i => i.productId.toString() === product.id.toString());
+    const qty = snapshotItem?.quantity || 1;
+    productDoc.totalPurchases += qty;
+    productDoc.totalEarned += product.price;
+    if ((productDoc.productType === 'serials' || productDoc.productType === 'accounts') && productDoc.serials?.length > 0) {
+      const giveCount = qty;
+      for (let qi = 0; qi < giveCount; qi++) {
+        if (productDoc.serials.length > 0) {
+          const idx = Math.floor(Math.random() * productDoc.serials.length);
+          const serialKey = productDoc.serials[idx];
+          productDoc.serials.splice(idx, 1);
+          user.ownedSerials = user.ownedSerials || [];
+          user.ownedSerials.push({ productId: productDoc._id, productName: productDoc.name, key: serialKey.key, purchaseDate: new Date() });
+        }
+      }
+    }
+    await productDoc.save();
+  }
+
+  // Cập nhật stats bundle
+  for (const bundleId of processedBundleIds) {
+    const bundle = await bundleModel.findById(bundleId);
+    if (bundle) {
+      const bs = cartSnapshot.bundles.find(b => b.bundleId.toString() === bundleId.toString());
+      bundle.totalPurchases += 1;
+      bundle.totalEarned += bs?.bundlePrice || 0;
+      await bundle.save();
+    }
+  }
+
+  // Thêm Discord roles
+  if (user.discordID) {
+    try {
+      const guild = await client.guilds.fetch(config.GuildID);
+      if (guild) {
+        const member = await guild.members.fetch(user.discordID).catch(() => null);
+        if (member) {
+          for (const p of allProducts) {
+            for (const roleId of (p.discordRoleIds || [])) {
+              const role = guild.roles.cache.get(roleId);
+              if (role) await member.roles.add(role);
+            }
+          }
+        }
+      }
+    } catch (e) { console.warn('[VietQR] Discord role error:', e.message); }
+  }
+
+  // Cập nhật user
+  const newProducts = allProducts.filter(p => !user.ownedProducts.map(id => id.toString()).includes(p.id.toString()));
+  user.ownedProducts.push(...newProducts.map(p => p.id));
+  user.totalSpent = (user.totalSpent || 0) + totalPaid;
+  user.cart = [];
+  user.cartBundles = [];
+  await user.save();
+
+  // Cập nhật thống kê
+  const stats = await statisticsModel.getStatistics();
+  stats.totalEarned += totalPaid;
+  stats.totalPurchases += 1;
+  const now = new Date();
+  let yearlyStats = stats.yearlyStats.find(y => y.year === now.getFullYear());
+  if (!yearlyStats) {
+    yearlyStats = { year: now.getFullYear(), months: Array(12).fill(null).map(() => ({ totalEarned: 0, totalPurchases: 0, userJoins: 0, totalSiteVisits: 0 })) };
+    stats.yearlyStats.push(yearlyStats);
+  }
+  yearlyStats.months[now.getMonth()].totalEarned += totalPaid;
+  yearlyStats.months[now.getMonth()].totalPurchases += 1;
+  await stats.save();
+
+  // Tạo PDF invoice + gửi email
+  const settingsDoc = await settingsModel.findOne();
+  try {
+    const pdfBuffer = await utils.generateInvoicePdf(payment, config, settingsDoc);
+    await utils.saveInvoicePdf(pdfBuffer, payment);
+    if (settingsDoc?.emailSettings?.enabled) {
+      await utils.sendInvoiceEmail(payment, user, allProducts, config, settingsDoc, pdfBuffer);
+    }
+  } catch (pdfErr) {
+    console.error('[VietQR] PDF/Email error:', pdfErr.message);
+  }
+
+  // Đánh dấu snapshot đã xử lý
+  cartSnapshot.status = 'processed';
+  cartSnapshot.processedAt = new Date();
+  cartSnapshot.transactionId = transactionId;
+  await cartSnapshot.save();
+
+  const productNames = allProducts.map(p => p.name).join(', ');
+  const source = sePayTransactionId ? 'SePay (auto)' : 'Manual confirm by staff';
+  utils.sendDiscordLog('Purchase Completed',
+    `[${user.discordUsername || user.username}](${config.baseURL}/profile/${user.discordID || user._id}) purchased \`${productNames}\` via \`VietQR\` (${source}).`
+  );
+
+  return payment;
+}
+
 app.post('/checkout/vietqr', checkAuthenticated, csrfProtection, async (req, res, next) => {
   try {
     const paymentConfig = res.locals.paymentConfig;
@@ -7269,17 +7667,27 @@ app.post('/checkout/vietqr', checkAuthenticated, csrfProtection, async (req, res
     for (const cartItem of user.cart) {
       const product = await productModel.findById(cartItem._id);
       if (!product) continue;
+      if ((product.productType === 'serials' || product.productType === 'accounts') && (!product.serials || product.serials.length === 0)) continue;
 
       const isOnSale = product.onSale && product.saleStartDate <= currentDate && currentDate <= product.saleEndDate;
       const validPrice = isOnSale ? product.salePrice : product.price;
 
-      subtotal += validPrice;
+      const quantity = user.cartQuantities
+        ? (user.cartQuantities.get(product._id.toString()) || 1)
+        : 1;
+
+      const finalQty = (product.productType === 'serials' || product.productType === 'accounts')
+        ? Math.min(quantity, product.serials.length)
+        : quantity;
+
+      subtotal += validPrice * finalQty;
 
       cartSnapshotItems.push({
         productId: product._id,
         price: product.price,
         salePrice: isOnSale ? product.salePrice : null,
-        discountedPrice: validPrice,
+        discountedPrice: validPrice * finalQty,
+        quantity: finalQty,
       });
     }
 
@@ -7345,6 +7753,13 @@ app.post('/checkout/vietqr', checkAuthenticated, csrfProtection, async (req, res
       total: totalPrice,
       ipAddress: ipAddress,
       userAgent: userAgent,
+      paymentMethod: 'vietqr',
+      paymentDetails: {
+        bankCode: paymentConfig.vietqr.bankCode,
+        accountNumber: paymentConfig.vietqr.accountNumber,
+        accountName: paymentConfig.vietqr.accountName,
+        amount: totalPrice,
+      }
     });
 
     // Generate VietQR code
@@ -7353,7 +7768,7 @@ app.post('/checkout/vietqr', checkAuthenticated, csrfProtection, async (req, res
       accountNumber: paymentConfig.vietqr.accountNumber,
       accountName: paymentConfig.vietqr.accountName,
       amount: totalPrice,
-      description: `${globalSettings.storeName} - Payment ${cartSnapshot._id.toString().substring(0, 8)}`,
+      description: `SEVQR ${cartSnapshot._id.toString().substring(0, 8)}`,
       transactionId: cartSnapshot._id.toString(),
       clientId: paymentConfig.vietqr.clientId || '',
       apiKey: paymentConfig.vietqr.apiKey || ''
@@ -7388,25 +7803,49 @@ app.post('/checkout/vietqr', checkAuthenticated, csrfProtection, async (req, res
 app.get('/checkout/vietqr/verify/:snapshotId', checkAuthenticated, async (req, res, next) => {
   try {
     const { snapshotId } = req.params;
-    
+
     const cartSnapshot = await CartSnapshot.findById(snapshotId);
     if (!cartSnapshot) {
       return res.json({ success: false, message: 'Payment not found' });
     }
 
+    // Đã xử lý rồi → trả về thành công ngay
     if (cartSnapshot.status === 'processed') {
       const payment = await paymentModel.findOne({ userId: cartSnapshot.userId }).sort({ createdAt: -1 });
-      return res.json({ 
-        success: true, 
-        message: 'Payment completed', 
+      return res.json({
+        success: true,
+        message: 'Payment completed',
         transactionId: payment ? payment.transactionID : null
       });
     }
 
-    return res.json({ 
-      success: false, 
+    // --- Tự động kiểm tra qua SePay API ---
+    const paymentConfig = res.locals.paymentConfig;
+    const sepayToken = paymentConfig?.vietqr?.sepayApiToken;
+
+    if (sepayToken && cartSnapshot.status === 'pending') {
+      const sePayTx = await checkSePayTransaction(cartSnapshot, sepayToken);
+
+      if (sePayTx) {
+        if(config.DebugMode) console.log(`[SePay] ✅ Transaction matched: ID=${sePayTx.id}, Amount=${sePayTx.amount_in}`);
+        try {
+          const payment = await processVietQRPayment(cartSnapshot, sePayTx.id);
+          return res.json({
+            success: true,
+            message: 'Payment confirmed via SePay',
+            transactionId: payment ? payment.transactionID : null
+          });
+        } catch (processErr) {
+          console.error('[SePay] Process payment error:', processErr.message);
+        }
+      }
+    }
+
+    return res.json({
+      success: false,
       message: 'Waiting for payment confirmation',
-      status: cartSnapshot.status
+      status: cartSnapshot.status,
+      sepayEnabled: !!sepayToken
     });
 
   } catch (error) {
@@ -7418,7 +7857,7 @@ app.get('/checkout/vietqr/verify/:snapshotId', checkAuthenticated, async (req, r
 app.post('/checkout/vietqr/webhook', express.json(), async (req, res) => {
   try {
     const { snapshotId, status } = req.body;
-    
+
     if (status === 'success' || status === 'completed') {
       const cartSnapshot = await CartSnapshot.findById(snapshotId);
       if (!cartSnapshot) {
@@ -7434,6 +7873,57 @@ app.post('/checkout/vietqr/webhook', express.json(), async (req, res) => {
   } catch (error) {
     console.error('[VietQR Webhook] Error:', error.message);
     res.status(500).json({ success: false });
+  }
+});
+
+// ── SePay Webhook (push notification từ SePay khi có giao dịch) ──
+app.post('/checkout/vietqr/sepay-webhook', express.json(), async (req, res) => {
+  try {
+    console.log('[SePay Webhook] Received:', JSON.stringify(req.body));
+
+    const txData = req.body;
+    const amountIn = parseFloat(txData.amount_in || txData.transferAmount || 0);
+    const content = (txData.transaction_content || txData.content || txData.description || '').toUpperCase();
+
+    if (amountIn <= 0) {
+      return res.json({ success: true, message: 'Not an incoming transaction' });
+    }
+
+    // Lấy tất cả CartSnapshot đang pending để tìm match
+    const pendingSnapshots = await CartSnapshot.find({
+      paymentMethod: 'vietqr',
+      status: 'pending'
+    }).sort({ createdAt: -1 }).limit(50);
+
+    let matched = null;
+    for (const snap of pendingSnapshots) {
+      const shortId = snap._id.toString().substring(0, 8).toUpperCase();
+      const expectedAmount = Math.round(snap.total);
+
+      if (content.includes(shortId) && amountIn >= expectedAmount) {
+        matched = snap;
+        console.log(`[SePay Webhook] ✅ Matched snapshot: ${snap._id}, amount=${amountIn}`);
+        break;
+      }
+    }
+
+    if (!matched) {
+      console.log(`[SePay Webhook] No matching snapshot for content="${content}" amount=${amountIn}`);
+      return res.json({ success: true, message: 'No matching order' });
+    }
+
+    // Xử lý thanh toán
+    try {
+      await processVietQRPayment(matched, txData.id || txData.transaction_id || 'SEPAY-WEBHOOK');
+      console.log(`[SePay Webhook] ✅ Payment processed for snapshot ${matched._id}`);
+    } catch (procErr) {
+      console.error('[SePay Webhook] Process error:', procErr.message);
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[SePay Webhook] Error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -8471,50 +8961,135 @@ if (config.Redirects && Array.isArray(config.Redirects)) {
   });
 }
 
+// =================== STAFF VIETQR PAYMENT MANAGEMENT ===================
+
+app.get('/staff/vietqr-debug', checkAuthenticated, checkStaffAccess('canViewInvoices'), async (req, res, next) => {
+  try {
+    const paymentConfig = res.locals.paymentConfig;
+    const sepayToken = paymentConfig?.vietqr?.sepayApiToken;
+    if (!sepayToken) return res.json({ success: false, error: 'SePay API Token chưa được cấu hình trong Settings' });
+
+    const response = await axios.get('https://my.sepay.vn/userapi/transactions/list', {
+      params: { limit: 10 },
+      headers: { 'Authorization': `Bearer ${sepayToken}`, 'Content-Type': 'application/json' },
+      timeout: 10000
+    });
+    const pendingSnapshots = await CartSnapshot.find({ paymentMethod: 'vietqr', status: 'pending' })
+      .sort({ createdAt: -1 }).limit(5);
+
+    res.json({
+      success: true,
+      sePayStatus: response.data?.status,
+      totalTransactions: (response.data?.transactions || []).length,
+      latestTransactions: (response.data?.transactions || []).slice(0, 5).map(t => ({
+        id: t.id, date: t.transaction_date, amount_in: t.amount_in, content: t.transaction_content
+      })),
+      pendingSnapshots: pendingSnapshots.map(s => ({
+        id: s._id, shortId: s._id.toString().substring(0, 8),
+        total: s.total, createdAt: s.createdAt, status: s.status
+      }))
+    });
+  } catch (error) {
+    res.json({ success: false, error: error.message, response: error.response?.data });
+  }
+});
+
+app.get('/staff/vietqr-payments', checkAuthenticated, checkStaffAccess('canViewInvoices'), async (req, res, next) => {
+  try {
+    const existingUser = await findUserById(req.user.id);
+    const isOwner = req.isOwner();
+    const staffPermissions = existingUser?.staffPermissions || {};
+
+    const pendingPayments = await CartSnapshot.find({
+      paymentMethod: 'vietqr',
+      status: { $in: ['pending', 'processing'] }
+    }).populate('userId').sort({ createdAt: -1 });
+
+    const enriched = pendingPayments.map(snap => {
+      const u = snap.userId;
+      return {
+        _id: snap._id, total: snap.total, status: snap.status,
+        createdAt: snap.createdAt, paymentDetails: snap.paymentDetails,
+        username: u ? (u.discordUsername || u.username || u.email || 'Unknown') : 'Unknown',
+        userId: u ? (u.discordID || u._id.toString()) : null,
+      };
+    });
+
+    res.render('staff/vietqr-payments', {
+      user: req.user, existingUser, isOwner, staffPermissions,
+      pendingPayments: enriched, csrfToken: req.session.csrfToken,
+      currentPage: 'vietqr-payments'
+    });
+  } catch (error) {
+    console.error('[VietQR Staff] Error loading page:', error);
+    next(error);
+  }
+});
+
+app.post('/staff/vietqr-payments/:id/confirm', checkAuthenticated, checkStaffAccess('canViewInvoices'), csrfProtection, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const cartSnapshot = await CartSnapshot.findById(id);
+    if (!cartSnapshot) return res.status(404).json({ success: false, message: 'Payment not found' });
+    if (cartSnapshot.status === 'processed') return res.json({ success: false, message: 'Already processed' });
+    if (cartSnapshot.paymentMethod !== 'vietqr') return res.status(400).json({ success: false, message: 'Not a VietQR payment' });
+
+    const payment = await processVietQRPayment(cartSnapshot, null);
+    res.json({ success: true, transactionId: payment?.transactionID });
+  } catch (error) {
+    console.error('[VietQR Manual Confirm] Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/staff/vietqr-payments/:id/reject', checkAuthenticated, checkStaffAccess('canViewInvoices'), csrfProtection, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const cartSnapshot = await CartSnapshot.findById(id);
+    if (!cartSnapshot) return res.status(404).json({ success: false, message: 'Not found' });
+    cartSnapshot.status = 'cancelled';
+    await cartSnapshot.save();
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// =================== 404 & ERROR HANDLERS ===================
 
 app.get('/error', (req, res) => {
   const errorMessage = "This is a test error message to verify the error page design.";
-  res.status(500).render('error', {
-      errorMessage,
-  });
+  res.status(500).render('error', { errorMessage });
 });
 
 app.use((req, res, next) => {
   res.status(404).render('error', {
-      errorMessage: 'Page not found. The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.'
+    errorMessage: 'Page not found. The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.'
   });
 });
 
-
-app.use(async(err, req, res, next) => {
+app.use(async (err, req, res, next) => {
   console.error(err.stack);
-
   const products = await productModel.find().sort({ position: 1 });
-
   const errorPrefix = `[${new Date().toLocaleString()}] [v${packageFile.version}]`;
   const errorMsg = `\n\n${errorPrefix}\n${err.stack}\n\nProducts:\n${products}`;
-  fs.appendFile("./logs.txt", errorMsg, (e) => {
-    if (e) console.log(e);
-  });
-
+  fs.appendFile("./logs.txt", errorMsg, (e) => { if (e) console.log(e); });
   res.status(500).render('error', { errorMessage: 'Something went wrong on our end. Please try again later.' });
 });
 
-
 app.listen(config.Port, async () => {
-
   console.log("――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――");
   console.log("                                                                          ");
-  if (config.LicenseKey) console.log(`${color.green.bold.underline(`Plex Store v${packageFile.version} is now Online!`)} (${color.gray(`${config.LicenseKey.slice(0, -10)}`)})`);
-  if (!config.LicenseKey) console.log(`${color.green.bold.underline(`Plex Store v${packageFile.version} is now Online! `)}`);
-  console.log(`• Join our discord server for support, ${color.cyan(`discord.gg/plexdev`)}`);
-  console.log(`• Documentation can be found here, ${color.cyan(`docs.plexdevelopment.net`)}`);
-  console.log(`• By using this product you agree to all terms located here, ${color.yellow(`plexdevelopment.net/tos`)}`);
+  if (config.LicenseKey) console.log(`${color.green.bold.underline(`NETFLIX COLDBREW Store v${packageFile.version} is now Online!`)} (${color.gray(`${config.LicenseKey.slice(0, -10)}`)})`);
+  if (!config.LicenseKey) console.log(`${color.green.bold.underline(`NETFLIX COLDBREW Store v${packageFile.version} is now Online! `)}`);
+  console.log(`• Liên hệ Zalo: ${color.cyan(`0961 095 939`)}`);
+  console.log(`• Email: ${color.cyan(`tiendat1516@gmail.com`)}`);
+  console.log(`• Hỗ trợ từ 10h-24h`);
   if (config.LicenseKey) console.log("                                                                          ");
-  if (config.LicenseKey) console.log(`${color.green.bold.underline(`Source Code:`)}`);
-  if (config.LicenseKey) console.log(`• You can buy the full source code at ${color.yellow(`plexdevelopment.net/products/pstoresourcecode`)}`);
-  if (config.LicenseKey) console.log(`• Use code ${color.green.bold.underline(`PLEX`)} for 10% OFF!`);
+  if (config.LicenseKey) console.log(`${color.green.bold.underline(`NETFLIX COLDBREW:`)}`);
+  if (config.LicenseKey) console.log(`• Cung cấp tài khoản Netflix Premium chất lượng cao`);
+  if (config.LicenseKey) console.log(`• Giá ưu đãi nhất thị trường!`);
   console.log("                                                                          ");
   console.log("――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――");
-  console.log(color.yellow("[DASHBOARD] ") + `Web Server has started and is accessible with port ${color.yellow(`${config.Port}`)}`)
+  console.log(color.yellow("[DASHBOARD] ") + `Web Server has started and is accessible with port ${color.yellow(`${config.Port}`)}`);
 });

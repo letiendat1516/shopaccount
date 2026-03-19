@@ -10,7 +10,8 @@ console.log(`${color.yellow(`Starting product, this can take a while..`)}`)
 
 const version = Number(process.version.split('.')[0].replace('v', ''));
 if (version < 20) {
-  console.log(`${color.red(`[ERROR] Plex Store requires a NodeJS version of 20 or higher!\nYou can check your NodeJS by running the "node -v" command in your terminal.`)}`);
+  console.log(`${color.red(`[ERROR] NETFLIX COLDBREW Store requires a NodeJS version of 20 or higher!\nYou can check your NodeJS by running the "node -v" command in your terminal.`)}`);
+
 
   console.log(`${color.blue(`\n[INFO] To update Node.js, follow the instructions below for your operating system:`)}`);
   console.log(`${color.green(`- Windows:`)} Download and run the installer from ${color.cyan(`https://nodejs.org/`)}`);
@@ -21,7 +22,7 @@ if (version < 20) {
   console.log(`${color.cyan(`  - sudo yum update`)}`);
   console.log(`${color.cyan(`  - sudo yum install -y nodejs`)}`);
 
-  let logMsg = `\n\n[${new Date().toLocaleString()}] [ERROR] Plex Store requires a NodeJS version of 20 or higher!`;
+  let logMsg = `\n\n[${new Date().toLocaleString()}] [ERROR] NETFLIX COLDBREW Store requires a NodeJS version of 20 or higher!`;
   fs.appendFile("./logs.txt", logMsg, (e) => { 
     if(e) console.log(e);
   });
@@ -49,15 +50,9 @@ require("./app.js");
 
 async function uploadToHaste(textToUpload) {
     try {
-      const response = await axios.post('https://paste.plexdevelopment.net/documents', textToUpload);
-      return response.data.key;
+      // Log saved locally in logs.txt
+      return null;
     } catch (error) {
-      if (error.response) {
-        console.error('Error uploading to Haste-server. Status:', error.response.status);
-        console.error('Response data:', error.response.data);
-      } else {
-        console.error('Error uploading to Haste-server:', error.message);
-      }
       return null;
     }
   }
@@ -85,10 +80,9 @@ async function uploadToHaste(textToUpload) {
   
       uploadToHaste(truncatedContent).then(key => {
         if (key) {
-          const hasteURL = `https://paste.plexdevelopment.net/${key}`;
-          console.log(`${color.green.bold(`[v${botVersion.version}]`)} ${color.red(`If you require assistance, create a ticket in our Discord server and share this link:`)} ${color.yellow(hasteURL)}\n\n`);
+          console.log(`${color.green.bold(`[v${botVersion.version}]`)} ${color.red(`Error logged. Check logs.txt for details.`)}\n\n`);
         } else {
-          console.log('Paste Upload failed.');
+          console.log(`${color.green.bold(`[v${botVersion.version}]`)} ${color.red(`Error logged. Check logs.txt for details.`)}`);
         }
       });
     });
@@ -157,12 +151,11 @@ async function uploadToHaste(textToUpload) {
 
         const pasteKey = await uploadToHaste(debugContent);
         if (pasteKey) {
-            const hasteURL = `https://paste.plexdevelopment.net/${pasteKey}`;
-            console.log(color.green.bold('\n\n[DEBUG]'), 'Debug information uploaded successfully!');
-            console.log(color.yellow.bold('If a staff member asked you to enable this, please share the link below with them so we can troubleshoot the issue you are having:'));
-            console.log(color.cyan.bold(hasteURL), '\n\n');
+            console.log(color.green.bold('\n\n[DEBUG]'), 'Debug information saved successfully!');
+            console.log(color.yellow.bold('Debug file saved at:'), color.cyan(debugFilePath), '\n\n');
         } else {
-            console.log(color.red('Failed to upload debug information to the paste server.'));
+            console.log(color.green.bold('\n\n[DEBUG]'), 'Debug information saved locally.');
+            console.log(color.yellow.bold('Debug file saved at:'), color.cyan(debugFilePath), '\n\n');
         }
     } catch (error) {
         console.error(color.red.bold('Error generating debug information:'), error);

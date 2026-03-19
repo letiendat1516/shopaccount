@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error - <%= settings.storeName %></title>
+    <title>Lỗi - <%= settings.storeName %></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="<%= settings.faviconPath %>" type="image/x-icon">
@@ -125,11 +125,11 @@
             </div>
 
             <h1 class="text-4xl md:text-5xl font-black text-white mb-4">
-                Oops! Something Went Wrong
+                Ôi! Đã Xảy Ra Lỗi
             </h1>
 
             <p class="text-text-secondary text-lg mb-8">
-                We encountered an unexpected error. Don't worry, we're on it!
+                Chúng tôi gặp phải lỗi không mong muốn. Đừng lo, chúng tôi đang xử lý!
             </p>
 
             <div class="w-full h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent mb-8"></div>
@@ -138,7 +138,7 @@
                 <div class="flex items-start gap-3">
                     <i class="fas fa-info-circle text-red-500 text-xl mt-1 flex-shrink-0"></i>
                     <div class="text-left">
-                        <h3 class="font-semibold text-white mb-2">Error Details:</h3>
+                        <h3 class="font-semibold text-white mb-2">Chi Tiết Lỗi:</h3>
                         <p class="text-red-400 break-words">
                             <%= errorMessage %>
                         </p>
@@ -150,24 +150,24 @@
                 <button onclick="window.history.back()" 
                         class="px-8 py-4 bg-dark-card hover:bg-dark-border text-white border border-white/20 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Go Back</span>
+                    <span>Quay Lại</span>
                 </button>
 
                 <a href="/" 
                    class="px-8 py-4 bg-accent hover:bg-accent/90 text-white rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 hover-lift">
                     <i class="fas fa-home"></i>
-                    <span>Back to Home</span>
+                    <span>Về Trang Chủ</span>
                 </a>
             </div>
 
             <div class="mt-8 pt-8 border-t border-white/10">
                 <p class="text-text-secondary text-sm mb-4">
-                    Need help? Our support team is here for you.
+                    Cần hỗ trợ? Đội ngũ hỗ trợ luôn sẵn sàng giúp bạn.
                 </p>
                 <a href="<%= settings.discordInviteLink %>" 
                    class="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors duration-300 text-sm font-semibold">
                     <i class="fab fa-discord"></i>
-                    <span>Contact Support</span>
+                    <span>Liên Hệ Hỗ Trợ</span>
                     <i class="fas fa-arrow-right text-xs"></i>
                 </a>
             </div>

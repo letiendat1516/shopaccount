@@ -1,12 +1,8 @@
 # ===========================================================================
-# Plex Store Configuration - EXAMPLE
+# NETFLIX COLDBREW Store Configuration - EXAMPLE
 # 
 # IMPORTANT: Copy this file to config.yml and fill in your actual values
 # DO NOT commit config.yml to version control!
-# 
-# If you find any issues, need support, or have a suggestion for the product, let us know in our Discord server.
-# Discord: https://discord.gg/plexdev
-# Documentation: https://docs.plexdevelopment.net/
 # ===========================================================================
 
 # MongoDB Connection String
@@ -100,7 +96,7 @@ Redirects:
     statusCode: 302
 
   - path: "/discord"
-    target: "https://discord.gg/plexdev"
+    target: "https://discord.gg/your-server"
     method: "GET"
     statusCode: 301
 

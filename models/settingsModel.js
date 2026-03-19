@@ -111,31 +111,31 @@ We value your privacy and are committed to safeguarding the personal information
   logoPath: { type: String, default: '/images/logo.png' },
   websiteFont: { type: String, default: 'Rubik' },
   faviconPath: { type: String, default: '/images/favicon.ico' },
-  accentColor: { type: String, default: '#5e99ff' },
-  discordInviteLink: { type: String, default: 'https://discord.gg/plexdev' },
+  accentColor: { type: String, default: '#E50914' },
+  discordInviteLink: { type: String, default: '' },
   siteBannerText: { type: String, default: '' },
-  homePageTitle: { type: String, default: 'Welcome to Plex Development' },
-  homePageSubtitle: { type: String, default: 'Your destination for high-quality, easy-to-use products. We offer a range of affordable solutions without compromising on excellence.' },
-  productsPageTitle: { type: String, default: 'Our Products' },
-  productsPageSubtitle: { type: String, default: 'Explore our range of high-quality, easy-to-use digital products, designed to enhance your online presence.' },
-  tosPageTitle: { type: String, default: 'Terms of Service' },
-  tosPageSubtitle: { type: String, default: 'Please read the terms of service carefully before using our products and services.' },
-  privacyPolicyPageTitle: { type: String, default: 'Privacy Policy' },
-  privacyPolicyPageSubtitle: { type: String, default: 'Understand how we collect, use, and protect your personal information.' },
-  storeName: { type: String, default: 'Plex Development' },
-  paymentCurrency: { type: String, default: 'USD' },
-  currencySymbol: { type: String, default: '$' },
+  homePageTitle: { type: String, default: 'NETFLIX PREMIUM' },
+  homePageSubtitle: { type: String, default: 'Trải nghiệm xem phim bản quyền với chất lượng 4K Ultra HD và âm thanh vòm Dolby Atmos. Cung cấp tài khoản Netflix Premium chất lượng cao với giá ưu đãi nhất thị trường.' },
+  productsPageTitle: { type: String, default: 'Dịch Vụ Của Chúng Tôi' },
+  productsPageSubtitle: { type: String, default: 'Lựa chọn gói dịch vụ phù hợp với nhu cầu của bạn.' },
+  tosPageTitle: { type: String, default: 'Điều Khoản Dịch Vụ' },
+  tosPageSubtitle: { type: String, default: 'Vui lòng đọc kỹ điều khoản dịch vụ trước khi sử dụng sản phẩm và dịch vụ của chúng tôi.' },
+  privacyPolicyPageTitle: { type: String, default: 'Chính Sách Bảo Mật' },
+  privacyPolicyPageSubtitle: { type: String, default: 'Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.' },
+  storeName: { type: String, default: 'NETFLIX COLDBREW' },
+  paymentCurrency: { type: String, default: 'VND' },
+  currencySymbol: { type: String, default: '₫' },
   customNavTabs: [{ name: { type: String, required: true }, link: { type: String, required: true } }],
   customFooterTabs: [{ name: { type: String, required: true }, link: { type: String, required: true } }],
-  footerDescription: { type: String, required: true, default: 'Welcome to Plex Development, your one-stop shop for all your needs. We’re dedicated to providing quality products and a seamless shopping experience. If you have any questions, our team is always ready to assist!' },
+  footerDescription: { type: String, required: true, default: 'Cung cấp tài khoản Netflix Premium chất lượng cao với giá ưu đãi nhất thị trường. Trải nghiệm giải trí không giới hạn.' },
   features: [
     { icon: { type: String, required: true, default: 'fas fa-user-friends' }, title: { type: String, required: true, default: 'User-Friendly' }, description: { type: String, required: true, default: 'Easily manage your store with our intuitive interface, no coding required.' }},
     { icon: { type: String, required: true, default: 'fas fa-cogs' }, title: { type: String, required: true, default: 'Highly Customizable' }, description: { type: String, required: true, default: 'Tailor your store to match your brand with extensive customization options.' }},
     { icon: { type: String, required: true, default: 'fas fa-shield-alt' }, title: { type: String, required: true, default: 'Secure' }, description: { type: String, required: true, default: 'Keep your store and customer data safe with our built-in security features.' }}
   ],
-  seoTitle: { type: String, default: 'Plex Development - High-Quality Discord Bots, Websites & More' },
-  seoDescription: { type: String, default: 'Plex Development provides high-quality Discord bots, custom websites, and other digital products to improve your online presence. Get reliable products and great service tailored to your needs.' },
-  seoTags: { type: String, default: 'Plex Development, High Quality Products, Easy to Use, Customer Support, Discord bots, Websites' },
+  seoTitle: { type: String, default: 'NETFLIX COLDBREW - Tài Khoản Netflix Premium Giá Rẻ, Chất Lượng Cao' },
+  seoDescription: { type: String, default: 'NETFLIX COLDBREW cung cấp tài khoản Netflix Premium chất lượng 4K Ultra HD, âm thanh Dolby Atmos với giá ưu đãi nhất. Bảo hành, hỗ trợ 24/7.' },
+  seoTags: { type: String, default: 'Netflix Premium, Netflix giá rẻ, tài khoản Netflix, Netflix 4K, Netflix Coldbrew, mua Netflix, Netflix Việt Nam' },
   apiKey: { type: String, default: '' },
   apiEnabled: { type: Boolean, default: false },
   antiPiracyEnabled: { type: Boolean, default: false },
@@ -201,15 +201,16 @@ We value your privacy and are committed to safeguarding the personal information
   },
     vietqr: {
       enabled: { type: Boolean, default: false },
-      bankCode: { type: String, default: '970405' }, // VietinBank code
+      bankCode: { type: String, default: '970405' },
       accountNumber: { type: String, default: '' },
       accountName: { type: String, default: '' },
-      accountType: { type: Number, default: 0 }, // 0 = Bank Account, 1 = Business
-      clientId: { type: String, default: '' }, // VietQR API Client ID (optional)
-      apiKey: { type: String, default: '' },   // VietQR API Key (optional)
-      webhookUrl: { type: String, default: '' }, // For third-party webhook
-      webhookSecret: { type: String, default: '' }, // Secret key for webhook verification
-      autoConfirmTimeout: { type: Number, default: 300000 } // 5 minutes in milliseconds
+      accountType: { type: Number, default: 0 },
+      clientId: { type: String, default: '' },
+      apiKey: { type: String, default: '' },
+      sepayApiToken: { type: String, default: '' }, // SePay API Token for auto-verify
+      webhookUrl: { type: String, default: '' },
+      webhookSecret: { type: String, default: '' },
+      autoConfirmTimeout: { type: Number, default: 300000 }
   }
 }
 });
